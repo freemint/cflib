@@ -418,7 +418,7 @@ handle_menu (short title, short item)
 		default:
 			if (title == TSCUT)
 			{
-				char            str[50], s2[50];
+				char            str[50], s2[60];
 
 				get_string (menu, item, str);
 				sprintf (s2, "[1][%s][OK]", str);
