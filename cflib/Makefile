@@ -47,6 +47,9 @@ normal020:
 normalv4e:
 	$(MAKE) libcflibv4e.a TARGET="v4e"
 
+clean::
+	rm -rf .lib*
+
 libcflib$(TARGET).a: objs
 	$(AM_V_at)$(RM) $@
 	$(AM_V_AR)$(AR) rc $@ \

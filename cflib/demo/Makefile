@@ -29,5 +29,7 @@ GENFILES = $(TARGET)
 $(TARGET): $(OBJS) ../libcflib.a
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
 
+clean::
+	rm -f *.app
 
 include $(top_srcdir)/DEPENDENCIES
