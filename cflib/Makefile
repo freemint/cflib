@@ -71,6 +71,8 @@ cflib.spec: cflib.spec.in VERSION
 docu: cflib.stg
 	$(HCP) -ocflib.hyp cflib.stg
 
+all-recursive:: normal
+
 install:
 	install -m 755 -d $(PREFIX)/include
 	install -m 644 cflib.h        ${PREFIX}/include
