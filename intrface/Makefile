@@ -1,14 +1,14 @@
 #
-# Makefile for cflib demo program
+# Makefile for cflib intrface helper
 #
-TARGET = demo.app
+TARGET = extobfix.prg
 
 SHELL = /bin/sh
 SUBDIRS = 
 
 srcdir = .
-top_srcdir = ../..
-subdir = demo
+top_srcdir = ..
+subdir = intrface
 
 default: all
 
@@ -20,16 +20,16 @@ all-here: $(TARGET)
 
 # default overwrites
 INCLUDES += -I..
+#GENERAL += -mshort
 
 # default definitions
 OBJS = $(COBJS:.c=.o) $(SOBJS:.s=.o)
 LIBS += -L.. -lcflib -lgem
 GENFILES = $(TARGET)
 
-$(TARGET): $(OBJS) ../libcflib.a
+$(TARGET): $(OBJS)
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
+	$(STRIP) $@
 
-clean::
-	rm -f *.app
 
 include $(top_srcdir)/DEPENDENCIES

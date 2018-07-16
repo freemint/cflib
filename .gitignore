@@ -1,9 +1,9 @@
 .deps
 .lib*
-gemlib/mt_gem.h
+cflib.spec
 *.o
 *.a
-*.slb
 *.app
 *.prg
+*.tar.gz
 *~
