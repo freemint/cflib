@@ -87,7 +87,7 @@ ifeq ($(WITH_V4E_LIB),yes)
 	install -m 755 -d $(PREFIX)/lib/m5475
 	install -m 644 libcflibv4e.a  ${PREFIX}/lib/m5475/libcflib.a
 endif
-	install -m 755 -d $(PREFIX)/lib/stguide
+	install -m 755 -d $(PREFIX)/stguide
 	install -m 644 cflib.hyp      ${PREFIX}/stguide
 	install -m 644 cflib.ref      ${PREFIX}/stguide
 
