@@ -11,18 +11,18 @@ before_install:
   - export BASE_RAW_URL="https://raw.githubusercontent.com/${USER}"
 
   - wget -O .travis/download_prerequisities.sh "${BASE_RAW_URL}/travis-scripts/master/download_prerequisities.sh"
-  - sh ./.travis/download_prerequisities.sh
-  - sh ./.travis/install-cross-mint.sh gcc-m68k-atari-mint binutils-m68k-atari-mint mintlib-m68k-atari-mint gemlib-m68k-atari-mint > /dev/null
+  - ./.travis/download_prerequisities.sh
+  - ./.travis/install-cross-mint.sh gcc-m68k-atari-mint binutils-m68k-atari-mint mintlib-m68k-atari-mint gemlib-m68k-atari-mint > /dev/null
   
 before_script:
   - . ./.travis/setup_env.sh
 
 script:
-  - sh ./.travis/build.sh "${PWD}/.travis/tmp" "${PWD}/.travis/out"
+  - ./.travis/build.sh "${PWD}/.travis/tmp" "${PWD}/.travis/out"
 
 deploy:
   provider: script
   skip_cleanup: true
-  script: sh ./.travis/deploy.sh "${PWD}/.travis/out" $encrypted_e135c774651f_key $encrypted_e135c774651f_iv
+  script: ./.travis/deploy.sh "${PWD}/.travis/out" $encrypted_e135c774651f_key $encrypted_e135c774651f_iv
   on:
     repo: freemint/cflib
