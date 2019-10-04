@@ -21,6 +21,6 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ./.travis/deploy.sh "${PWD}/.travis/out" $encrypted_e135c774651f_key $encrypted_e135c774651f_iv
+  script: ./.travis/deploy.sh "${PWD}/.travis/out" $encrypted_a6113459d469_key $encrypted_a6113459d469_iv
   on:
     repo: freemint/cflib
