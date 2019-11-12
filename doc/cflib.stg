@@ -1,11 +1,17 @@
+@if VERSION >= 6
+@os atari
+@charset atarist
+@inputenc atarist
+@lang "de"
+@endif
 @database "CF-Lib"
 @author "Christian Felsch"
-@$VER: 0.20.0
+@$VER: 0.21.0
 @subject "Programmieren/C"
-@options "+zz-s"
+@options "+z -s"
 
 ## ##############################################################################
-@node "Titel" "CF-Lib"
+@node "Main" "CF-Lib"
 @{U}Titel                                                               CF-Lib@{0}
 
    Einleitung
@@ -42,7 +48,7 @@ Siehe /usr/doc/cflib-*/COPYING.LIB fÅr die Nutzungsbedingungen.
 Siehe /usr/doc/cflib-*/LiesMich fÅr weitere Informationen.
 Siehe /usr/doc/cflib-*/ChangeLog fÅr eine exakte Auflistung aller énderungen.
 
-Frank Naumann <fnaumann@freemint.de>
+Frank Naumann <fnaumann@@freemint.de>
 2001-02-27
 
 ------------------------------------------------------------------------------
@@ -99,8 +105,8 @@ Christian Felsch
 Adalbert-Stifter-Str 33
 63477 Maintal
 
-email: C.Felsch@gmx.de
-       Christian Felsch @ HH
+email: C.Felsch@@gmx.de
+       Christian Felsch @@ HH
 
 @endnode
 
@@ -108,7 +114,7 @@ email: C.Felsch@gmx.de
 @node "Entwicklungsgeschichte" "CF-Lib: Entwicklungsgeschichte"
 @{U}Entwicklungsgeschichte                                              CF-Lib@{0}
 
- Version 0.20.0 - Frank Naumann <fnaumann@freemint.de>
+ Version 0.20.0 - Frank Naumann <fnaumann@@freemint.de>
  
     Die cflib wurde von Christian Felsch unter die LGPL gestellt und ist
     jetzt Bestandteil des FreeMiNT CVS repositorys. SÑmtliche Entwicklung
@@ -150,7 +156,7 @@ email: C.Felsch@gmx.de
     colorpop.c
     Farbauswahl-Popup mit bis zu 256 Farben. [HA]
  
-    Zum PL 12 hat Heiko Achilles @ DU [HA] einige nÅtzliche Dinge 
+    Zum PL 12 hat Heiko Achilles @@ DU [HA] einige nÅtzliche Dinge 
     beigesteuert!
 
 
@@ -463,7 +469,7 @@ das erste Zeichen im Button verwendet.
 @endnode
 
 ## ##############################################################################
-@node "App" ""CF-Lib: App"
+@node "App" "CF-Lib: App"
 @{U}Applikation                                                         CF-Lib@{0}
 
 Einige nÅtzlichen Funktionen, die jede Applikation benîtigt.
@@ -763,7 +769,7 @@ tatsÑchliche Auflîsung angepasst.
             RÅckgabe    1, wenn O.K.
 
 @alabel dd_reply
-   int dd_reply(short fd, int ack);
+   int dd_reply(int fd, short ack);
          Schickt 1-Byte-Antwort an den Sender.
             fd          Handle der Pipe
             ack         Antwort: (DD_OK, DD_NAK, ...)
@@ -1285,7 +1291,7 @@ dem TOS- und dem normalisierten Format zu konvertieren.
 @alabel get_long
 @alabel set_ulong
    void set_short(OBJECT *tree, short obj, short i);
-   short  get_short(OBJECT *tree, short obj);
+   short get_short(OBJECT *tree, short obj);
    void set_long(OBJECT *tree, short obj, long l);
    long get_long(OBJECT *tree, short obj);
    void set_ulong(OBJECT *tree, short obj, unsigned long l);

@@ -7,3 +7,5 @@ cflib.spec
 *.prg
 *.tar.gz
 *~
+doc/cflib.hyp
+doc/cflib.ref

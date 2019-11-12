@@ -18,7 +18,7 @@ include $(top_srcdir)/RULES
 include $(top_srcdir)/PHONY
 include $(srcdir)/VERSION
 
-all-here: libs
+all-here: libs doc/cflib.hyp
 
 dist: distdir
 	-chmod -R a+r $(distdir) 
@@ -75,8 +75,16 @@ cflib.spec: cflib.spec.in VERSION
 	$(AM_V_at)rm -f $@
 	$(AM_V_GEN)sed 's,@VERSION@,$(VERSION),g' $@.in >$@
 
-docu: cflib.stg
-	$(HCP) -ocflib.hyp cflib.stg
+docu: doc/cflib.hyp
+
+doc/cflib.hyp: doc/cflib.stg
+	@if test "$(HCP)" != ""; then hcp="$(HCP)"; else hcp=hcp; fi; \
+	if test "$$hcp" != "" && $$hcp --version >/dev/null 2>&1; then \
+		$$hcp -o $@ $<; \
+	else \
+		echo "HCP not found, help file not compiled" >&2; \
+	fi
+
 
 all-recursive:: normal
 
@@ -97,8 +105,8 @@ ifeq ($(WITH_V4E_LIB),yes)
 	install -m 644 libcflibv4e.a  ${PREFIX}/lib/m5475/libcflib.a
 endif
 	install -m 755 -d $(PREFIX)/stguide
-	install -m 644 cflib.hyp      ${PREFIX}/stguide
-	install -m 644 cflib.ref      ${PREFIX}/stguide
+	install -m 644 doc/cflib.hyp      ${PREFIX}/stguide
+	install -m 644 doc/cflib.ref      ${PREFIX}/stguide
 
 uninstall:
 	rm -f ${PREFIX}/include/cflib.h

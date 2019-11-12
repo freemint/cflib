@@ -11,6 +11,7 @@ before_install:
   - export BASE_RAW_URL="https://raw.githubusercontent.com/${USER}"
   - git clone --depth=1 --branch=master https://github.com/freemint/travis-scripts.git .travis.tmp && mv .travis.tmp/* .travis/
   - ./.travis/install-cross-mint.sh gcc-m68k-atari-mint binutils-m68k-atari-mint mintlib-m68k-atari-mint gemlib-m68k-atari-mint > /dev/null
+  - . ./.travis/install-udo.sh
   
 before_script:
   - . ./.travis/setup_env.sh
