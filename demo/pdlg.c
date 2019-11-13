@@ -25,244 +25,227 @@
  */
 
 #include <cflib.h>
+#ifdef __GNUC__
 #include <gemx.h>
+#endif
+#ifdef __PUREC__
+#include <tos.h>
+#include <wdlgpdlg.h>
+#endif
 #include "demo.h"
 #include "pdlg.h"
 
 
 /* Event-Routine der MDials */
-extern void handle_mdial_msg (short *msg);
+extern void handle_mdial_msg(_WORD *msg);
 
 #ifndef FALSE
 #define FALSE	0
 #define TRUE	1
 #endif
 
-
-#if defined(__GNUC__) && defined(__MSHORT__)
-
 extern OBJECT *popups;
 
 /*
  * Callbacks fÅr Sub-Dialog
  */
-static long __CDECL
-init_qed_sub (PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
+static long __CDECL init_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 {
 	OBJECT *tree;
-	int offset;
+	_WORD offset;
 
+	(void)settings;
 	tree = sub_dialog->tree;
 	offset = sub_dialog->index_offset;
 
-	set_string (tree, PS_WPNAME + offset, "<unbekannt>");
-	set_short (tree, PS_WPSL + offset, 65);
-	set_short (tree, PS_WPZL + offset, 80);
+	set_string(tree, PS_WPNAME + offset, "<unbekannt>");
+	set_short(tree, PS_WPSL + offset, 65);
+	set_short(tree, PS_WPZL + offset, 80);
 
-	set_string (tree, PS_GFNAME + offset, "6x6 system font");
-	set_short (tree, PS_GFPTS + offset, 10);
+	set_string(tree, PS_GFNAME + offset, "6x6 system font");
+	set_short(tree, PS_GFPTS + offset, 10);
 
 	return 1;
 }
 
-static long __CDECL
-do_qed_sub (PRN_SETTINGS *settings, PDLG_SUB *sub_dialog, short exit_obj)
+static long __CDECL do_qed_sub(struct PDLG_HNDL_args args)
 {
+	PDLG_SUB *sub_dialog = args.sub;
 	OBJECT *tree;
-	short offset;
-	short id = 1, pts = 10;
+	_WORD offset;
+	_WORD id = 1, pts = 10;
 
 	tree = sub_dialog->tree;
 	offset = sub_dialog->index_offset;
-	switch (exit_obj - offset)
+	switch (args.exit_obj - offset)
 	{
 		case PS_WPDSTR:
 		case PS_WPDPOP:
-			if ((exit_obj - offset) == PS_WPDPOP)
-				handle_popup (tree, PS_WPDPOP + offset,
-					      popups, DICHTEPOP, POP_OPEN);
+			if ((args.exit_obj - offset) == PS_WPDPOP)
+				handle_popup(tree, PS_WPDPOP + offset, popups, DICHTEPOP, POP_OPEN);
 			else
-				handle_popup (tree, PS_WPDPOP + offset,
-					      popups, DICHTEPOP, POP_CYCLE);
+				handle_popup(tree, PS_WPDPOP + offset, popups, DICHTEPOP, POP_CYCLE);
 			break;
 
 		case PS_WPSEL:
-			set_state (tree, exit_obj, OS_SELECTED, FALSE);
-			redraw_obj (tree, exit_obj);
+			set_state(tree, args.exit_obj, OS_SELECTED, FALSE);
+			redraw_obj(tree, args.exit_obj);
 			break;
 
 		case PS_GFSEL:
-			do_fontsel ((FS_M_XFSL | FS_M_MAGX),
-				    "Druckerfont wÑhlen", &id, &pts);
-			set_state (tree, exit_obj, OS_SELECTED, FALSE);
-			redraw_obj (tree, exit_obj);
+			do_fontsel(FS_M_XFSL | FS_M_MAGX, "Druckerfont wÑhlen", &id, &pts);
+			set_state(tree, args.exit_obj, OS_SELECTED, FALSE);
+			redraw_obj(tree, args.exit_obj);
 			break;
 	}
 	return 1;
 }
 
-static long __CDECL
-reset_qed_sub (PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
+static long __CDECL reset_qed_sub(PRN_SETTINGS *settings, PDLG_SUB *sub_dialog)
 {
-	/*
-	 * OBJECT       *tree;
-	 * int          offset;
-	 * 
-	 * tree = sub_dialog->tree;
-	 * offset = sub_dialog->index_offset;
-	 */
+#if 0
+	OBJECT *tree;
+	int offset;
+
+	tree = sub_dialog->tree;
+	offset = sub_dialog->index_offset;
+#endif
+
+	(void)settings;
+	(void)sub_dialog;
 	return 1;
 }
 
 
-static PDLG_SUB *
-create_sub_dialog (void)
+static PDLG_SUB *create_sub_dialog(void)
 {
 	PDLG_SUB *sub = NULL;
 	OBJECT *tree;
 
-	sub = malloc (sizeof (PDLG_SUB));
+	sub = malloc(sizeof(PDLG_SUB));
 	if (sub)
 	{
 		sub->next = 0L;
 		sub->option_flags = 0;
 		sub->sub_id = -1;
 
-		rsrc_gaddr (R_TREE, PDLGICON, &tree);
-		sub->sub_icon = tree + PRN_ICON;	/* Zeiger auf das Icon */
+		rsrc_gaddr(R_TREE, PDLGICON, &tree);
+		sub->sub_icon = tree + PRN_ICON;		/* Zeiger auf das Icon */
 
-		rsrc_gaddr (R_TREE, PRN_SUB, &tree);
-		sub->sub_tree = tree;	/* Zeiger auf den Unterdialogs */
+		rsrc_gaddr(R_TREE, PRN_SUB, &tree);
+		sub->sub_tree = tree;					/* Zeiger auf den Unterdialogs */
 
-		sub->dialog = 0L;	/* Zeiger auf die Struktur des Fensterdialogs oder 0L */
-		sub->tree = 0L;	/* Zeiger auf den zusammengesetzen Objektbaum */
-		sub->index_offset = 0;	/* Indexverschiebung des Unterdialogs */
+		sub->dialog = 0L;						/* Zeiger auf die Struktur des Fensterdialogs oder 0L */
+		sub->tree = 0L;							/* Zeiger auf den zusammengesetzen Objektbaum */
+		sub->index_offset = 0;					/* Indexverschiebung des Unterdialogs */
 		sub->reserved1 = 0;
 		sub->reserved2 = 0;
 
-		sub->init_dlg = init_qed_sub;	/* Initialisierungsfunktion */
-		sub->do_dlg = do_qed_sub;	/* Behandlungsfunktion */
-		sub->reset_dlg = reset_qed_sub;	/* ZurÅcksetzfunktion */
+		sub->init_dlg = init_qed_sub;			/* Initialisierungsfunktion */
+		sub->do_dlg = do_qed_sub;				/* Behandlungsfunktion */
+		sub->reset_dlg = reset_qed_sub;			/* ZurÅcksetzfunktion */
 		sub->reserved3 = 0;
 	}
 	return sub;
 }
 
 
-static int
-wlfp_available (void)
+static int wlfp_available(void)
 {
-	short ag1, ag2, ag3, ag4;
+	_WORD ag1, ag2, ag3, ag4;
 
-	if (appl_xgetinfo (7, &ag1, &ag2, &ag3, &ag4))
+	if (appl_xgetinfo(7, &ag1, &ag2, &ag3, &ag4))
+	{
 		if ((ag1 & 0x17) == 0x17)
 			return 1;
-	
+	}
+
 	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
-static void
-save_settings (PRN_SETTINGS *settings)
+static void save_settings(PRN_SETTINGS *settings)
 {
-	/*
-	 * fd = fopen("i:\\pdlg.set", "wb");
-	 * if (fd)
-	 * {
-	 * 	fwrite(settings, 1, sizeof(PRN_SETTINGS), fd);
-	 * 	fclose(fd);
-	 * }
-	 */
+#if 0
+	fd = fopen("i:\\pdlg.set", "wb");
+	if (fd)
+	{
+		fwrite(settings, 1, sizeof(PRN_SETTINGS), fd);
+		fclose(fd);
+	}
+#endif
+	(void)settings;
 }
 
-static PRN_SETTINGS *
-load_settings (PRN_DIALOG *prn_dialog)
+static PRN_SETTINGS *load_settings(PRN_DIALOG *prn_dialog)
 {
 	PRN_SETTINGS *set = NULL;
 
-	set = pdlg_new_settings (prn_dialog);
+	set = pdlg_new_settings(prn_dialog);
 	if (set)
 	{
-		/*
-		 * fd = fopen("i:\\pdlg.set", "rb");
-		 * if (fd)
-		 * {
-		 * 	fread(set, 1, sizeof(PRN_SETTINGS), fd);
-		 * 	fclose(fd);
-		 * }
-		 * else
-		 */
-		pdlg_dflt_settings (prn_dialog, set);
+#if 0
+		fd = fopen("i:\\pdlg.set", "rb");
+		if (fd)
+		{
+			fread(set, 1, sizeof(PRN_SETTINGS), fd);
+			fclose(fd);
+		}
+		else
+#endif
+			pdlg_dflt_settings(prn_dialog, set);
 	}
-	
 	return set;
 }
-#endif
 
 /* --------------------------------------------------------------------------- */
-void
-test_pdlg (int in_win)
+void test_pdlg(int in_win)
 {
-#if defined(__GNUC__) && !defined(__MSHORT__)
-	do_alert (1, 0,
-		  "[3][pdlg und GNU geht nicht, da ich nicht|"
-		  "weiss, wie ich ohne -mshort eine 16bit|"
-		  "ParameterÅbergabe realisiere!][schade]");
-	return;
-#else
-	if (wlfp_available ())
+	if (wlfp_available())
 	{
 		PRN_SETTINGS *prn_settings;
 		PRN_DIALOG *prn_dialog;
-		short d, button, ret, handle;
+		_WORD d, button, ret, handle;
 		EVNT ev;
 
-		prn_dialog = pdlg_create (PDLG_3D);
+		prn_dialog = pdlg_create(PDLG_3D);
 		if (prn_dialog)
 		{
 			PDLG_SUB *sub_dialog;
 
 			if (in_win)
-				disable_menu ();
+				disable_menu();
 
 			/* Settings holen */
-			prn_settings = load_settings (prn_dialog);
+			prn_settings = load_settings(prn_dialog);
 
 			/* Unterdialoge einhÑngen */
-			sub_dialog = create_sub_dialog ();
+			sub_dialog = create_sub_dialog();
 			if (sub_dialog)
-				pdlg_add_sub_dialogs (prn_dialog, sub_dialog);
+				pdlg_add_sub_dialogs(prn_dialog, sub_dialog);
 
 			if (in_win)
 			{
 				/* Fenster-Dialog durchfÅhren */
 
-				handle =
-					pdlg_open (prn_dialog, prn_settings,
-						   "qed", 0x0000, -1, -1);
+				handle = pdlg_open(prn_dialog, prn_settings, "qed", 0x0000, -1, -1);
 
 				/* ob das wohl erlaubt ist?? :-)) */
-				wind_set_str (handle, WF_NAME,
-					      " Drucker-Konfiguration ");
+				wind_set_str(handle, WF_NAME, " Drucker-Konfiguration ");
 
-				do {
-					ev.mwhich =
-						evnt_multi (MU_KEYBD |
-							    MU_MESAG |
-							    MU_BUTTON,
-							    2, 1, 1,
-							    0, 0, 0,
-							    0, 0, 0,
-							    0, 0, 0,
-							    0,
-							    ev.msg,
-							    0,
-							    &ev.mx,
-							    &ev.my,
-							    &ev.mbutton,
-							    &ev.kstate,
-							    &ev.key,
-							    &ev.mclicks);
+				do
+				{
+					ev.mwhich = evnt_multi(MU_KEYBD | MU_MESAG | MU_BUTTON,
+						2, 1, 1,
+						0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0,
+						ev.msg,
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
+						0, 0,
+#else
+						0,
+#endif
+						&ev.mx, &ev.my, &ev.mbutton, &ev.kstate, &ev.key, &ev.mclicks);
 
 					if (ev.mwhich & MU_MESAG)
 					{
@@ -273,11 +256,10 @@ test_pdlg (int in_win)
 							case WM_SIZED:
 								/* fÅr fremdes Fenster */
 								if (ev.msg[3] != handle)
-									handle_mdial_msg (ev.msg);
+									handle_mdial_msg(ev.msg);
 								break;
 
-								case
-							WM_BOTTOMED:	/* nicht erlaubt! */
+							case WM_BOTTOMED:					/* nicht erlaubt! */
 								break;
 
 							case WM_TOPPED:
@@ -288,42 +270,35 @@ test_pdlg (int in_win)
 								ev.msg[3] = handle;
 								break;
 						}
-
 					}
-					ret =
-						pdlg_evnt (prn_dialog,
-							   prn_settings, &ev,
-							   &button);
-				}
-				while (ret == 1);
+					ret = pdlg_evnt(prn_dialog, prn_settings, &ev, &button);
+				} while (ret == 1);
 
-				pdlg_close (prn_dialog, &d, &d);
+				pdlg_close(prn_dialog, &d, &d);
 			}
 			else
 			{
 				/* normalen Dialog durchfÅhren */
-				button = pdlg_do (prn_dialog, prn_settings,
-						 "document name", 0x0000);
-				debug ("pdlg_do(): %d\n", button);
+				button = pdlg_do(prn_dialog, prn_settings, "document name", 0x0000);
+				debug("pdlg_do(): %d\n", button);
 			}
 
 			if (button == PDLG_OK)
-				save_settings (prn_settings);
+				save_settings(prn_settings);
 
 			if (sub_dialog)
 			{
-				pdlg_remove_sub_dialogs (prn_dialog);
-				free (sub_dialog);
+				pdlg_remove_sub_dialogs(prn_dialog);
+				free(sub_dialog);
 			}
 
-			pdlg_free_settings (prn_settings);
-			pdlg_delete (prn_dialog);
+			pdlg_free_settings(prn_settings);
+			pdlg_delete(prn_dialog);
 
 			if (in_win)
-				enable_menu ();
+				enable_menu();
 		}
 	}
 	else
-		form_alert (1, "[1][WDialog ist nicht installiert!][Schade]");
-#endif
+		form_alert(1, "[1][WDialog ist nicht installiert!][Schade]");
 }

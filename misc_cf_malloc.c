@@ -24,23 +24,17 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "intern.h"
 
 
-void *
-cf_malloc (long size, char *who, int global)
+void *cf_malloc(long size, char *who, int global)
 {
 	void *r = NULL;
 
-	if (global && getcookie ("MiNT", NULL))
-		r = (void *) Mxalloc (size, 0x23);
+	if (global && getcookie("MiNT", NULL))
+		r = (void *)Mxalloc(size, 0x23);
 	else
-		r = (void *) Malloc (size);
+		r = (void *)Malloc(size);
 
 	if (r == NULL)
 	{
@@ -48,20 +42,17 @@ cf_malloc (long size, char *who, int global)
 
 		if (gl_gem > 0)
 		{
-			sprintf (msg,
-				 "[3][CF-Lib (%s)|Can't allocate RAM!][Ignore|Exit]",
-				 who);
-			if (form_alert (2, msg) == 2)
+			sprintf(msg, "[3][CF-Lib (%s)|Can't allocate RAM!][Ignore|Exit]", who);
+			if (form_alert(2, msg) == 2)
 			{
-				appl_exit ();
-				exit (-39);
+				appl_exit();
+				exit(-39);
 			}
 		}
 		else
 		{
-			fprintf (stderr, "CF-Lib (%s)\nCan't allocate RAM!\n",
-				 who);
-			exit (-39);
+			fprintf(stderr, "CF-Lib (%s)\nCan't allocate RAM!\n", who);
+			exit(-39);
 		}
 	}
 	return r;

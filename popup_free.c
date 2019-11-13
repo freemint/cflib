@@ -24,31 +24,24 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "intern.h"
 
 
-short
-free_popup (POPUP *p)
+_WORD free_popup(POPUP *p)
 {
-	int i = -1;
+	_WORD i = -1;
 
-	if (!p->tree)
+	if (p->tree == NULL)
 		return FALSE;
-	
-	do {
+
+	do
+	{
 		i++;
-		if (get_obtype (p->tree, i, NULL) == G_STRING)
-			/* free_string freigeben */
-			Mfree ((char *) get_obspec (p->tree, i));
-	}
-	while (!(p->tree[i].ob_flags & OF_LASTOB));
+		if (get_obtype(p->tree, i, NULL) == G_STRING)
+			free((char *)get_obspec(p->tree, i));	/* free_string freigeben */
+	} while (!(p->tree[i].ob_flags & OF_LASTOB));
 	
-	Mfree (p->tree);
+	Mfree(p->tree);
 	
 	return TRUE;
 }

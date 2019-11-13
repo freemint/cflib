@@ -28,27 +28,21 @@
  * GEM clipbrd
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "intern.h"
 
 
-char *
-scrap_rtxt (char *buf, long *len, long maxlen)
+char *scrap_rtxt(char *buf, long *len, long maxlen)
 {
 	char path[80];
 	int datei;
 
-	if (get_scrapdir (path))
+	if (get_scrapdir(path))
 	{
-		strcat (path, "scrap.txt");
-		if ((datei = (int) Fopen (path, 0)) >= 0)
+		strcat(path, "scrap.txt");
+		if ((datei = (int)Fopen(path, 0)) >= 0)
 		{
-			*len = Fread (datei, maxlen, buf);
-			Fclose (datei);
+			*len = Fread(datei, maxlen, buf);
+			Fclose(datei);
 			buf[*len] = '\0';
 			return buf;
 		}

@@ -27,10 +27,9 @@
 #include "intern.h"
 
 
-short
-get_obtype (OBJECT *tree, short obj, short *ud)
+_WORD get_obtype(OBJECT *tree, _WORD obj, _WORD *ud)
 {
-	short type;
+	_WORD type;
 
 	if (ud != NULL)
 		*ud = FALSE;

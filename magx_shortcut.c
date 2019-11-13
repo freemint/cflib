@@ -24,31 +24,26 @@
  * 
  */
 
-#include <ctype.h>
-#include <stddef.h>
-
 #include "intern.h"
 #include "magx.h"
 
 
-short
-get_magx_shortcut (OBJECT *tree, short obj, char *c)
+_WORD get_magx_shortcut(OBJECT *tree, _WORD obj, char *c)
 {
-	short pos = -1, us, mtyp;
+	_WORD pos = -1, us, mtyp;
 	char *p;
 
 	if (c != NULL)
 		*c = '\0';
-	mtyp = get_magx_obj (tree, obj);
+	mtyp = get_magx_obj(tree, obj);
 
-	if ((mtyp == MX_SCRADIO) || (mtyp == MX_SCCHECK) ||
-	    (mtyp == MX_SCEXIT) || (mtyp == MX_SCSTRING))
+	if (mtyp == MX_SCRADIO || mtyp == MX_SCCHECK || mtyp == MX_SCEXIT || mtyp == MX_SCSTRING)
 	{
 		if ((tree[obj].ob_type & 0x00ff) == G_USERDEF)
-			p = (char *) tree[obj].ob_spec.userblk->ub_parm;
+			p = (char *)tree[obj].ob_spec.userblk->ub_parm;
 		else
 			p = tree[obj].ob_spec.free_string;
-		us = (tree[obj].ob_state & 0xff00) >> 8;
+		us = (tree[obj].ob_state >> 8) & 0xff;
 		if (us != 0xFF)
 		{
 			pos = us & 0xf;
@@ -56,6 +51,6 @@ get_magx_shortcut (OBJECT *tree, short obj, char *c)
 				*c = p[pos];
 		}
 	}
-	
+
 	return pos;
 }

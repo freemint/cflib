@@ -24,30 +24,23 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
-
-#include <ctype.h>
 #include "intern.h"
+#include "file.h"
 
 
-int
-set_path (char *path)
+int set_path(char *path)
 {
 	int drive, ret;
 
 	if (path[0] == '\0')
 		return FALSE;
 
-	path[0] = toupper (path[0]);
+	path[0] = toupper(path[0]);
 	if (path[0] >= '1' && path[0] <= '6')
 		drive = path[0] - '1' + 26;
 	else
 		drive = path[0] - 'A';
-	Dsetdrv (drive);
-	ret = Dsetpath (path + 2);
-	return (ret == 0);
+	Dsetdrv(drive);
+	ret = Dsetpath(path + 2);
+	return ret == 0;
 }

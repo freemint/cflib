@@ -37,9 +37,7 @@
 #include "intern.h"
 
 
-void
-cf_objc_edit (OBJECT *tree, short obj, short kreturn, short *idx, short mode,
-	      short kstate, short *ctrl)
+void cf_objc_edit(OBJECT *tree, _WORD obj, _WORD kreturn, _WORD *idx, _WORD mode, _WORD kstate, _WORD *ctrl)
 {
 	if (!(tree[obj].ob_flags & OF_EDITABLE))
 		return;
@@ -55,15 +53,15 @@ cf_objc_edit (OBJECT *tree, short obj, short kreturn, short *idx, short mode,
 
 	if (mode == ED_CHAR)
 	{
-		int scan, i;
+		_WORD scan, i;
 		long l;
 		TEDINFO *ted;
 		char *ptext;
 		char buf[80];
 
 		*ctrl = FALSE;
-		
-		ted = (TEDINFO *) get_obspec (tree, obj);
+
+		ted = (TEDINFO *)get_obspec(tree, obj);
 		ptext = ted->te_ptext;
 
 		scan = (kreturn & 0xff00) >> 8;
@@ -71,43 +69,40 @@ cf_objc_edit (OBJECT *tree, short obj, short kreturn, short *idx, short mode,
 		{
 			switch (scan)
 			{
-				case 0x2D:	/* ^X -> Cut */
-					scrap_wtxt (ptext);
-					objc_edit (tree, obj, 0x11B, idx, ED_CHAR);	/* ESC: lschen */
-					*ctrl = TRUE;
-					break;
+			case 0x2D:											/* ^X -> Cut */
+				scrap_wtxt(ptext);
+				objc_edit(tree, obj, 0x11B, idx, ED_CHAR);		/* ESC: loeschen */
+				*ctrl = TRUE;
+				break;
 
-				case 0x2E:	/* ^C -> Copy */
-					scrap_wtxt (ptext);
-					*ctrl = TRUE;
-					break;
+			case 0x2E:											/* ^C -> Copy */
+				scrap_wtxt(ptext);
+				*ctrl = TRUE;
+				break;
 
-				case 0x2F:	/* ^V -> Paste */
-					objc_edit (tree, obj, 0x11B, idx, ED_CHAR);	/* ESC: lschen */
-					scrap_rtxt (buf, &l, 80);
-					for (i = 0;
-					     i < min (l, ted->te_txtlen - 1);
-					     i++)
-						objc_edit (tree, obj, buf[i],
-							   idx, ED_CHAR);
-					*ctrl = TRUE;
-					break;
+			case 0x2F:											/* ^V -> Paste */
+				objc_edit(tree, obj, 0x11B, idx, ED_CHAR);		/* ESC: loeschen */
+				scrap_rtxt(buf, &l, sizeof(buf));
+				if (l > ted->te_txtlen - 1)
+					l = ted->te_txtlen - 1;
+				for (i = 0; i < l; i++)
+					objc_edit(tree, obj, buf[i], idx, ED_CHAR);
+				*ctrl = TRUE;
+				break;
 			}
 		}
 		else
 		{
 			switch (scan)
 			{
-				case 0x52:	/* INS -> ASCII-Tabelle */
-					/* i = ascii_table(1, 13); */
-					i = ascii_table (sys_big_id,
-							     sys_big_pts);
-					if (i > 0)
-						kreturn = i & 0xff;
-					break;
+			case 0x52:											/* INS -> ASCII-Tabelle */
+				i = ascii_table(sys_big_id, sys_big_pts);
+				if (i > 0)
+					kreturn = i & 0xff;
+				break;
 			}
 		}
 	}
-	if (!(kstate & K_CTRL))	/* keine Ctrl-Codes durchlassen */
-		objc_edit (tree, obj, kreturn, idx, mode);
+	if (!(kstate & K_CTRL))											/* keine Ctrl-Codes durchlassen */
+		objc_edit(tree, obj, kreturn, idx, mode);
 }

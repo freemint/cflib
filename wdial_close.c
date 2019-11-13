@@ -30,14 +30,13 @@
 /*
  * Dialog-Fenster schliežen.
  */
-void
-close_wdial (WDIALOG *wd)
+void close_wdial(WDIALOG *wd)
 {
 	if (wd != NULL)
 	{
 		if ((wd->win_handle > 0) && (wd->mode & WD_OPEN))
 		{
-			wind_close (wd->win_handle);
+			wind_close(wd->win_handle);
 			wd->mode = 0;
 		}
 	}

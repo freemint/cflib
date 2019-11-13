@@ -24,18 +24,11 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
-
-#include <ctype.h>
 #include "intern.h"
+#include "file.h"
 
 
-int
-make_normalpath (char *path)
+int make_normalpath(char *path)
 {
 	int i;
 	char p[256];
@@ -45,25 +38,25 @@ make_normalpath (char *path)
 	if (path[0] == '\0')
 		return FALSE;
 
-#ifdef __MINT__
-	if (path[0] == '/')	/* UNIX-Pfad */
+#if !defined(__PUREC__)
+	if (path[0] == '/')				/* UNIX-Pfad */
 	{
-		unx2dos (path, p);
-		strcpy (path, p);
+		unx2dos(path, p);
+		strcpy(path, p);
 	}
 #endif
 
 	/* Laufwerk bestimmen */
-	if (path[1] != ':')	/* Kein Laufwerk */
+	if (path[1] != ':')				/* Kein Laufwerk */
 	{
-		drv = 'A' + Dgetdrv ();	/* aktuelles Laufwerk */
+		drv = 'A' + Dgetdrv();		/* aktuelles Laufwerk */
 		if (drv > 'Z')
 			drv = drv - 'Z' + '0';	/* A..Z 1..6 */
 		f = path;
 	}
 	else
 	{
-		path[0] = toupper (path[0]);
+		path[0] = toupper(path[0]);
 		drv = path[0];
 		if (drv > 'Z')
 			drv = drv - 'Z' + '0';	/* A..Z 1..6 */
@@ -72,34 +65,34 @@ make_normalpath (char *path)
 	/* Pfad mit Laufwerk bestimmen */
 	if (f[0] == '.' && (f[1] == '\\' || f[1] == '\0'))
 	{
-		get_path (p, drv);	/* aktuellen Pfad nehmen */
+		get_path(p, drv);			/* aktuellen Pfad nehmen */
 		if (f[1] == '\\')
-			strcat (p, f + 2);
+			strcat(p, f + 2);
 	}
-	else if (f[0] != '\\')	/* Keine Root */
+	else if (f[0] != '\\')			/* Keine Root */
 	{
-		get_path (p, drv);
-		strcat (p, f);
+		get_path(p, drv);
+		strcat(p, f);
 	}
 	else
 	{
 		p[0] = drv;
 		p[1] = ':';
 		p[2] = '\0';
-		strcat (p, f);
+		strcat(p, f);
 	}
 
-	i = (int) strlen (p);
+	i = (int)strlen(p);
 	if (p[i - 1] != '\\')
 	{
 		p[i] = '\\';
 		p[i + 1] = '\0';
 	}
 
-	ret = path_exists (p);
+	ret = path_exists(p);
 	if (!ret)
 		p[i] = '\0';
 
-	strcpy (path, p);
+	strcpy(path, p);
 	return ret;
 }

@@ -14,14 +14,7 @@
  * signal (write on an empty pipe) is ignored
  */
 
-#ifdef __MINT__
-  #include <mintbind.h>
-#else
-  #include <tos.h>
-#endif
-
 #include "dragdrop.h"
-
 
 /*
  * ddcreate: create a pipe for doing the drag & drop,
@@ -48,12 +41,11 @@
  *    returns DD_NAK
  * -2 if appl_write fails
  */
-int
-dd_create (int apid, int winid, int msx, int msy, int kstate, char *exts)
+int dd_create(int apid, int winid, int msx, int msy, int kstate, char *exts)
 {
 	int fd, i;
-	short msg[8];
-	long fd_mask;
+	_WORD msg[8];
+	long fdmask;
 	char c;
 
 	__dragdrop_pipename[17] = __dragdrop_pipename[18] = 'A';
@@ -68,17 +60,8 @@ dd_create (int apid, int winid, int msx, int msy, int kstate, char *exts)
 				break;
 		}
 		/* FA_HIDDEN means "get EOF if nobody has pipe open for reading" */
-		fd = (int) Fcreate (__dragdrop_pipename, FA_HIDDEN);
-	}
-#ifdef __MINT__
-	while (fd == -EACCES || fd == -EPERM);
-#else
-/* [GS] Start */
-	while (fd == EACCDN);
-/* End; old
-	while (fd == EACCDN)
-*/
-#endif
+		fd = (int) Fcreate(__dragdrop_pipename, FA_HIDDEN);
+	} while (fd == EACCES || fd == EPERM);
 
 	if (fd < 0)
 		return fd;
@@ -92,42 +75,38 @@ dd_create (int apid, int winid, int msx, int msy, int kstate, char *exts)
 	msg[5] = msy;
 	msg[6] = kstate;
 	msg[7] = (__dragdrop_pipename[17] << 8) | __dragdrop_pipename[18];
-	i = appl_write (apid, (int) sizeof (msg), msg);
+	i = appl_write(apid, (int)sizeof(msg), msg);
 	if (i == 0)
 	{
-		Fclose (fd);
+		Fclose(fd);
 		return -2;
 	}
 
 	/* now wait for a response */
-	fd_mask = 1L << fd;
-	i = Fselect (DD_TIMEOUT, &fd_mask, 0L, 0L);
-	if (!i || !fd_mask)	/* timeout happened */
+	fdmask = 1L << fd;
+	i = Fselect(DD_TIMEOUT, &fdmask, 0L, 0L);
+	if (!i || !fdmask)	/* timeout happened */
 	{
-		Fclose (fd);
+		Fclose(fd);
 		return -1;
 	}
 
 	/* read the 1 byte response */
-	i = (int) Fread (fd, 1L, &c);
+	i = (int)Fread(fd, 1L, &c);
 	if (i != 1 || c != DD_OK)
 	{
-		Fclose (fd);
+		Fclose(fd);
 		return -1;
 	}
 
 	/* now read the "preferred extensions" */
-	i = (int) Fread (fd, DD_EXTSIZE, exts);
+	i = (int)Fread(fd, DD_EXTSIZE, exts);
 	if (i != DD_EXTSIZE)
 	{
-		Fclose (fd);
+		Fclose(fd);
 		return -1;
 	}
 
-#ifdef __MINT__
-	__dragdrop_oldpipesig = signal (SIGPIPE, SIG_IGN);
-#else
-	__dragdrop_oldpipesig = (long) Psignal (SIGPIPE, SIG_IGN);
-#endif
+	__dragdrop_oldpipesig = (__mint_sighandler_t)Psignal(SIGPIPE, SIG_IGN);
 	return fd;
 }

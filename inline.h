@@ -1,7 +1,7 @@
 /*
  * resource set indices for inline
  *
- * created by ORCS 2.15
+ * created by ORCS 2.16
  */
 
 /*
@@ -89,7 +89,7 @@
 #    define _WORD short
 #  endif
 #endif
-extern _WORD inline_rsc_load(void);
+extern _WORD inline_rsc_load(_WORD wchar, _WORD hchar);
 extern _WORD inline_rsc_gaddr(_WORD type, _WORD idx, void *gaddr);
 extern _WORD inline_rsc_free(void);
 #endif

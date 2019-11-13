@@ -27,12 +27,11 @@
 #include "intern.h"
 
 
-void
-ol2ts (long l, short *i1, short *i2)
+void ol2ts(long l, _WORD *i1, _WORD *i2)
 {
 	short *va;
 
-	va = (short *) &l;
+	va = (short *)&l;
 	*i1 = va[0];
 	*i2 = va[1];
 }

@@ -29,28 +29,24 @@
  * ACHTUNG: Nicht re-entrant, d.h. jede Applikation nur ein Kreuz, Ñh MenÅ!
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "menu.h"
 
 
-static inline short
-check_item_key (char *str, short kstate, short kreturn)
+static _WORD check_item_key(char *str, _WORD kstate, _WORD kreturn)
 {
-	short found = FALSE;
-	short len, i, r, ks;
+	_WORD found = FALSE;
+	_WORD i, r, ks;
+	short len;
 	char s[50], ascii;
 	unsigned char scan;
 
 	/* do not make shift keys differences */
-	if ( kstate & K_RSHIFT ) kstate |= K_LSHIFT;
+	if (kstate & K_RSHIFT)
+		kstate |= K_LSHIFT;
 	/* look only to shift/alt/ctrl modifiers */
 	kstate &= K_LSHIFT|K_CTRL|K_ALT;
 
-	scan = (kreturn & 0xff00) >> 8;
+	scan = (kreturn >> 8) & 0xff;
 	if (scan > 127)
 		return FALSE;
 	if (scan >= 0x78 && scan < 0x80)
@@ -60,7 +56,7 @@ check_item_key (char *str, short kstate, short kreturn)
 
 	if (str[0] != '\0')
 	{
-		len = (int) strlen (str);
+		len = (short)strlen(str);
 		i = len - 1;
 		r = 0;
 		while (str[i] == ' ')
@@ -74,8 +70,8 @@ check_item_key (char *str, short kstate, short kreturn)
 
 			while ((i >= 0) && (str[i] != ' '))
 				i--;
-			strcpy (s, str + i + 1);
-			str_toupper (s);
+			strcpy(s, str + i + 1);
+			str_toupper(s);
 
 			ks = 0;
 			i = 0;
@@ -88,11 +84,11 @@ check_item_key (char *str, short kstate, short kreturn)
 						ks |= K_CTRL;
 						i++;
 						break;
-					case '\7':
+					case '\007':
 						ks |= K_ALT;
 						i++;
 						break;
-					case '\1':
+					case '\001':
 						ks |= K_LSHIFT;
 						i++;
 						break;
@@ -102,7 +98,7 @@ check_item_key (char *str, short kstate, short kreturn)
 			}
 
 			found = FALSE;
-			if (ks == kstate)	/* Sondertasten mÅssen gleich sein */
+			if (ks == kstate)			/* Sondertasten mÅssen gleich sein */
 			{
 				if (s[i + 1] == '\0')	/* nur einzelnes Zeichen */
 				{
@@ -111,45 +107,34 @@ check_item_key (char *str, short kstate, short kreturn)
 					else if (s[i] == ascii)
 						found = TRUE;
 				}
-				else if ((strcmp (s + i, "DEL") == 0)
-					 && (scan == 83))
+				else if ((strcmp(s + i, "DEL") == 0) && (scan == 83))
 					found = TRUE;
-				else if ((strcmp (s + i, "ESC") == 0)
-					 && (scan == 1))
+				else if ((strcmp(s + i, "ESC") == 0) && (scan == 1))
 					found = TRUE;
-				else if ((strcmp (s + i, "HELP") == 0)
-					 && (scan == 98))
+				else if ((strcmp(s + i, "HELP") == 0) && (scan == 98))
 					found = TRUE;
-				else if ((strcmp (s + i, "HOME") == 0)
-					 && (scan == 71))
+				else if ((strcmp(s + i, "HOME") == 0) && (scan == 71))
 					found = TRUE;
-				else if ((strcmp (s + i, "INS") == 0)
-					 && (scan == 82))
+				else if ((strcmp(s + i, "INS") == 0) && (scan == 82))
 					found = TRUE;
-				else if ((strcmp (s + i, "TAB") == 0)
-					 && (scan == 15))
+				else if ((strcmp(s + i, "TAB") == 0) && (scan == 15))
 					found = TRUE;
-				else if ((strcmp (s + i, "UNDO") == 0)
-					 && (scan == 97))
+				else if ((strcmp(s + i, "UNDO") == 0) && (scan == 97))
 					found = TRUE;
-				else if ((s[i] == 'F') && (s[i + 1] >= '1')
-					 && (s[i + 1] <= '9'))
+				else if ((s[i] == 'F') && (s[i + 1] >= '1') && (s[i + 1] <= '9'))
 				{
 					if (s[i + 2] == '0' && scan == 68)	/* F10 */
 						found = TRUE;
 					else
 					{
-						if (ks == K_LSHIFT
-						    || ks == K_RSHIFT)
+						if (ks == K_LSHIFT || ks == K_RSHIFT)
 						{
-							if ((scan - 25) ==
-							    (s[i + 1] + 10))
+							if ((scan - 25) == (s[i + 1] + 10))
 								found = TRUE;
 						}
 						else
 						{
-							if (scan ==
-							    (s[i + 1] + 10))
+							if (scan == (s[i + 1] + 10))
 								found = TRUE;
 						}
 					}
@@ -160,65 +145,53 @@ check_item_key (char *str, short kstate, short kreturn)
 	return found;
 }
 
-short
-is_menu_key (short kreturn, short kstate, short *title, short *item)
+_WORD is_menu_key(_WORD kreturn, _WORD kstate, _WORD *title, _WORD *item)
 {
-	short menu_box, i, t, menu_accbox;
+	_WORD menu_box, i, t;
+	_WORD the_bar;
+	_WORD the_title;
+	_WORD menu_accbox;
 	char str[50];
-	short found = FALSE;
+	_WORD found = FALSE;
+	OBJECT *tree = __menu_tree;
 
-	if ((__menu_tree != NULL) && !__menu_disabled)
+	if (tree != NULL && !__menu_disabled)
 	{
-		menu_box = __menu_tree[0].ob_tail;
-		menu_accbox = menu_box = __menu_tree[menu_box].ob_head;
-		t = 3;		/* 3: Desktop-Titel */
+		the_bar = tree[ROOT].ob_head;
+		the_title = tree[the_bar].ob_head;
+		menu_box = tree[ROOT].ob_tail;
+		menu_accbox = menu_box = tree[menu_box].ob_head;
+		t = tree[the_title].ob_head;										/* 3: Desktop-Titel */
 		do
 		{
-			i = __menu_tree[menu_box].ob_head;
+			i = tree[menu_box].ob_head;
 			do
 			{
-#ifdef G_SHORTCUT
-				if (
-				    ((__menu_tree[i].ob_type == G_STRING)
-				     || (__menu_tree[i].ob_type ==
-					 G_SHORTCUT))
-#else
-				/* FIXME...  */
-				if ((__menu_tree[i].ob_type == G_STRING)
-#endif
-				    && !(__menu_tree[i].ob_state & OS_DISABLED))
+				if (((tree[i].ob_type == G_STRING) || (tree[i].ob_type == G_SHORTCUT))
+				    && !(tree[i].ob_state & OS_DISABLED))
 				{
-					get_string (__menu_tree, i, str);
-					if (!(str[0] == '-')
-					 /*   && (strncmp (str, "  Desk", 6) !=
-						0)  not need anymore the accessory menu should not be evaluated only first item this tests is not enough! */  )
+					get_string(tree, i, str);
+					if (str[0] != '-')
 					{
-						found =
-							check_item_key (str,
-									kstate,
-									kreturn);
+						found = check_item_key(str, kstate, kreturn);
 						if (found)
 						{
 							*title = t;
 							*item = i;
-							menu_tnormal
-								(__menu_tree,
-								 *title, 0);
+							menu_tnormal(tree, *title, 0);
 							return TRUE;
 						}
 					}
 				}
-				i = __menu_tree[i].ob_next;
-       if( menu_accbox == menu_box )   /* stop research for acc menu only the first item should be evaluated */
-       {
-         while (i != menu_box) i = __menu_tree[i].ob_next;
-       }
-			}
-			while (i != menu_box);
-			menu_box = __menu_tree[menu_box].ob_next;
-			t = __menu_tree[t].ob_next;
-		}
-		while (t != 2);	/* 2: Box, die die Titel umgibt */
+				i = tree[i].ob_next;
+				if (menu_accbox == menu_box)   /* stop research for acc menu only the first item should be evaluated */
+				{
+					i = menu_box;
+				}
+			} while (i != menu_box);
+			menu_box = tree[menu_box].ob_next;
+			t = tree[t].ob_next;
+		} while (t != the_title);							/* 2: Box, die die Titel umgibt */
 	}
 	return FALSE;
 }

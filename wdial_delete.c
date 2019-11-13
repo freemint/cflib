@@ -24,19 +24,13 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "wdial.h"
 
 
 /*
  * Dialog entfernen.
  */
-void
-delete_wdial (WDIALOG * wd)
+void delete_wdial(WDIALOG *wd)
 {
 	if (wd != NULL)
 	{
@@ -44,13 +38,13 @@ delete_wdial (WDIALOG * wd)
 
 		if (wd->win_handle > 0)
 		{
-			close_wdial (wd);
-			wind_delete (wd->win_handle);
+			close_wdial(wd);
+			wind_delete(wd->win_handle);
 			wd->win_handle = -1;
 		}
 
 		/* aus Liste l”schen */
-		if (wd == __wdial_list)	/* erster? */
+		if (wd == __wdial_list)		/* erster? */
 			__wdial_list = wd->next;
 		else
 		{
@@ -60,6 +54,6 @@ delete_wdial (WDIALOG * wd)
 			p->next = wd->next;
 		}
 
-		Mfree (wd);
+		Mfree(wd);
 	}
 }

@@ -1,0 +1,16 @@
+extobfix.prg
+.C[-I..]
+.C[-E25 -F100 -L32 -P]
+.C[-A-]
+.L[-S=4096]
+=
+
+pcstart.o
+
+extobfix.c     
+
+..\cflib.prj
+pcgemlib.lib
+pcextlib.lib
+pcstdlib.lib
+pctoslib.lib

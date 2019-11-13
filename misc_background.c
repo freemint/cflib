@@ -24,40 +24,31 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
-#include "app.h"
 #include "intern.h"
+#include "app.h"
 
 
-static void
-cf_background (GRECT *box, MFDB *buffer, int get)
+static void cf_background(GRECT *box, MFDB *buffer, _WORD get)
 {
 	MFDB screen;
-	short xy[8];
+	_WORD xy[8];
 	GRECT r;
 
 	r = *box;
-	if (rc_intersect (&gl_desk, &r))	/* nur sichtbaren Bereich */
+	if (rc_intersect(&gl_desk, &r))					/* nur sichtbaren Bereich */
 	{
-		screen.fd_addr = NULL;	/* Bildschirm */
+		screen.fd_addr = NULL;						/* Bildschirm */
 		buffer->fd_w = r.g_w;
 		buffer->fd_h = r.g_h;
-		buffer->fd_wdwidth = (r.g_w + 15) >> 4;	/* Anzahl in intS */
+		buffer->fd_wdwidth = (r.g_w + 15) >> 4;		/* Anzahl in intS */
 		buffer->fd_stand = FALSE;
 		buffer->fd_nplanes = gl_planes;
 		if (get)
-			buffer->fd_addr =
-				cf_malloc ((long) buffer->fd_wdwidth * 2L *
-					   r.g_h * gl_planes, "cf_background",
-					   FALSE);
+			buffer->fd_addr = cf_malloc((long)buffer->fd_wdwidth * 2L * r.g_h * gl_planes, "cf_background", FALSE);
 
 		if (buffer->fd_addr != NULL)
 		{
-			hide_mouse ();
+			hide_mouse();
 			if (get)
 			{
 				xy[0] = r.g_x;
@@ -68,8 +59,7 @@ cf_background (GRECT *box, MFDB *buffer, int get)
 				xy[5] = 0;
 				xy[6] = r.g_w - 1;
 				xy[7] = r.g_h - 1;
-				vro_cpyfm (cf_vdi_handle, S_ONLY, xy, &screen,
-					   buffer);
+				vro_cpyfm(cf_vdi_handle, S_ONLY, xy, &screen, buffer);
 			}
 			else
 			{
@@ -81,26 +71,22 @@ cf_background (GRECT *box, MFDB *buffer, int get)
 				xy[5] = r.g_y;
 				xy[6] = r.g_x + r.g_w - 1;
 				xy[7] = r.g_y + r.g_h - 1;
-				vro_cpyfm (cf_vdi_handle, S_ONLY, xy, buffer,
-					   &screen);
-				Mfree (buffer->fd_addr);
+				vro_cpyfm(cf_vdi_handle, S_ONLY, xy, buffer, &screen);
+				Mfree(buffer->fd_addr);
 			}
-			show_mouse ();
+			show_mouse();
 		}
 		else
-			form_dial (FMD_FINISH, r.g_x, r.g_y, r.g_w, r.g_h,
-				   r.g_x, r.g_y, r.g_w, r.g_h);
+			form_dial_grect(FMD_FINISH, &r, &r);
 	}
 }
 
-void
-restore_background (GRECT *box, MFDB *buffer)
+void restore_background(GRECT *box, MFDB *buffer)
 {
-	cf_background (box, buffer, FALSE);
+	cf_background(box, buffer, FALSE);
 }
 
-void
-save_background (GRECT *box, MFDB *buffer)
+void save_background(GRECT *box, MFDB *buffer)
 {
-	cf_background (box, buffer, TRUE);
+	cf_background(box, buffer, TRUE);
 }

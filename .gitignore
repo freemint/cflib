@@ -5,6 +5,8 @@ cflib.spec
 *.a
 *.app
 *.prg
+*.lib
+*.pdb
 *.tar.gz
 *~
 doc/cflib.hyp

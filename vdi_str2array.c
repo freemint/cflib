@@ -31,13 +31,12 @@
 #include "intern.h"
 
 
-#ifndef __MINT__
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
 
-short
-vdi_str2array (char *src, int *des)
+_WORD vdi_str2array(const char *src, _WORD *des)
 {
-	short len = 0;
-	unsigned char *c = (unsigned char *) src;
+	_WORD len = 0;
+	const unsigned char *c = (const unsigned char *) src;
 
 	while (*c != '\0')
 	{

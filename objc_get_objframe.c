@@ -27,23 +27,23 @@
 #include "intern.h"
 
 
-void
-get_objframe (OBJECT *tree, short obj, GRECT *r)
+void get_objframe(OBJECT *tree, _WORD obj, GRECT *r)
 {
-	short d, i;
-	short type, shadow = 0, outline = 0, line = 0;
+	_WORD d, i;
+	_WORD type;
+	_WORD shadow = 0;
+	_WORD outline = 0;
+	_WORD line = 0;
 
-	objc_offset (tree, obj, &r->g_x, &r->g_y);
+	objc_offset(tree, obj, &r->g_x, &r->g_y);
 	r->g_w = tree[obj].ob_width;
 	r->g_h = tree[obj].ob_height;
 
-	type = get_obtype (tree, obj, NULL);
+	type = get_obtype(tree, obj, NULL);
 	switch (type)
 	{
 		case G_STRING:
-#ifdef G_SHORTCUT
 		case G_SHORTCUT:
-#endif
 		case G_ICON:
 		case G_CICON:
 			/* nichts mehr zu tun */
@@ -55,7 +55,7 @@ get_objframe (OBJECT *tree, short obj, GRECT *r)
 				line++;
 			if (tree[obj].ob_flags & OF_EXIT)
 				line++;
-			if (line && tree[obj].ob_state & OS_SHADOWED)
+			if (line && (tree[obj].ob_state & OS_SHADOWED))
 				shadow = 2 * line;
 			break;
 
@@ -63,7 +63,7 @@ get_objframe (OBJECT *tree, short obj, GRECT *r)
 		case G_FTEXT:
 			line = -(tree[obj].ob_spec.tedinfo->te_thickness);
 			if (line && (tree[obj].ob_state & OS_SHADOWED))
-				shadow = abs (line * 2);
+				shadow = abs(line * 2);
 			else
 				line = 0;
 			break;
@@ -79,18 +79,18 @@ get_objframe (OBJECT *tree, short obj, GRECT *r)
 		case G_IBOX:
 		case G_BOXCHAR:
 			line = -(tree[obj].ob_spec.obspec.framesize);
-			if (line && tree[obj].ob_state & OS_SHADOWED)
-				shadow = abs (line * 2);
+			if (line && (tree[obj].ob_state & OS_SHADOWED))
+				shadow = abs(line * 2);
 			break;
 
 		default:
-			/*
-			 * {
-			 * char s[80];
-			 * sprintf(s, "[3][CF-Lib Hinweis: get_objframe()!|Objekt %d hat unbekannten Typ %d|!][soso]", obj, type);
-			 * form_alert(1, s);
-			 * }
-			 */
+#if 0
+			{
+				char s[80];
+				sprintf(s, "[3][CF-Lib Hinweis: get_objframe()!|Objekt %d hat unbekannten Typ %d|!][soso]", obj, type);
+				form_alert(1, s);
+			}
+#endif
 			return;
 	}
 
@@ -99,7 +99,7 @@ get_objframe (OBJECT *tree, short obj, GRECT *r)
 
 	if (line > 0)
 	{
-		outline = max (outline, line);
+		outline = max(outline, line);
 		shadow += line;
 	}
 
@@ -113,8 +113,8 @@ get_objframe (OBJECT *tree, short obj, GRECT *r)
 
 	if (shadow)
 	{
-		r->g_w += max (outline, shadow);
-		r->g_h += max (outline, shadow);
+		r->g_w += max(outline, shadow);
+		r->g_h += max(outline, shadow);
 	}
 	else
 	{
@@ -122,12 +122,13 @@ get_objframe (OBJECT *tree, short obj, GRECT *r)
 		r->g_h += outline;
 	}
 
-	if ((appl_xgetinfo (13, &d, &i, &d, &d) && i == 1) &&
-	    (tree[obj].ob_flags & OF_FL3DACT))
+	if (appl_xgetinfo(13, &d, &i, &d, &d) &&
+		i == 1 &&
+		(tree[obj].ob_flags & OF_FL3DACT))
 	{
-		short hinc = 0, vinc = 0;
+		_WORD hinc = 0, vinc = 0;
 
-		objc_sysvar (0, 6, 0, 0, &hinc, &vinc);
+		objc_sysvar(0, 6, 0, 0, &hinc, &vinc);
 		r->g_x -= hinc;
 		r->g_y -= vinc;
 		r->g_w += 2 * hinc;

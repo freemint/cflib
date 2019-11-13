@@ -28,27 +28,25 @@
 #include "app.h"
 
 
-short
-hide_mouse_if_needed (GRECT *rect)
+_WORD hide_mouse_if_needed(GRECT *rect)
 {
 	if (!__app_hidden)
 	{
 		GRECT mouse;
-		short mx, my, d;
+		_WORD mx, my, d;
 
 		mouse.g_w = 63;
 		mouse.g_h = 31;
-		
-		graf_mkstate (&mx, &my, &d, &d);
+		graf_mkstate(&mx, &my, &d, &d);
 		mouse.g_x = mx - (mouse.g_w / 2);
 		mouse.g_y = my - (mouse.g_h / 2);
 
-		if (rc_intersect (rect, &mouse))
+		if (rc_intersect(rect, &mouse))
 		{
-			hide_mouse ();
+			hide_mouse();
 			return TRUE;
 		}
 	}
-	
+
 	return FALSE;
 }

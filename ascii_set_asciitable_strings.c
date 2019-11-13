@@ -28,11 +28,10 @@
 #include "inline.h"
 
 
-void
-set_asciitable_strings (char *title, char *button)
+void set_asciitable_strings(char *title, char *button)
 {
 	if (title[0] != '\0')
-		set_string (cf_ascii_tab, AT_TITLE, title);
+		set_string(cf_ascii_tab, AT_TITLE, title);
 	if (button[0] != '\0')
-		set_string (cf_ascii_tab, AT_ABBRUCH, button);
+		set_string(cf_ascii_tab, AT_ABBRUCH, button);
 }

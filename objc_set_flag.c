@@ -27,11 +27,10 @@
 #include "intern.h"
 
 
-void
-set_flag (OBJECT *tree, short obj, short flag, short set)
+void set_flag(OBJECT *tree, _WORD obj, _WORD flag, _WORD set)
 {
 	if (set)
-		tree[obj].ob_flags |= flag;	/* Flag setzen */
+		tree[obj].ob_flags |= flag;		/* Flag setzen */
 	else
 		tree[obj].ob_flags &= ~flag;	/* Flag l”schen */
 }

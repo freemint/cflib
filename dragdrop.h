@@ -19,17 +19,29 @@
 
 #include "intern.h"
 
-
 extern char __dragdrop_pipename[];
 
-#ifdef __MINT__
 #include <errno.h>
-#include <signal.h>
-extern __sighandler_t __dragdrop_oldpipesig;
-#else
-#include <atarierr.h>
-extern long __dragdrop_oldpipesig;
+
+/*
+ * we need the MiNT definitions for those, not any library definitions
+ */
+#ifndef __mint_sighandler_t_defined
+#define __mint_sighandler_t_defined 1
+typedef void __CDECL (*__mint_sighandler_t) (long signum);
 #endif
+
+extern __mint_sighandler_t __dragdrop_oldpipesig;
+
+#undef SIG_IGN
+#define SIG_IGN ((__mint_sighandler_t) 1L)
+#undef SIGPIPE
+#define SIGPIPE 13
+
+#undef EACCES
+#undef EPERM
+#define EACCES -36
+#define EPERM  -38
 
 
 #endif /* _dragdrop_h */

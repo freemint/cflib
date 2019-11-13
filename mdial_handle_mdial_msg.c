@@ -24,50 +24,42 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "mdial.h"
 
 
-static inline void
-redraw_cursor (MDIAL *dial)
+/* FIXME: identical to wdial_draw_cursor? */
+void redraw_mdial_cursor(MDIAL *dial)
 {
 	if (dial->edit_obj > 0)
 	{
 		GRECT r;
 
-		objc_edit (dial->tree, dial->edit_obj, 0, &dial->edit_idx,
-			   ED_INIT);
-		get_objframe (dial->tree, dial->edit_obj, &r);
-		redraw_mdial (dial, ROOT, MAX_DEPTH, r.g_x, r.g_y - 3,
-			     r.g_w + 1, r.g_h + 6);
-		objc_edit (dial->tree, dial->edit_obj, 0, &dial->edit_idx,
-			   ED_INIT);
+		objc_edit(dial->tree, dial->edit_obj, 0, &dial->edit_idx, ED_INIT);
+		get_objframe(dial->tree, dial->edit_obj, &r);
+		redraw_mdial(dial, ROOT, MAX_DEPTH, r.g_x, r.g_y - 3, r.g_w + 1, r.g_h + 6);
+		objc_edit(dial->tree, dial->edit_obj, 0, &dial->edit_idx, ED_INIT);
 	}
 }
 
-static inline void
-move_dial (MDIAL *dial, short x, short y)
+
+static void move_dial(MDIAL *dial, _WORD x, _WORD y)
 {
 	GRECT r;
 
-	wind_get_grect (dial->win_handle, WF_CURRXYWH, &r);
+	wind_get_grect(dial->win_handle, WF_CURRXYWH, &r);
 	r.g_x = x;
 	r.g_y = y;
-	wind_set_grect (dial->win_handle, WF_CURRXYWH, &r);
-	wind_get_grect (dial->win_handle, WF_WORKXYWH, &r);
+	wind_set_grect(dial->win_handle, WF_CURRXYWH, &r);
+	wind_get_grect(dial->win_handle, WF_WORKXYWH, &r);
 	dial->tree[0].ob_x = r.g_x;
 	dial->tree[0].ob_y = r.g_y - dial->delta_y;
 }
 
-static short
-handle_msg (short *msg)
+
+static _WORD handle_msg(_WORD *msg)
 {
 	MDIAL *md;
-	short ret = FALSE;
+	_WORD ret = FALSE;
 
 	md = __mdial_md_list;
 	while (md)
@@ -81,14 +73,13 @@ handle_msg (short *msg)
 		switch (msg[0])
 		{
 		case WM_REDRAW:
-			redraw_mdial (md, ROOT, MAX_DEPTH, msg[4], msg[5],
-				      msg[6], msg[7]);
-			redraw_cursor (md);
+			redraw_mdial(md, ROOT, MAX_DEPTH, msg[4], msg[5], msg[6], msg[7]);
+			redraw_mdial_cursor(md);
 			ret = TRUE;
 			break;
 
 		case WM_MOVED:
-			move_dial (md, msg[4], msg[5]);
+			move_dial(md, msg[4], msg[5]);
 			ret = TRUE;
 			break;
 		}
@@ -96,17 +87,16 @@ handle_msg (short *msg)
 	return ret;
 }
 
-void
-handle_mdial_msg (short *msg)
+void handle_mdial_msg(_WORD *msg)
 {
-	if (!handle_msg (msg) && __mdial_win_cb)
+	if (!handle_msg(msg) && __mdial_win_cb)
 	{
 		switch (msg[0])
 		{
 		case WM_REDRAW:
 		case WM_MOVED:
 		case WM_SIZED:
-			__mdial_win_cb (msg);
+			__mdial_win_cb(msg);
 			break;
 		default:
 			;

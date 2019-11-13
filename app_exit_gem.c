@@ -28,18 +28,17 @@
 #include "app.h"
 
 
-void
-exit_gem (void)
+void exit_gem(void)
 {
 	if (gl_gdos)
-		vst_unload_fonts (cf_vdi_handle, 0);
+		vst_unload_fonts(cf_vdi_handle, 0);
 
-	v_clsvwk (cf_vdi_handle);
+	v_clsvwk(cf_vdi_handle);
 
-	exit_userdef ();
+	exit_userdef();
 
 	if (__app_rsc_load)
-		rsrc_free ();
+		rsrc_free();
 
-	appl_exit ();
+	appl_exit();
 }

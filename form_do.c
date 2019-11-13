@@ -1,0 +1,8 @@
+#include "form_do_edit_valid.c"
+#include "form_do_find_edit.c"
+#include "form_do_cf_objc_find.c"
+#include "form_do_find_shortcut.c"
+#include "form_do_cf_form_keybd.c"
+#include "form_do_cf_objc_edit.c"
+#include "form_do_cf_form_do.c"
+#include "form_do_simple_dial.c"

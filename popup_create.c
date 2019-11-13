@@ -30,19 +30,18 @@
 /*
  * Popup zur Laufzeit erzeugen.
  */
-short
-create_popup (POPUP *p, short anz, short maxlen, char *item)
+_WORD create_popup(POPUP *p, _WORD anz, _WORD maxlen, char *item)
 {
 	char *text;
-	int i;
+	_WORD i;
 
-	p->tree = cf_malloc ((anz + 1) * sizeof (OBJECT), "create_popup", FALSE);
+	p->tree = (OBJECT *) cf_malloc((anz + 1) * sizeof(OBJECT), "create_popup", FALSE);
 	if (p->tree == NULL)
 		return FALSE;
 
 	p->max_item = anz;
 	if (maxlen == -1)
-		p->item_len = (int) strlen (item);
+		p->item_len = (_WORD)strlen(item);
 	else
 		p->item_len = maxlen;
 
@@ -60,7 +59,7 @@ create_popup (POPUP *p, short anz, short maxlen, char *item)
 	p->tree[0].ob_height = 1;
 
 	/* Speicher fr String holen */
-	text = strdup (item);
+	text = strdup(item);
 	if (text == NULL)
 		return FALSE;
 
@@ -69,8 +68,8 @@ create_popup (POPUP *p, short anz, short maxlen, char *item)
 	p->tree[1].ob_head = -1;
 	p->tree[1].ob_tail = -1;
 	p->tree[1].ob_type = G_STRING;
-	p->tree[1].ob_flags = (OF_SELECTABLE | OF_LASTOB);
-	p->tree[1].ob_state = 0;
+	p->tree[1].ob_flags = OF_SELECTABLE | OF_LASTOB;
+	p->tree[1].ob_state = OS_NORMAL;
 	p->tree[1].ob_spec.free_string = text;
 	p->tree[1].ob_x = 0;
 	p->tree[1].ob_y = 0;
@@ -80,7 +79,7 @@ create_popup (POPUP *p, short anz, short maxlen, char *item)
 	p->akt_item = 1;
 
 	for (i = 0; i <= p->akt_item; i++)
-		rsrc_obfix (p->tree, i);
+		rsrc_obfix(p->tree, i);
 
 	return TRUE;
 }

@@ -28,40 +28,34 @@
  * GEM clipbrd
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "intern.h"
 
 
-void
-scrap_clear (void)
+void scrap_clear(void)
 {
 	char scrap[80], path[80];
 	DTA dta, *old_dta;
 	int ok;
 
-	if (get_scrapdir (scrap))
+	if (get_scrapdir(scrap))
 	{
-		strcpy (path, scrap);
-		strcat (path, "scrap.*");
-		old_dta = (DTA *) Fgetdta ();
-		Fsetdta (&dta);
+		strcpy(path, scrap);
+		strcat(path, "scrap.*");
+		old_dta = (DTA *)Fgetdta();
+		Fsetdta(&dta);
 
-		ok = (Fsfirst (path, 0) == 0);
+		ok = Fsfirst(path, 0) == 0;
 		while (ok)
 		{
-			strcpy (path, scrap);
-#ifdef __MINT__
-			strcat (path, dta.dta_name);
+			strcpy(path, scrap);
+#if defined(__PUREC__) || defined(d_fname)
+			strcat(path, dta.d_fname);
 #else
-			strcat (path, dta.d_fname);
+			strcat(path, dta.dta_name);
 #endif
-			Fdelete (path);
-			ok = (Fsnext () == 0);
+			Fdelete(path);
+			ok = Fsnext() == 0;
 		}
-		Fsetdta (old_dta);
+		Fsetdta(old_dta);
 	}
 }

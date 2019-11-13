@@ -27,14 +27,12 @@
 #include "intern.h"
 
 
-long
-get_obspec (OBJECT *tree, short obj)
+long get_obspec(OBJECT *tree, _WORD obj)
 {
-	short ud;
+	_WORD ud;
 
-	get_obtype (tree, obj, &ud);
+	get_obtype(tree, obj, &ud);
 	if (ud)
 		return tree[obj].ob_spec.userblk->ub_parm;
-	
 	return tree[obj].ob_spec.index;
 }

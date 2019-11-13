@@ -1,7 +1,7 @@
 ****************************************************************************
 *
-*	Reduzierte NKCC fÅr die CF-Lib/PureC
-*	Version fÅr PureC
+* reduced NKCC for the CF-Lib
+* Pure-C compatible version
 *
 ****************************************************************************
 
@@ -115,7 +115,7 @@ nk_findscan:   btst.l	#NKFb_NUM,d0		 ; on numeric keypad?
 *
 ****************************************************************************
 
-MODULE nkc_init
+nkc_init:
 
 *------------- fetch addresses of TOS' key scan code translation tables
 
@@ -141,7 +141,6 @@ MODULE nkc_init
 .exit:		   move 	#VERSION,d0 		 ; load version #
 			   rts							 ; bye
 
-ENDMOD
 
 ****************************************************************************
 *
@@ -149,7 +148,7 @@ ENDMOD
 *
 ****************************************************************************
 
-MODULE nkc_tos2n
+nkc_tos2n:
 
 			   movem.l	d3/d4,-(sp) 		 ; save registers
 
@@ -372,7 +371,6 @@ MODULE nkc_tos2n
 			   movem.l	(sp)+,d3/d4 		 ; restore registers
 			   rts							 ; bye
 
-ENDMOD
 
 ****************************************************************************
 *
@@ -380,7 +378,7 @@ ENDMOD
 *
 ****************************************************************************
 
-MODULE nkc_n2tos
+nkc_n2tos:
 
 			   move 	d0,d1				 ; normalized key code
 			   and		#NKFf_FUNC|NKFf_ALT|NKFf_CTRL,d1 ; isolate flags
@@ -561,7 +559,6 @@ MODULE nkc_n2tos
 .exit:		   tst.l	d0					 ; set CCR
 			   rts							 ; bye
 
-ENDMOD
 
 ****************************************************************************
 *
@@ -569,13 +566,12 @@ ENDMOD
 *
 ****************************************************************************
 
-MODULE nkc_toupper
+nkc_toupper:
 			   lea      toupper,a0           ; ^upper case translation table
                and      #$ff,d0              ; high byte = 0 for word operation
                move.b   (a0,d0),d0           ; convert
                rts                           ; bye
 
-ENDMOD
 
 ****************************************************************************
 *
@@ -583,13 +579,12 @@ ENDMOD
 *
 ****************************************************************************
 
-MODULE nkc_tolower
+nkc_tolower:
 			   lea      tolower,a0           ; ^lower case translation table
                and      #$ff,d0              ; high byte = 0 for word operation
                move.b   (a0,d0),d0           ; convert
                rts                           ; bye
 
-ENDMOD
 
 ****************************************************************************
 *							 LOCAL DATA SECTION 						   *

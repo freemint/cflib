@@ -27,16 +27,15 @@
 #include "wdial.h"
 
 
-void
-iconify_wdial (WDIALOG *wd, short x, short y, short w, short h)
+void iconify_wdial(WDIALOG *wd, _WORD x, _WORD y, _WORD w, _WORD h)
 {
 	if (wd->icon && !(wd->mode & WD_ICON))
 	{
 		/* alte Gr”že merken */
-		wind_get_grect (wd->win_handle, WF_CURRXYWH, &wd->work);
+		wind_get_grect(wd->win_handle, WF_CURRXYWH, &wd->work);
 
-		wind_set (wd->win_handle, WF_ICONIFY, x, y, w, h);
-		wind_get (wd->win_handle, WF_WORKXYWH, &x, &y, &w, &h);
+		wind_set(wd->win_handle, WF_ICONIFY, x, y, w, h);
+		wind_get(wd->win_handle, WF_WORKXYWH, &x, &y, &w, &h);
 		wd->icon[0].ob_x = x;
 		wd->icon[0].ob_y = y;
 		wd->icon[0].ob_width = w;

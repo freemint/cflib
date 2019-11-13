@@ -27,20 +27,22 @@
 #include "wdial.h"
 
 
-void
-redraw_wdobj (WDIALOG *wd, short obj)
+/*
+ * Einzelne Objekte neu zeichnen.
+ */
+void redraw_wdobj(WDIALOG *wd, _WORD obj)
 {
 	GRECT r;
 
-	if (wd != NULL && ( wd->mode & WD_OPEN ) != 0 )
+	if (wd != NULL && (wd->mode & WD_OPEN) != 0)
 	{
-		get_objframe (wd->tree, obj, &r);
-		draw_wdial (wd, ROOT, MAX_DEPTH, r.g_x, r.g_y, r.g_w, r.g_h);
+		get_objframe(wd->tree, obj, &r);
+		draw_wdial(wd, ROOT, MAX_DEPTH, r.g_x, r.g_y, r.g_w, r.g_h);
 
 		/* neu zeichnen, wenn obj das Editfeld bzw. ein Child von obj ist */
-		if ((obj == wd->edit_obj) ||
-		    (wd->edit_obj >= wd->tree[obj].ob_head
-		     && wd->edit_obj <= wd->tree[obj].ob_tail))
-			wdial_draw_cursor (wd, ED_INIT);
+		/* FIXME: logical order is not neccessarily physical order */
+		/* FIXME: should not draw cursor when iconified */
+		if ((obj == wd->edit_obj) || (wd->edit_obj >= wd->tree[obj].ob_head && wd->edit_obj <= wd->tree[obj].ob_tail))
+			wdial_draw_cursor(wd, ED_INIT);
 	}
 }

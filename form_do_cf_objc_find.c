@@ -41,16 +41,13 @@
  * Liefert das Objekt an (x,y), wenn es nicht DISABLED oder HIDETREE ist,
  * sonst -1.
  */
-short
-cf_objc_find (OBJECT *tree, short start, short depth, short x, short y)
+_WORD cf_objc_find(OBJECT *tree, _WORD start, _WORD depth, _WORD x, _WORD y)
 {
-	short obj;
+	_WORD obj;
 
-	obj = objc_find (tree, start, depth, x, y);
-	if ((obj != -1)
-	    && ((tree[obj].ob_flags & OF_HIDETREE)
-		|| (tree[obj].ob_state & OS_DISABLED)))
+	obj = objc_find(tree, start, depth, x, y);
+	if (obj >= 0 && ((tree[obj].ob_flags & OF_HIDETREE) || (tree[obj].ob_state & OS_DISABLED)))
 		obj = -1;
-	
+
 	return obj;
 }

@@ -31,19 +31,18 @@
 #include "intern.h"
 
 
-int
-get_scrapdir (char *scrap)
+int get_scrapdir(char *scrap)
 {
 	static char dir[80] = "";
 
 	if (dir[0] == '\0')
 	{
-		scrp_read (dir);
+		scrp_read(dir);
 		if (dir[0] != '\0')
 		{
 			int i;
 
-			i = (int) strlen (dir);
+			i = (int)strlen(dir);
 			if (dir[i - 1] != '\\')
 			{
 				dir[i] = '\\';
@@ -51,6 +50,6 @@ get_scrapdir (char *scrap)
 			}
 		}
 	}
-	strcpy (scrap, dir);
-	return (scrap[0] != '\0');
+	strcpy(scrap, dir);
+	return scrap[0] != '\0';
 }

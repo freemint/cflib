@@ -1,0 +1,17 @@
+demo.app
+.C[-I..]
+.C[-E25 -F100 -L32 -M -P]
+.C[-A-]
+.L[-S=4096]
+=
+
+pcstart.o
+ 
+demo.c        (demo.h)
+pdlg.c        (demo.h)
+ 
+..\cflib.prj
+pcgemlib.lib
+pcextlib.lib
+pcstdlib.lib
+pctoslib.lib

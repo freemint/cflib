@@ -27,13 +27,11 @@
 #include "intern.h"
 
 
-void
-norm_to_gem (unsigned long norm, short *ks, short *kr)
+void norm_to_gem(unsigned long norm, _WORD *ks, _WORD *kr)
 {
-	long toskey = nkc_n2tos (norm);
-	
-	*kr = ((short) (toskey & 0x000000ffL) |	/* ascii */
-	       (short) ((toskey & 0x00ff0000L) >> 8L));	/* scan */
-	
-	*ks = (short) ((toskey & 0xff000000L) >> 24L);	/* kstate */
+	long toskey = nkc_n2tos(norm);
+
+	*kr = ((_WORD)(toskey & 0x000000ffL) |			/* ascii */
+		  (_WORD)((toskey & 0x00ff0000L) >> 8L));	/* scan */
+	*ks = (_WORD)((toskey & 0xff000000L) >> 24L);	/* kstate */
 }

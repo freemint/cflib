@@ -27,7 +27,7 @@ COBJS = \
 	app_xgetinfo.c \
 	\
 	ascii_set_asciitable_strings.c \
-	ascii_table.c \
+	asciitab.c \
 	\
 	cicon.c \
 	\

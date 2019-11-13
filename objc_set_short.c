@@ -27,11 +27,10 @@
 #include "intern.h"
 
 
-void
-set_short (OBJECT *tree, short obj, short i)
+void set_short(OBJECT *tree, _WORD obj, short i)
 {
 	char tmp[32];
 
-	ltoa (i, tmp, 10);
-	set_string (tree, obj, tmp);
+	ltoa(i, tmp, 10);
+	set_string(tree, obj, tmp);
 }

@@ -24,13 +24,13 @@
  * 
  */
 
+#include "intern.h"
 #include "app.h"
 #include "mdial.h"
 
 
-void
-set_mdial_wincb (MDIAL_WCB cb)
+void set_mdial_wincb(MDIAL_WCB cb)
 {
 	__mdial_win_cb = cb;
-	cf_msg_cb = (__mdial_win_cb != NULL);
+	cf_msg_cb = __mdial_win_cb != NULL;
 }

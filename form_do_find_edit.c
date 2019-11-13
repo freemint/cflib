@@ -37,18 +37,17 @@
 #include "intern.h"
 
 
-short
-find_edit (OBJECT *tree, short obj, short mode)
+_WORD find_edit(OBJECT *tree, _WORD obj, _WORD mode)
 {
-	short ret = 0;
-	int i = 0;
-	int prev = 0, next = 0;
-	int first = 0, last = 0;
+	_WORD ret = 0;
+	_WORD i = 0;
+	_WORD prev = 0, next = 0;
+	_WORD first = 0, last = 0;
 
 	do
 	{
 		i++;
-		if (edit_valid (tree, i))
+		if (edit_valid(tree, i))
 		{
 			/* ersten merken */
 			if (first == 0)
@@ -62,8 +61,7 @@ find_edit (OBJECT *tree, short obj, short mode)
 			/* enth„lt beim while-Ende den letzen */
 			last = i;
 		}
-	}
-	while (!(tree[i].ob_flags & OF_LASTOB));
+	} while (!(tree[i].ob_flags & OF_LASTOB));
 
 	if (prev == 0)
 		prev = last;
@@ -82,7 +80,7 @@ find_edit (OBJECT *tree, short obj, short mode)
 			break;
 
 		default:
-			debug ("\find_edit: unbekannter Modus %d.\n", mode);
+			debug("find_edit: unbekannter Modus %d.\n", mode);
 	}
 
 	return ret;

@@ -27,10 +27,9 @@
 #include "intern.h"
 
 
-short
-do_popup (POPUP *p, short button)
+_WORD do_popup(POPUP *p, _WORD button)
 {
-	short flag, p_x, p_y, d;
+	_WORD flag, p_x, p_y, d;
 	MENU Menu, MData;
 
 	Menu.mn_tree = p->tree;
@@ -38,9 +37,9 @@ do_popup (POPUP *p, short button)
 	Menu.mn_item = 0;
 	Menu.mn_scroll = FALSE;
 
-	graf_mkstate (&p_x, &p_y, &d, &d);
+	graf_mkstate(&p_x, &p_y, &d, &d);
 
-	flag = cf_menu_popup (&Menu, p_x, p_y, &MData, button, 0);
+	flag = cf_menu_popup(&Menu, p_x, p_y, &MData, button, 0);
 
-	return (flag ? MData.mn_item : 0);
+	return flag ? MData.mn_item : 0;
 }

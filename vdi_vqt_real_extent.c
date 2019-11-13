@@ -31,38 +31,35 @@
 #include "intern.h"
 
 
-#if  !defined (_GEMLIB_H_)
-
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
 /*
  * Kennt die Pure/GEM-Lib nicht.
  */
 
-void
-vqt_real_extent (short handle, short x, short y, char *string, short extent[])
+void vqt_real_extent(_WORD handle, _WORD x, _WORD y, const char *string, _WORD extent[])
 {
-	static VDIPB vdipb =
-	{
-		_VDIParBlk.contrl,
-		_VDIParBlk.intin,
-		_VDIParBlk.ptsin,
-		_VDIParBlk.intout,
-		_VDIParBlk.ptsout
-	};
-
-	short i;
+	VDIPB vdipb;
+	_WORD i;
 
 	i = vdi_str2array(string, _VDIParBlk.intin);
+
+	vdipb.contrl = _VDIParBlk.contrl;
+	vdipb.intin = _VDIParBlk.intin;
+	vdipb.intout = _VDIParBlk.intout;
+	vdipb.ptsin = _VDIParBlk.ptsin;
+	vdipb.ptsout = _VDIParBlk.ptsout;
 
 	_VDIParBlk.ptsin[0] = x;
 	_VDIParBlk.ptsin[1] = y;
 	_VDIParBlk.contrl[0] = 240;
 	_VDIParBlk.contrl[1] = 1;
 	_VDIParBlk.contrl[3] = i;
+	_VDIParBlk.contrl[5] = 0;
 	_VDIParBlk.contrl[6] = handle;
 
 	vdi(&vdipb);
 
-	for (i = 0; i<8; i++)
+	for (i = 0; i < 8; i++)
 		extent[i] = _VDIParBlk.ptsout[i];
 }
 

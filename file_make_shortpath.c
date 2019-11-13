@@ -25,24 +25,24 @@
  */
 
 #include "intern.h"
+#include "file.h"
 
 
-void
-make_shortpath (char *path, char *shortpath, int maxlen)
+void make_shortpath(char *path, char *shortpath, int maxlen)
 {
 	char help[256];
 	int path_len;
 	char *p1, *p2;
 
-	strcpy (help, path);
-	path_len = (int) strlen (help);
+	strcpy(help, path);
+	path_len = (int)strlen(help);
 	if (maxlen < 18)
-		split_filename (path, NULL, help);
+		split_filename(path, NULL, help);
 	else if (path_len > maxlen)
 	{
-		p1 = strchr (help, '\\');
+		p1 = strchr(help, '\\');
 		p2 = p1;
-		path_len += 2;	/* zwei Punkte neu */
+		path_len += 2;		/* zwei Punkte neu */
 		while (*p2 != '\0' && path_len > maxlen)
 		{
 			p2++;
@@ -54,15 +54,15 @@ make_shortpath (char *path, char *shortpath, int maxlen)
 		}
 		if (*p2 != '\0')
 		{
-			memmove (p1 + 3, p2, strlen (p2) + 1);
+			memmove(p1 + 3, p2, strlen(p2) + 1);
 			p1[1] = '.';
 			p1[2] = '.';
 		}
 		else
 		{
-			p2 = strrchr (help, '\\');
-			memmove (help, p2, strlen (p2) + 1);
+			p2 = strrchr(help, '\\');
+			memmove(help, p2, strlen(p2) + 1);
 		}
 	}
-	strcpy (shortpath, help);
+	strcpy(shortpath, help);
 }

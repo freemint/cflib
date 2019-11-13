@@ -24,27 +24,24 @@
  * 
  */
 
-#include <ctype.h>
 #include "intern.h"
+#include <ctype.h>
 
 
-int
-get_patchlev (const char *id_str, char *pl)
+int get_patchlev(const char *id_str, char *pl)
 {
 	const char *p;
 	int len;
 	int ret = FALSE;
 
-	len = strlen (id_str);
+	len = (int)strlen(id_str);
 	if (id_str[0] == '$' && id_str[len - 1] == '$')
 	{
 		p = id_str;
-		while (!isdigit (*p))
+		while (!isdigit(*p))
 			p++;
-		
-		while (*p != '$' && !isspace (*p))
+		while (*p != '$' && !isspace(*p))
 			*pl++ = *p++;
-		
 		*pl = '\0';
 		ret = TRUE;
 	}

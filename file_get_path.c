@@ -24,29 +24,22 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
-
-#include <ctype.h>
 #include "intern.h"
+#include "file.h"
 
 
-int
-get_path (char *path, char drive)
+int get_path(char *path, char drive)
 {
 	int ret, drive_nr;
 
 	if (drive == 0)
 	{
-		drive = 'A' + Dgetdrv ();	/* Aktuelles Laufwerk */
+		drive = 'A' + Dgetdrv();		/* Aktuelles Laufwerk */
 		if (drive > 'Z')
 			drive = drive - 'Z' + '0';
 	}
 	else
-		drive = toupper (drive);
+		drive = toupper(drive);
 	if (drive >= '1' && drive <= '6')	/* Laufwerk nach Z mit Big-DOS oder MetaDOS > 2.60 */
 		drive_nr = drive - '1' + 26;
 	else
@@ -56,8 +49,8 @@ get_path (char *path, char drive)
 	ret = Dgetpath (path + 2, drive_nr + 1);
 	strcat (path, "\\");
 
-	if (fs_case_sens (path) == NO_CASE)
-		str_toupper (path);
+	if (fs_case_sens(path) == NO_CASE)
+		str_toupper(path);
 
-	return (ret == 0);
+	return ret == 0;
 }

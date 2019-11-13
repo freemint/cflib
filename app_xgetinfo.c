@@ -27,19 +27,19 @@
 #include "intern.h"
 #include "app.h"
 
-#if ! (( __GEMLIB_MAJOR__ > 0 ) || ( __GEMLIB_MINOR__ > 42 ) || (( __GEMLIB_MINOR__ == 42 ) && ( __GEMLIB_REVISION__ > 2 )))
 /* note: The new gemlib plXX (after the mgemlib->gemlib merge)
  * contains correct appl_xgetinfo() binding already */
 
-short
-appl_xgetinfo (short type, short *out1, short *out2, short *out3, short *out4)
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
+
+_WORD appl_xgetinfo(_WORD type, _WORD *out1, _WORD *out2, _WORD *out3, _WORD *out4)
 {
-	short has_agi = FALSE;
+	_WORD has_agi = FALSE;
 
 	has_agi = (	(_GemParBlk.global[0] >= 0x400)
 			|| (appl_find ("?AGI\0\0\0\0") == 0));
 	if (has_agi)
-		return (appl_getinfo (type, out1, out2, out3, out4));
+		return appl_getinfo(type, out1, out2, out3, out4);
 
 	return 0;
 }

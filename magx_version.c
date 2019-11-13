@@ -24,23 +24,19 @@
  * 
  */
 
-#include <ctype.h>
-#include <stddef.h>
-
 #include "intern.h"
 #include "magx.h"
 
 
-int
-get_magx_version (void)
+int get_magx_version(void)
 {
 	long v;
 	MAGX_COOKIE *magxCook;
-	int version;
+	short version;
 
-	if (getcookie ("MagX", &v))
+	if (getcookie("MagX", &v))
 	{
-		magxCook = (MAGX_COOKIE *) v;
+		magxCook = (MAGX_COOKIE *)v;
 		version = magxCook->aesvars->version;
 	}
 	else

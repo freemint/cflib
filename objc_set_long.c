@@ -27,11 +27,10 @@
 #include "intern.h"
 
 
-void
-set_long (OBJECT *tree, short obj, long l)
+void set_long(OBJECT *tree, _WORD obj, long l)
 {
 	char tmp[32];
 
-	ltoa (l, tmp, 10);
-	set_string (tree, obj, tmp);
+	ltoa(l, tmp, 10);
+	set_string(tree, obj, tmp);
 }

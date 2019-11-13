@@ -36,43 +36,42 @@
 # define _stringify(x)	#x
 #endif
 
-#define CFLIB_PATCHLEVEL	str(__CFLIB_MAJOR__) "." str(__CFLIB_MINOR__) "." \
-				str(__CFLIB_REVISION__) __CFLIB_BETATAG__
+#define CFLIB_PATCHLEVEL	str(__CFLIB_MAJOR__) "." str(__CFLIB_MINOR__) "." str(__CFLIB_REVISION__) __CFLIB_BETATAG__
 
 /*
  * global identify string for the lib
  */
-char __Ident_cflib[] = "$PatchLevel: CF library: " CFLIB_PATCHLEVEL " $";
+char const __Ident_cflib[] = "$PatchLevel: CF library: " CFLIB_PATCHLEVEL " $";
 
 
-short	gl_phys_handle = -1;
+_WORD	gl_phys_handle = -1;
 GRECT	gl_desk;
 
-short	sys_big_id;
-short	sys_big_height;
-short	sys_big_pts;
-short	sys_sml_id;
-short	sys_sml_height;
-short	sys_sml_pts;
-short	sys_wchar;
-short	sys_hchar;
-short	sys_wbox;
-short	sys_hbox;
+_WORD	sys_big_id;
+_WORD	sys_big_height;
+_WORD	sys_big_pts;
+_WORD	sys_sml_id;
+_WORD	sys_sml_height;
+_WORD	sys_sml_pts;
+_WORD	sys_wchar;
+_WORD	sys_hchar;
+_WORD	sys_wbox;
+_WORD	sys_hbox;
 
-short	gl_wchar;
-short	gl_hchar;
-short	gl_wbox;
-short	gl_hbox;
+_WORD	gl_wchar;
+_WORD	gl_hchar;
+_WORD	gl_wbox;
+_WORD	gl_hbox;
 
-short	gl_gdos = FALSE;
-short	gl_font_anz = 1;
-short	gl_planes = 1;
+_WORD	gl_gdos = FALSE;
+_WORD	gl_font_anz = 1;
+_WORD	gl_planes = 1;
 
-short	gl_gem = 0;
-short	gl_mint = 0;
-short	gl_naes = 0;
-long	gl_xaaes = 0L;
-short	gl_magx = 0;
-short	gl_nvdi = 0;
+_WORD	gl_gem = 0;
+_WORD	gl_mint = 0;
+_WORD	gl_naes = 0;
+long	gl_xaaes = 0;
+_WORD	gl_magx = 0;
+_WORD	gl_nvdi = 0;
 
-char	gl_appdir[256] = "";
+char	gl_appdir[256];

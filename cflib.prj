@@ -1,0 +1,34 @@
+cflib.lib
+
+.C[-E25 -F100 -L32 -M -P]
+.C[-A- -2-]
+.L[-G -J]
+
+=
+
+alerts.c
+app.c
+asciitab.c
+cicon.c
+colorpop.c
+comm.c
+cookie.c
+debug.c
+dragdrop.c
+file.c
+filesel.c
+fontsel.c
+form_do.c
+globals.c
+magx.c
+mdial.c
+menu.c
+misc.c
+nkcc.c
+nkcc-pc.s
+objc.c
+popup.c
+scrap.c
+userdef.c
+vdi.c
+wdial.c

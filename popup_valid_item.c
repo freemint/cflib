@@ -27,9 +27,7 @@
 #include "intern.h"
 
 
-short
-popup_valid_item (OBJECT *tree, short obj)
+_WORD popup_valid_item(OBJECT *tree, _WORD obj)
 {
-	return (!get_state (tree, obj, OS_DISABLED)
-		&& get_flag (tree, obj, OF_SELECTABLE));
+	return !get_state(tree, obj, OS_DISABLED) && get_flag(tree, obj, OF_SELECTABLE);
 }

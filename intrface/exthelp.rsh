@@ -1,8 +1,12 @@
 /*
  * GEM resource C output of exthelp
  *
- * created by ORCS 2.15
+ * created by ORCS 2.16
  */
+
+#if !defined(__GNUC__) || !defined(__mc68000__)
+#include <portab.h>
+#endif
 
 #ifdef OS_WINDOWS
 #  include <portaes.h>
@@ -15,7 +19,7 @@
 #  endif
 #else
 #  ifdef __TURBOC__
-#    include <portaes.h>
+#    include <aes.h>
 #    define CP (_WORD *)
 #  endif
 #endif
@@ -59,6 +63,10 @@
 #  include <obdefs.h>
 #  define _WORD int
 #  define SHORT int
+#endif
+
+#ifndef _VOID
+#  define _VOID void
 #endif
 
 #ifndef OS_NORMAL
@@ -176,11 +184,23 @@
 #  define _UBYTE char
 #endif
 
+#ifndef _BOOL
+#  define _BOOL int
+#endif
+
 #ifndef _LONG
 #  ifdef LONG
 #    define _LONG LONG
 #  else
 #    define _LONG long
+#  endif
+#endif
+
+#ifndef _ULONG
+#  ifdef ULONG
+#    define _ULONG ULONG
+#  else
+#    define _ULONG unsigned long
 #  endif
 #endif
 
@@ -242,11 +262,8 @@
 #endif
 
 #ifdef __STDC__
-#ifndef GetTextSize
-extern void GetTextSize(_WORD *_width, _WORD *_height);
-#endif
 #ifndef W_Cicon_Setpalette
-extern int W_Cicon_Setpalette(_WORD *_palette);
+extern _BOOL W_Cicon_Setpalette(_WORD *_palette);
 #endif
 #ifndef hrelease_objs
 extern void hrelease_objs(OBJECT *_ob, _WORD _num_objs);
@@ -360,9 +377,11 @@ static OBJECT *rs_trindex[NUM_TREE] = {
 
 #if RSC_NAMED_FUNCTIONS
 #ifdef __STDC__
-_WORD exthelp_rsc_load(void)
+_WORD exthelp_rsc_load(_WORD wchar, _WORD hchar)
 #else
-_WORD exthelp_rsc_load()
+_WORD exthelp_rsc_load(wchar, hchar)
+_WORD wchar;
+_WORD wchar;
 #endif
 {
 #ifndef RSC_HAS_PALETTE
@@ -378,8 +397,6 @@ _WORD exthelp_rsc_load()
 	{
 		_WORD Obj;
 		OBJECT *tree;
-		_WORD wchar, hchar;
-		GetTextSize(&wchar, &hchar);
 		for (Obj = 0, tree = rs_object; Obj < NUM_OBS; Obj++, tree++)
 		{
 			tree->ob_x = wchar * (tree->ob_x & 0xff) + (tree->ob_x >> 8);
@@ -546,20 +563,20 @@ _WORD exthelp_rsc_free()
 #endif /* RSC_NAMED_FUNCTIONS */
 
 #else /* !RSC_STATIC_FILE */
-int rs_numstrings = 17;
-int rs_numfrstr = 1;
+_WORD rs_numstrings = 17;
+_WORD rs_numfrstr = 1;
 
-int rs_nuser = 0;
-int rs_numimages = 0;
-int rs_numbb = 0;
-int rs_numfrimg = 0;
-int rs_numib = 0;
-int rs_numcib = 0;
-int rs_numti = 0;
-int rs_numobs = 18;
-int rs_numtree = 1;
+_WORD rs_nuser = 0;
+_WORD rs_numimages = 0;
+_WORD rs_numbb = 0;
+_WORD rs_numfrimg = 0;
+_WORD rs_numib = 0;
+_WORD rs_numcib = 0;
+_WORD rs_numti = 0;
+_WORD rs_numobs = 18;
+_WORD rs_numtree = 1;
 
 char rs_name[] = "exthelp.rsc";
 
-int _rsc_format = 2; /* RSC_FORM_SOURCE2 */
+_WORD _rsc_format = 2; /* RSC_FORM_SOURCE2 */
 #endif /* RSC_STATIC_FILE */

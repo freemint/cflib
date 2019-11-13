@@ -36,13 +36,13 @@
 /* --------------------------------------------------------------------------- */
 OBJECT	*menu, *objdial, *popdial, *wicon, *popups, *about;
 WDIALOG	*wdial;
-short	quit;
-short	vdi_handle;
-short	event, msx, msy, mbutton, kstate, mclick, kreturn, win_handle;
-short	modal = FALSE;
-short	id = 1, pts = 10;
+_WORD	quit;
+_WORD	vdi_handle;
+_WORD	event, msx, msy, mbutton, kstate, mclick, kreturn, win_handle;
+_WORD	modal = FALSE;
+_WORD	id = 1, pts = 10;
 
-static void handle_msg (short *msg);
+static void handle_msg(_WORD *msg);
 
 /* --------------------------------------------------------------------------- */
 /* 
@@ -50,82 +50,72 @@ static void handle_msg (short *msg);
  * app-modalen Dialogen Redraw-, Move- und Size-Aktionen ausgewertet 
  * werden.
  */
-static void
-redraw_win (short handle, short xc, short yc, short wc, short hc)
+static void redraw_win(_WORD handle, _WORD xc, _WORD yc, _WORD wc, _WORD hc)
 {
 	GRECT t1, t2;
-	short temp[4];
+	_WORD temp[4];
 
-	hide_mouse ();
-	wind_update (TRUE);
+	hide_mouse();
+	wind_update(TRUE);
 	t2.g_x = xc;
 	t2.g_y = yc;
 	t2.g_w = wc;
 	t2.g_h = hc;
-	wind_get_grect (handle, WF_FIRSTXYWH, &t1);
-	vsf_color (vdi_handle, 0);
+	wind_get_grect(handle, WF_FIRSTXYWH, &t1);
+	vsf_color(vdi_handle, G_WHITE);
 
-	wind_get (handle, WF_WORKXYWH, &temp[0], &temp[1], &temp[2],
-		  &temp[3]);
+	wind_get(handle, WF_WORKXYWH, &temp[0], &temp[1], &temp[2], &temp[3]);
 	temp[2] += temp[0] - 1;
 	temp[3] += temp[1] - 1;
 
 	while (t1.g_w && t1.g_h)
 	{
-		if (rc_intersect (&t2, &t1))
+		if (rc_intersect(&t2, &t1))
 		{
-			set_clipping (vdi_handle, t1.g_x, t1.g_y, t1.g_w,
-				      t1.g_h, TRUE);
-			v_bar (vdi_handle, temp);
+			set_clipping(vdi_handle, t1.g_x, t1.g_y, t1.g_w, t1.g_h, TRUE);
+			v_bar(vdi_handle, temp);
 		}
-		wind_get (handle, WF_NEXTXYWH, &t1.g_x, &t1.g_y, &t1.g_w,
-			  &t1.g_h);
+		wind_get(handle, WF_NEXTXYWH, &t1.g_x, &t1.g_y, &t1.g_w, &t1.g_h);
 	}
-	wind_update (FALSE);
-	show_mouse ();
+	wind_update(FALSE);
+	show_mouse();
 }
 
-static void
-open_win (void)
+static void open_win(void)
 {
-	short work_out[57];
+	_WORD work_out[57];
 	GRECT r = { 100, 100, 350, 150 };
 
-	vdi_handle = open_vwork (work_out);
-	win_handle =
-		wind_create_grect ((NAME | MOVER | CLOSER | SIZER), &gl_desk);
-	wind_set_str (win_handle, WF_NAME, " Fenster ");
-	wind_open_grect (win_handle, &r);
+	vdi_handle = open_vwork(work_out);
+	win_handle = wind_create_grect(NAME | MOVER | CLOSER | SIZER, &gl_desk);
+	wind_set_str(win_handle, WF_NAME, " Fenster ");
+	wind_open_grect(win_handle, &r);
 }
 
-static void
-win_msg (short *msg)
+static void win_msg(_WORD *msg)
 {
 	if (msg[3] == win_handle)
 	{
 		switch (msg[0])
 		{
 			case WM_CLOSED:
-				wind_close (win_handle);
+				wind_close(win_handle);
 				break;
 			case WM_BOTTOMED:
-				wind_set (win_handle, WF_BOTTOM, 0, 0, 0, 0);
+				wind_set(win_handle, WF_BOTTOM, 0, 0, 0, 0);
 				break;
 			case WM_REDRAW:
-				redraw_win (win_handle, msg[4], msg[5],
-					    msg[6], msg[7]);
+				redraw_win(win_handle, msg[4], msg[5], msg[6], msg[7]);
 				break;
 			case WM_NEWTOP:
 			case WM_TOPPED:
-				wind_set (win_handle, WF_TOP, 0, 0, 0, 0);
+				wind_set(win_handle, WF_TOP, 0, 0, 0, 0);
 				break;
 			case WM_MOVED:
-				wind_set (win_handle, WF_CURRXYWH, msg[4],
-					  msg[5], msg[6], msg[7]);
+				wind_set(win_handle, WF_CURRXYWH, msg[4], msg[5], msg[6], msg[7]);
 				break;
 			case WM_SIZED:
-				wind_set (win_handle, WF_CURRXYWH, msg[4],
-					  msg[5], msg[6], msg[7]);
+				wind_set(win_handle, WF_CURRXYWH, msg[4], msg[5], msg[6], msg[7]);
 				break;
 		}
 	}
@@ -133,50 +123,44 @@ win_msg (short *msg)
 
 /* --------------------------------------------------------------------------- */
 
-static void
-modal_dial (void)
+static void modal_dial(void)
 {
-	short antw, edit;
+	_WORD antw, edit;
 	GRECT r;
 
-	wind_update (BEG_UPDATE);
-	form_center (objdial, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
-	form_dial (FMD_START, r.g_x, r.g_y, r.g_w, r.g_h, r.g_x, r.g_y, r.g_w,
-		   r.g_h);
-	objc_draw (objdial, ROOT, MAX_DEPTH, r.g_x, r.g_y, r.g_w, r.g_h);
+	wind_update(BEG_UPDATE);
+	form_center_grect(objdial, &r);
+	form_dial_grect(FMD_START, &r, &r);
+	objc_draw_grect(objdial, ROOT, MAX_DEPTH, &r);
 
 	edit = EDIT1;
-	do {
-		antw = cf_form_do (objdial, &edit);
-	}
-	while (antw != ENDE && antw != UNDO);
-	set_state (objdial, antw, OS_SELECTED, FALSE);
-	form_dial (FMD_FINISH, r.g_x, r.g_y, r.g_w, r.g_h, r.g_x, r.g_y,
-		   r.g_w, r.g_h);
-	wind_update (END_UPDATE);
+	do
+	{
+		antw = cf_form_do(objdial, &edit);
+	} while (antw != ENDE && antw != UNDO);
+	set_state(objdial, antw, OS_SELECTED, FALSE);
+	form_dial_grect(FMD_FINISH, &r, &r);
+	wind_update(END_UPDATE);
 	if (antw == ENDE)
 		quit = TRUE;
 }
 
 /* --------------------------------------------------------------------------- */
 
-static void
-appmodal_dial (void)
+static void appmodal_dial(void)
 {
 	void *mdial;
-	short close = FALSE;
-	short stguide_id, exit_obj;
+	_WORD close = FALSE;
+	_WORD stguide_id, exit_obj;
 
-	mdial = open_mdial (objdial, EDIT1);
+	mdial = open_mdial(objdial, EDIT1);
 	while (!close)
 	{
-		exit_obj = do_mdial (mdial);
+		exit_obj = do_mdial(mdial);
 		switch (exit_obj)
 		{
 			case EXITBUT:
-				do_walert (1, 2,
-					   "[1][Mdial ist re-entrant!][Toll]",
-					   "Alert");
+				do_walert(1, 2, "[1][Mdial ist re-entrant!][Toll]", "Alert");
 				break;
 
 			case ENDE:
@@ -185,170 +169,153 @@ appmodal_dial (void)
 				break;
 
 			case HELP:
-				stguide_id = appl_find ("ST-GUIDE");
+				stguide_id = appl_find("ST-GUIDE");
 				if (stguide_id > 0)
-					send_vastart (stguide_id, "*:\\cflib.hyp");
+					send_vastart(stguide_id, "*:\\cflib.hyp");
 				break;
 
 			case UNDO:
 				close = TRUE;
 				break;
 		}
-		if (get_flag (objdial, exit_obj, OF_EXIT))
-			set_state (objdial, exit_obj, OS_SELECTED, FALSE);
+		if (get_flag(objdial, exit_obj, OF_EXIT))
+			set_state(objdial, exit_obj, OS_SELECTED, FALSE);
 		if (!close)
-			redraw_mdobj (mdial, exit_obj);
+			redraw_mdobj(mdial, exit_obj);
 	}
-	close_mdial (mdial);
+	close_mdial(mdial);
 }
 
 /* --------------------------------------------------------------------------- */
 
 static POPUP pop;
 
-static void
-set_popcolor (short s_obj, OBJECT *d_tree, short d_obj)
+static void set_popcolor(_WORD s_obj, OBJECT *d_tree, _WORD d_obj)
 {
 	OBSPEC spec;
-	short color;
+	_WORD color;
 
-	spec.index = get_obspec (popups, s_obj);
-	color = spec.obspec.interiorcol;	/* neue Farbe holen */
-	spec.index = get_obspec (d_tree, d_obj);
-	spec.obspec.interiorcol = color;	/* neue Farbe setzen */
-	set_obspec (d_tree, d_obj, spec.index);
+	spec.index = get_obspec(popups, s_obj);
+	color = spec.obspec.interiorcol;		/* get new color */
+	spec.index = get_obspec(d_tree, d_obj);
+	spec.obspec.interiorcol = color;		/* set new color */
+	set_obspec(d_tree, d_obj, spec.index);
 }
 
-static void
-nonmodal_open_cb (WDIALOG *wd)
+static void nonmodal_open_cb(WDIALOG *wd)
 {
 	char str[10];
 
 	/* dynamisches Popup anlegen */
-	set_string (wd->tree, P1TEXT, "bla");
-	create_popup (&pop, 5, 23, " zeile1");
-	append_popup (&pop, " zeile2zeile2");
-	append_popup (&pop, " zeile3zeile3zeile3");
+	set_string(wd->tree, P1TEXT, "bla");
+	create_popup(&pop, 5, 23, " zeile1");
+	append_popup(&pop, " zeile2zeile2");
+	append_popup(&pop, " zeile3zeile3zeile3");
 
-	get_string (popups, 20 /*POPF1 */ , str);
-	set_string (wd->tree, P2BOX, str);
+	get_string(popups, POPF1, str);
+	set_string(wd->tree, P2BOX, str);
 
-	get_string (popups, CPWHITE, str);
-	set_string (wd->tree, P3BOX, str);
-	set_popcolor (CPWHITE - 16, wd->tree, P3COL);
+	get_string(popups, CPWHITE, str);
+	set_string(wd->tree, P3BOX, str);
+	set_popcolor(CPWHITE - 16, wd->tree, P3COL);
 }
 
-static int
-nonmodal_exit_cb (WDIALOG *wd, short obj)
+static int nonmodal_exit_cb(WDIALOG *wd, _WORD obj)
 {
-	short close = FALSE;
-	short y;
+	_WORD close = FALSE;
+	_WORD y;
 	char s[30];
 
 	switch (obj)
 	{
 		case P1STR:
 		case P1BOX:
-			y =
-				handle_popup (wd->tree, P1BOX, pop.tree, 0,
-					      POP_OPEN);
+			y = handle_popup(wd->tree, P1BOX, pop.tree, 0, POP_OPEN);
 			if (y > 0)
 			{
-				get_string (pop.tree, y, s);
-				set_string (wd->tree, P1TEXT, s + 1);
-				redraw_wdobj (wd, P1TEXT);
+				get_string(pop.tree, y, s);
+				set_string(wd->tree, P1TEXT, s + 1);
+				redraw_wdobj(wd, P1TEXT);
 			}
 			break;
 
 		case P2STR:
 		case P2BOX:
 			if (obj == P2STR)
-				handle_popup (wd->tree, P2BOX, popups,
-					      FUNCPOP, POP_CYCLE);
+				handle_popup(wd->tree, P2BOX, popups, FUNCPOP, POP_CYCLE);
 			else
-				handle_popup (wd->tree, P2BOX, popups,
-					      FUNCPOP, POP_OPEN);
+				handle_popup(wd->tree, P2BOX, popups, FUNCPOP, POP_OPEN);
 			break;
 
 		case P3STR:
 		case P3BOX:
 			if (obj == P3STR)
-				y =
-					handle_popup (wd->tree, P3BOX, popups,
-						      COLPOP, POP_CYCLE);
+				y = handle_popup(wd->tree, P3BOX, popups, COLPOP, POP_CYCLE);
 			else
-				y =
-					handle_popup (wd->tree, P3BOX, popups,
-						      COLPOP, POP_OPEN);
+				y = handle_popup(wd->tree, P3BOX, popups, COLPOP, POP_OPEN);
 			if (y > 0)
 			{
-				set_popcolor (y - 16, wd->tree, P3COL);
-				redraw_wdobj (wd, P3COL);
+				set_popcolor(y - 16, wd->tree, P3COL);
+				redraw_wdobj(wd, P3COL);
 			}
 			break;
 
 		case P4BOX:
-			handle_popup (NULL, 0, popups, POPUP4, POP_OPEN);
+			handle_popup(NULL, 0, popups, POPUP4, POP_OPEN);
 			break;
 
 		case P5STR:
 		case P5BOX:
 			if (obj == P5STR)
-				y =
-					handle_colorpop (wd->tree, P5BOX,
-							 POP_CYCLE, 8, 0);
+				y = handle_colorpop(wd->tree, P5BOX, POP_CYCLE, 8, 0);
 			else
-				y =
-					handle_colorpop (wd->tree, P5BOX,
-							 POP_OPEN, 8, 0);
-			set_state (wd->tree, obj, OS_SELECTED, FALSE);
-			redraw_wdobj (wd, P5BOX);
+				y = handle_colorpop(wd->tree, P5BOX, POP_OPEN, 8, 0);
+			set_state(wd->tree, obj, OS_SELECTED, FALSE);
+			redraw_wdobj(wd, P5BOX);
 			break;
 
 		case WD_CLOSER:
 			close = TRUE;
-			debug ("Closer ohne UNDO-Button!\n");
+			debug("Closer ohne UNDO-Button!\n");
 			break;
-
 	}
 	if (close)
-		free_popup (&pop);
+		free_popup(&pop);
 	return close;
 }
 
 /* --------------------------------------------------------------------------- */
-static int
-fsel_cb (char *path, char *name)
+static int fsel_cb(char *path, char *name)
 {
 	/* hier laufen die Dateinamen/Pfade bei einer Mehrfach-Dateiselektion auf */
 	/* wird solange von select_file() aufgerufen, wie TRUE zurÅckgegeben wird. */
 
+	(void)path;
+	(void)name;
 	return TRUE;
 }
 
 /* --------------------------------------------------------------------------- */
-static void
-handle_menu (short title, short item)
+static void handle_menu(_WORD title, _WORD item)
 {
 	switch (item)
 	{
 		case MABOUT:
 			if (modal)
-				simple_dial (about, 0);
+				simple_dial(about, 0);
 			else
-				simple_mdial (about, 0);
+				simple_mdial(about, 0);
 			break;
 
 
 		case MFSEL:
-		{
-			char            path[50] = "", name[50] = "";
+			{
+				char path[50] = "";
+				char name[50] = "";
 
-			if (select_file
-			    (path, name, "", "Dateiauswahl im Fenster",
-			     fsel_cb) && path[0])
-				debug ("    %s%s\n", path, name);
-		}
+				if (select_file(path, name, "", "Dateiauswahl im Fenster", fsel_cb) && path[0])
+					debug("    %s%s\n", path, name);
+			}
 			break;
 
 		case MENDE:
@@ -358,51 +325,42 @@ handle_menu (short title, short item)
 
 		case MDIAL1:
 			if (modal)
-				modal_dial ();
+				modal_dial();
 			else
-				appmodal_dial ();
+				appmodal_dial();
 			break;
 
 		case MDIAL2:
-			open_wdial (wdial, -1, -1);
+			open_wdial(wdial, -1, -1);
 			break;
 
 		case MALERT:
 			if (modal)
-				do_alert (1, 2,
-					  "[1][Dies ist ein modaler Alert.][OK|UNDO]");
+				do_alert(1, 2, "[1][Dies ist ein modaler Alert.][OK|UNDO]");
 			else
-				do_walert (1, 3,
-					   "[3][Dies ist ein Alert im Fenster.|Mit Text in der zweiten Zeile|und drei Buttons.|Und UNDO auf Abbruch!][Ja|Nein|Abbruch]",
-					   " Fenster-Alert ");
+				do_walert(1, 3, "[3][Dies ist ein Alert im Fenster.|Mit Text in der zweiten Zeile|und drei Buttons.|Und UNDO auf Abbruch!][Ja|Nein|Abbruch]", " Fenster-Alert ");
 			break;
 
 		case MFONTSEL:
-			if (!do_fontsel
-			    ((FS_M_MAGX | FS_M_XFSL), "Im Fenster", &id, &pts)
-			    && (id == -1))
+			if (!do_fontsel(FS_M_MAGX | FS_M_XFSL, "Im Fenster", &id, &pts) && id == -1)
 			{
 				if (modal)
-					do_alert (1, 0,
-						  "[3][Keine Fontauswahl verfÅgbar!][OK]");
+					do_alert(1, 0, "[3][Keine Fontauswahl verfÅgbar!][OK]");
 				else
-					do_walert (1, 0,
-						   "[3][Keine Fontauswahl verfÅgbar!][OK]",
-						   "Alert");
+					do_walert(1, 0, "[3][Keine Fontauswahl verfÅgbar!][OK]", "Alert");
 				id = 1;
 				pts = 10;
 			}
 			break;
 
 		case MPDLG:
-			test_pdlg (!modal);
+			test_pdlg(!modal);
 			break;
 
 		case MASCII:
-			set_asciitable_strings ("Aktueller Font", "");
-			ascii_table (id, 10);
+			set_asciitable_strings("Aktueller Font", "");
+			ascii_table(id, 10);
 			break;
-
 
 		case MMODAL:
 		case MFENSTER:
@@ -410,38 +368,36 @@ handle_menu (short title, short item)
 				modal = TRUE;
 			else if (modal && item == MFENSTER)
 				modal = FALSE;
-			menu_icheck (menu, MMODAL, modal);
-			menu_icheck (menu, MFENSTER, !modal);
+			menu_icheck(menu, MMODAL, modal);
+			menu_icheck(menu, MFENSTER, !modal);
 			break;
 
 
 		default:
 			if (title == TSCUT)
 			{
-				char            str[50], s2[60];
+				char str[50], s2[60];
 
-				get_string (menu, item, str);
-				sprintf (s2, "[1][%s][OK]", str);
+				get_string(menu, item, str);
+				sprintf(s2, "[1][%s][OK]", str);
 				if (modal)
-					do_alert (1, 0, s2);
+					do_alert(1, 0, s2);
 				else
-					do_walert (1, 0, s2,
-						   "MenÅ: Shortcuts");
+					do_walert(1, 0, s2, "MenÅ: Shortcuts");
 			}
 			break;
 	}
-	menu_tnormal (menu, title, 1);
+	menu_tnormal(menu, title, 1);
 }
 
-static void
-handle_msg (short *msg)
+static void handle_msg(_WORD *msg)
 {
-	if (!message_wdial (msg))
+	if (!message_wdial(msg))
 	{
 		switch (msg[0])
 		{
 			case MN_SELECTED:
-				handle_menu (msg[3], msg[4]);
+				handle_menu(msg[3], msg[4]);
 				break;
 
 			case WM_CLOSED:
@@ -451,7 +407,7 @@ handle_msg (short *msg)
 			case WM_TOPPED:
 			case WM_MOVED:
 			case WM_SIZED:
-				win_msg (msg);
+				win_msg(msg);
 				break;
 
 			case AP_TERM:
@@ -463,89 +419,87 @@ handle_msg (short *msg)
 
 /* --------------------------------------------------------------------------- */
 
-int
-main (void)
+int main(void)
 {
-	extern char __Ident_cflib[];
 	OBJECT *tree;
 	char tmp[20];
-	short  msg[8];
+	_WORD msg[8];
 
-	init_app ("demo.rsc");
-	init_colorpop (8);
+	init_app("demo.rsc");
+	init_colorpop(8);
 
-	rsrc_gaddr (R_TREE, MENUTREE, &menu);
-	create_menu (menu);
-	menu_icheck (menu, MMODAL, modal);
-	menu_icheck (menu, MFENSTER, !modal);
+	rsrc_gaddr(R_TREE, MENUTREE, &menu);
+	create_menu(menu);
+	menu_icheck(menu, MMODAL, modal);
+	menu_icheck(menu, MFENSTER, !modal);
 
-	rsrc_gaddr (R_TREE, OBJDIAL, &objdial);
-	fix_dial (objdial);
+	rsrc_gaddr(R_TREE, OBJDIAL, &objdial);
+	fix_dial(objdial);
 
-	rsrc_gaddr (R_TREE, POPDIAL, &tree);
-	fix_dial (tree);
-	fix_colorpopobj (tree, P5BOX, 0);
-	rsrc_gaddr (R_TREE, WINICON, &wicon);
-	wdial =
-		create_wdial (tree, wicon, P1TEXT, nonmodal_open_cb,
-			      nonmodal_exit_cb);
+	rsrc_gaddr(R_TREE, POPDIAL, &tree);
+	fix_dial(tree);
+	fix_colorpopobj(tree, P5BOX, 0);
+	rsrc_gaddr(R_TREE, WINICON, &wicon);
+	wdial = create_wdial(tree, wicon, P1TEXT, nonmodal_open_cb, nonmodal_exit_cb);
 
-	rsrc_gaddr (R_TREE, POPUPS, &popups);
-	fix_menu (popups);
+	rsrc_gaddr(R_TREE, POPUPS, &popups);
+	fix_menu(popups);
 
-	rsrc_gaddr (R_TREE, ABOUT, &about);
-	fix_menu (about);
-	get_patchlev (__Ident_cflib, tmp);
-	set_string (about, A_PL, tmp);
+	rsrc_gaddr(R_TREE, ABOUT, &about);
+	fix_menu(about);
+	get_patchlev(__Ident_cflib, tmp);
+	set_string(about, A_PL, tmp);
 
-	rsrc_gaddr (R_TREE, PRN_SUB, &tree);
-	fix_dial (tree);
+	rsrc_gaddr(R_TREE, PRN_SUB, &tree);
+	fix_dial(tree);
 
 	/* Callback fÅr modale Fensterdialoge, Fenster-Alerts usw. */
-	set_mdial_wincb (handle_msg);
+	set_mdial_wincb(handle_msg);
 
-	open_win ();
+	open_win();
 
 	quit = FALSE;
 
 	while (!quit)
 	{
 		mbutton = 0;
-		event = evnt_multi (MU_MESAG | MU_BUTTON | MU_KEYBD,
-				    1, 1, 1,
-				    0, 0, 0, 0, 0,
-				    0, 0, 0, 0, 0,
-				    msg,
-				    0,
-				    &msx, &msy, &mbutton, &kstate,
-				    &kreturn, &mclick);
+		event = evnt_multi(MU_MESAG | MU_BUTTON | MU_KEYBD,
+				1, 1, 1,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				msg,
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
+				0, 0,
+#else
+				0,
+#endif
+				&msx, &msy, &mbutton, &kstate, &kreturn, &mclick);
 
 		if (event & MU_MESAG)
-			handle_msg (msg);
+			handle_msg(msg);
 
 		if (event & MU_BUTTON)
 		{
-			if (!click_wdial (mclick, msx, msy, kstate, mbutton))
+			if (!click_wdial(mclick, msx, msy, kstate, mbutton))
 				;
 		}
 		if (event & MU_KEYBD)
 		{
-			if (!key_wdial (kreturn, kstate))
+			if (!key_wdial(kreturn, kstate))
 			{
-				short title, item;
+				_WORD title, item;
 
-				if (is_menu_key
-				    (kreturn, kstate, &title, &item))
-					handle_menu (title, item);
+				if (is_menu_key(kreturn, kstate, &title, &item))
+					handle_menu(title, item);
 			}
 		}
 	}
-	delete_wdial (wdial);
-	wind_close (win_handle);
-	wind_delete (win_handle);
-	v_clsvwk (vdi_handle);
+	delete_wdial(wdial);
+	wind_close(win_handle);
+	wind_delete(win_handle);
+	v_clsvwk(vdi_handle);
 
-	delete_menu ();
-	exit_app (0);
+	delete_menu();
+	exit_app(0);
 	return 0;
 }

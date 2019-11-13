@@ -27,10 +27,9 @@
 #include "intern.h"
 
 
-void
-send_m_special (int mode, int app)
+void send_m_special(int mode, int app)
 {
-	static short msg[8];
+	_WORD msg[8];
 
 	if (gl_magx)
 	{
@@ -44,7 +43,7 @@ send_m_special (int mode, int app)
 		msg[5] = 0x4758;	/* 'GX' */
 		msg[6] = mode;
 		msg[7] = app;
-		id = appl_find ("SCRENMGR");
-		appl_write (id, (int) sizeof (msg), msg);
+		id = appl_find("SCRENMGR");
+		appl_write(id, (int)sizeof(msg), msg);
 	}
 }

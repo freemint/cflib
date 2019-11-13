@@ -27,11 +27,10 @@
 #include "intern.h"
 
 
-void
-set_ulong (OBJECT *tree, short obj, unsigned long l)
+void set_ulong(OBJECT *tree, _WORD obj, unsigned long l)
 {
 	char tmp[32];
 
-	ultoa (l, tmp, 10);
-	set_string (tree, obj, tmp);
+	ultoa(l, tmp, 10);
+	set_string(tree, obj, tmp);
 }

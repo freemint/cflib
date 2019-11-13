@@ -29,67 +29,53 @@
  * ACHTUNG: Nicht re-entrant, d.h. jede Applikation nur ein Kreuz, Ñh MenÅ!
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "menu.h"
 
 
-static void
-toggle_menu (short dis)
+static void toggle_menu(_WORD dis)
 {
 	if ((__menu_tree != NULL) && (__menu_disabled != dis))
 	{
-		short titel;
+		_WORD titel;
 
-		wind_update (BEG_UPDATE);
-		titel = __menu_tree[3].ob_next;	/* 3: Desk-Titel */
-		while (titel != 2)	/* 2: Box, die die Titel umgibt */
+		wind_update(BEG_UPDATE);
+		titel = __menu_tree[3].ob_next;			/* 3: Desk-Titel */
+		while (titel != 2)						/* 2: Box, die die Titel umgibt */
 		{
-			set_state (__menu_tree, titel, OS_DISABLED, dis);
+			set_state(__menu_tree, titel, OS_DISABLED, dis);
 			titel = __menu_tree[titel].ob_next;
 		}
-		menu_bar (__menu_tree, TRUE);
+		menu_bar(__menu_tree, TRUE);
 
 		/* Ersten String (About) suchen */
-#ifdef G_SHORTCUT
-		while (!
-		       (__menu_tree[titel].ob_type == G_STRING
-			|| __menu_tree[titel].ob_type == G_SHORTCUT))
-#else
-		/* FIXME ... */
-		while (!(__menu_tree[titel].ob_type == G_STRING))
-#endif
+		while (!(__menu_tree[titel].ob_type == G_STRING || __menu_tree[titel].ob_type == G_SHORTCUT))
 			titel++;
-		menu_ienable (__menu_tree, titel, !dis);
+		menu_ienable(__menu_tree, titel, !dis);
 
 		__menu_disabled = dis;
 
-		wind_update (END_UPDATE);
+		wind_update(END_UPDATE);
 	}
 }
 
-void
-disable_menu (void)
+void disable_menu(void)
 {
 	if (__menu_tree != NULL)
 	{
 		__menu_dis_cnt++;
 		if (__menu_dis_cnt == 1)
-			toggle_menu (TRUE);
+			toggle_menu(TRUE);
 	}
 }
 
-void
-enable_menu (void)
+
+void enable_menu(void)
 {
 	if (__menu_tree != NULL)
 	{
 		if (__menu_dis_cnt > 0)
 			__menu_dis_cnt--;
 		if (__menu_dis_cnt == 0)
-			toggle_menu (FALSE);
+			toggle_menu(FALSE);
 	}
 }

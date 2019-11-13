@@ -25,30 +25,30 @@
  */
 
 #include "intern.h"
+#include "file.h"
 
 
-void
-set_extension (char *filename, char *new_ext)
+void set_extension(char *filename, char *new_ext)
 {
-	char *ptr = strrchr (filename, '.');
-	char *slash = strrchr (filename, '\\');
-	char *colon = strrchr (filename, ':');
+	char *ptr = strrchr(filename, '.');
+	char *slash = strrchr(filename, '\\');
+	char *colon = strrchr(filename, ':');
 
 	if (ptr == NULL || ptr == filename ||
-	    ptr < slash || ptr - slash == 1 || ptr - colon == 1)
+		ptr < slash || ptr - slash == 1 || ptr - colon == 1)
 	{
-		ptr = filename + strlen (filename);
+		ptr = filename + strlen(filename);
 		*ptr = '.';
 	}
 
-	if (fs_case_sens (filename) == NO_CASE)
+	if (fs_case_sens(filename) == NO_CASE)
 	{
 		char myext[5];
 
-		strcpy (myext, new_ext);
-		str_toupper (myext);
-		strcpy (ptr + 1, myext);
+		strcpy(myext, new_ext);
+		str_toupper(myext);
+		strcpy(ptr + 1, myext);
 	}
 	else
-		strcpy (ptr + 1, new_ext);
+		strcpy(ptr + 1, new_ext);
 }

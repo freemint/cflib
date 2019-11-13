@@ -30,48 +30,45 @@
 /*
  * Dialog-Fenster ”ffnen.
  */
-void
-open_wdial (WDIALOG *wd, short pos_x, short pos_y)
+void open_wdial(WDIALOG *wd, _WORD pos_x, _WORD pos_y)
 {
 	GRECT r1, r2;
-	short d;
+	_WORD d;
 
 	if (wd != NULL)
 	{
-		if (wd->mode == WD_OPEN)	/* ist schon offen */
+		if (wd->mode == WD_OPEN)						/* ist schon offen */
 		{
-			wind_set (wd->win_handle, WF_TOP, 0, 0, 0, 0);
+			wind_set(wd->win_handle, WF_TOP, 0, 0, 0, 0);
 			return;
 		}
-		if (wd->mode & WD_ICON)	/* ist iconified */
+		if (wd->mode & WD_ICON)							/* ist iconified */
 		{
-			uniconify_wdial (wd, -1, 0, 0, 0);
+			uniconify_wdial(wd, -1, 0, 0, 0);
 			return;
 		}
-		if (wd->mode & WD_SHADE)	/* ist shaded */
+		if (wd->mode & WD_SHADE)						/* ist shaded */
 		{
-			wind_set (wd->win_handle, WF_SHADE, 0, 0, 0, 0);
+			wind_set(wd->win_handle, WF_SHADE, 0, 0, 0, 0);
 			wd->mode &= ~WD_SHADE;
 			return;
 		}
-		else if (wd->win_handle > 0)	/* war schon mal offen */
+		else if (wd->win_handle > 0)					/* war schon mal offen */
 		{
 			if (wd->open_cb != NULL)
-				(wd->open_cb) (wd);
-			wind_calc_grect (WC_BORDER, wd->win_kind, &wd->work,
-					 &r1);
-			wind_open_grect (wd->win_handle, &r1);
+				(wd->open_cb)(wd);
+			wind_calc_grect(WC_BORDER, wd->win_kind, &wd->work, &r1);
+			wind_open_grect(wd->win_handle, &r1);
 			wd->mode = WD_OPEN;
 			return;
 		}
-		else		/* alles neu */
+		else											/* alles neu */
 		{
 			/* Rahmen abschalten */
 			wd->tree[0].ob_spec.obspec.framesize = 0;
 
-			if ((pos_x == -1) || (pos_y == -1))	/* Zentrieren */
-				form_center (wd->tree, &r1.g_x, &r1.g_y,
-					     &r1.g_w, &r1.g_h);
+			if ((pos_x == -1) || (pos_y == -1))			/* Zentrieren */
+				form_center_grect(wd->tree, &r1);
 			else
 			{
 				wd->tree[0].ob_x = pos_x;
@@ -84,11 +81,9 @@ open_wdial (WDIALOG *wd, short pos_x, short pos_y)
 			/* Titel nicht mitzeichnen */
 			if (wd->title_obj != -1)
 			{
-				wd->delta_y =
-					(wd->tree[wd->title_obj].ob_y +
-					 wd->tree[wd->title_obj].ob_height);
+				wd->delta_y = (wd->tree[wd->title_obj].ob_y + wd->tree[wd->title_obj].ob_height);
 				wd->tree[0].ob_y -= wd->delta_y;
-				set_flag (wd->tree, wd->title_obj, OF_HIDETREE,	TRUE);
+				set_flag(wd->tree, wd->title_obj, OF_HIDETREE, TRUE);
 			}
 			else
 				wd->delta_y = 0;
@@ -96,9 +91,9 @@ open_wdial (WDIALOG *wd, short pos_x, short pos_y)
 			r1.g_w = wd->tree[0].ob_width;
 			r1.g_h = wd->tree[0].ob_height - wd->delta_y;
 
-			wind_calc_grect (WC_BORDER, wd->win_kind, &r1, &r2);
+			wind_calc_grect(WC_BORDER, wd->win_kind, &r1, &r2);
 
-			if ((pos_x == -1) || (pos_y == -1))
+			if (pos_x == -1 || pos_y == -1)
 			{
 				/* Fenster neu zentrieren */
 				d = (r2.g_h - r1.g_h) / 2 + wd->delta_y / 2;
@@ -112,22 +107,18 @@ open_wdial (WDIALOG *wd, short pos_x, short pos_y)
 				}
 			}
 
-			wd->win_handle =
-				wind_create_grect (wd->win_kind, &r2);
+			wd->win_handle = wind_create_grect(wd->win_kind, &r2);
 			if (wd->win_handle > 0)
 			{
-				wind_set_str (wd->win_handle, WF_NAME,
-					      wd->win_name);
+				wind_set_str(wd->win_handle, WF_NAME, wd->win_name);
 				if (wd->open_cb != NULL)
-					(wd->open_cb) (wd);
-				wind_open_grect (wd->win_handle, &r2);
-				wind_calc_grect (WC_WORK, wd->win_kind, &r2,
-						 &wd->work);
+					(wd->open_cb)(wd);
+				wind_open_grect(wd->win_handle, &r2);
+				wind_calc_grect(WC_WORK, wd->win_kind, &r2, &wd->work);
 				wd->mode = WD_OPEN;
 			}
 			else
-				form_alert (1,
-					    "[3][wdial.Open:|Kein Fenster mehr frei!][oops]");
+				form_alert(1, "[3][wdial.Open:|Kein Fenster mehr frei!][oops]");
 		}
 	}
 }

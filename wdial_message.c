@@ -27,18 +27,17 @@
 #include "wdial.h"
 
 
-static inline void
-move_wdial (WDIALOG *wd, short new_x, short new_y)
+static void move_wdial(WDIALOG *wd, _WORD new_x, _WORD new_y)
 {
 	if (wd != NULL)
 	{
 		GRECT r;
 
-		wind_get_grect (wd->win_handle, WF_CURRXYWH, &r);
+		wind_get_grect(wd->win_handle, WF_CURRXYWH, &r);
 		r.g_x = new_x;
 		r.g_y = new_y;
-		wind_set_grect (wd->win_handle, WF_CURRXYWH, &r);
-		wind_get_grect (wd->win_handle, WF_WORKXYWH, &r);
+		wind_set_grect(wd->win_handle, WF_CURRXYWH, &r);
+		wind_get_grect(wd->win_handle, WF_WORKXYWH, &r);
 
 		if (wd->mode & WD_ICON)
 		{
@@ -60,41 +59,39 @@ move_wdial (WDIALOG *wd, short new_x, short new_y)
 /*
  * Event-Verarbeitung.
  */
-short
-message_wdial (short *msg)
+_WORD message_wdial(_WORD *msg)
 {
-	int ret = TRUE;
+	_WORD ret = TRUE;
 	WDIALOG *wd;
 
-	wd = get_wdial (msg[3]);
+	wd = get_wdial(msg[3]);
 	if (wd != NULL)
 	{
 		switch (msg[0])
 		{
 		case WM_REDRAW:
-			draw_wdial (wd, ROOT, MAX_DEPTH, msg[4], msg[5],
-				    msg[6], msg[7]);
-			wdial_draw_cursor (wd, ED_INIT);
+			draw_wdial(wd, ROOT, MAX_DEPTH, msg[4], msg[5], msg[6], msg[7]);
+			wdial_draw_cursor(wd, ED_INIT);
 			break;
 
 		case WM_MOVED:
-			move_wdial (wd, msg[4], msg[5]);
+			move_wdial(wd, msg[4], msg[5]);
 			break;
 
 		case WM_TOPPED:
-			wind_set (wd->win_handle, WF_TOP, 0, 0, 0, 0);
+			wind_set(wd->win_handle, WF_TOP, 0, 0, 0, 0);
 			break;
 
 		case WM_BOTTOMED:
-			wind_set (wd->win_handle, WF_BOTTOM, 0, 0, 0, 0);
+			wind_set(wd->win_handle, WF_BOTTOM, 0, 0, 0, 0);
 			break;
 
 		case WM_ICONIFY:
-			iconify_wdial (wd, msg[4], msg[5], msg[6], msg[7]);
+			iconify_wdial(wd, msg[4], msg[5], msg[6], msg[7]);
 			break;
 
 		case WM_UNICONIFY:
-			uniconify_wdial (wd, msg[4], msg[5], msg[6], msg[7]);
+			uniconify_wdial(wd, msg[4], msg[5], msg[6], msg[7]);
 			break;
 
 		case WM_SHADED:
@@ -107,7 +104,7 @@ message_wdial (short *msg)
 
 		case WM_CLOSED:
 			wd->next_obj = wd->cancel_obj;
-			wdial_call_cb (wd);
+			wdial_call_cb(wd);
 			break;
 
 		case WM_UNTOPPED:
@@ -118,6 +115,7 @@ message_wdial (short *msg)
 
 		default:
 			ret = FALSE;
+			break;
 		}
 	}
 	else

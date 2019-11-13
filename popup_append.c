@@ -27,11 +27,10 @@
 #include "intern.h"
 
 
-short
-append_popup (POPUP *p, char *item)
+_WORD append_popup(POPUP *p, char *item)
 {
 	char *text;
-	int i, state;
+	_WORD i, state;
 
 	if (p->tree == NULL)
 		return FALSE;
@@ -46,12 +45,12 @@ append_popup (POPUP *p, char *item)
 	p->akt_item++;
 
 	if (item[0] == '-')
-		state = 0x0008;
+		state = OS_DISABLED;
 	else
-		state = 0x0000;
+		state = OS_NORMAL;
 
 	/* Speicher fr String holen */
-	text = strdup (item);
+	text = strdup(item);
 	if (text == NULL)
 		return FALSE;
 
@@ -60,17 +59,17 @@ append_popup (POPUP *p, char *item)
 	p->tree[p->akt_item].ob_head = -1;
 	p->tree[p->akt_item].ob_tail = -1;
 	p->tree[p->akt_item].ob_type = G_STRING;
-	p->tree[p->akt_item].ob_flags = (OF_SELECTABLE | OF_LASTOB);
+	p->tree[p->akt_item].ob_flags = OF_SELECTABLE | OF_LASTOB;
 	p->tree[p->akt_item].ob_state = state;
 	p->tree[p->akt_item].ob_spec.free_string = text;
 	p->tree[p->akt_item].ob_x = 0;
 	p->tree[p->akt_item].ob_y = (p->akt_item - 1) * gl_hchar;
-	p->tree[p->akt_item].ob_width = (p->item_len) * gl_wchar;
+	p->tree[p->akt_item].ob_width = p->item_len * gl_wchar;
 	p->tree[p->akt_item].ob_height = 1 * gl_hchar;
 
 	/* Box */
 	p->tree[0].ob_tail = p->akt_item;
-	p->tree[0].ob_height = (p->akt_item) * gl_hchar;
+	p->tree[0].ob_height = p->akt_item * gl_hchar;
 
 	for (i = 0; i <= p->akt_item; i++)
 	{
@@ -78,7 +77,7 @@ append_popup (POPUP *p, char *item)
 		p->tree[i].ob_y /= gl_hchar;
 		p->tree[i].ob_width /= gl_wchar;
 		p->tree[i].ob_height /= gl_hchar;
-		rsrc_obfix (p->tree, i);
+		rsrc_obfix(p->tree, i);
 	}
 	return TRUE;
 }

@@ -34,38 +34,30 @@
  *
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
-#include <ctype.h>
 #include "intern.h"
+#include <ctype.h>
 
 
-short
-find_shortcut (OBJECT *tree, short kstate, short kreturn)
+_WORD find_shortcut(OBJECT *tree, _WORD kstate, _WORD kreturn)
 {
 	static KEYTAB *keytab = NULL;
-	short ret = -1;
-	int scan;
+	_WORD ret = -1;
+	_WORD scan;
 
 	if (keytab == NULL)
-		keytab =
-			(KEYTAB *) Keytbl ((void *) -1, (void *) -1,
-					   (void *) -1);
+		keytab = (KEYTAB *)Keytbl((void *)-1, (void *)-1, (void *)-1);
 
 	scan = (kreturn & 0xFF00) >> 8;
 
-	if (scan == 0x62)	/* HELP */
-		ret = find_flag (tree, OF_FLAG12);
+	if (scan == 0x62)							/* HELP */
+		ret = find_flag(tree, OF_FLAG12);
 
-	else if (scan == 0x61)	/* UNDO */
-		ret = find_flag (tree, OF_FLAG11);
+	else if (scan == 0x61)						/* UNDO */
+		ret = find_flag(tree, OF_FLAG11);
 
-	else if (kstate & K_ALT)	/* Shortcut */
+	else if (kstate & K_ALT)					/* Shortcut */
 	{
-		int pos, obj;
+		_WORD pos, obj;
 		char c;
 		char ascii;
 
@@ -73,24 +65,22 @@ find_shortcut (OBJECT *tree, short kstate, short kreturn)
 		do
 		{
 			obj++;
-			pos = get_magx_shortcut (tree, obj, &c);
+			pos = get_magx_shortcut(tree, obj, &c);
 			if (pos != -1)
 			{
 				if ((scan >= 0x78) && (scan < 0x80))
 					ascii = keytab->capslock[scan - 0x76];
 				else
 					ascii = keytab->capslock[scan];
-				if (toupper (c) == ascii)
+				if (toupper(c) == ascii)
 				{
 					ret = obj;
 					break;
 				}
 			}
-		}
-		while (!(tree[obj].ob_flags & OF_LASTOB));
+		} while (!(tree[obj].ob_flags & OF_LASTOB));
 	}
-	if ((tree[ret].ob_flags & OF_HIDETREE)
-	    || (tree[ret].ob_state & OS_DISABLED))
+	if ((tree[ret].ob_flags & OF_HIDETREE) || (tree[ret].ob_state & OS_DISABLED))
 		ret = -1;
 	return ret;
 }

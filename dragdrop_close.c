@@ -14,25 +14,14 @@
  * signal (write on an empty pipe) is ignored
  */
 
-#ifdef __MINT__
-  #include <mintbind.h>
-#else
-  #include <tos.h>
-#endif
-
 #include "dragdrop.h"
 
 
 /*
  * ddclose: close a drag & drop operation
  */
-void
-dd_close (int fd)
+void dd_close(int fd)
 {
-#ifdef __MINT__
-	(void) signal (SIGPIPE, __dragdrop_oldpipesig);
-#else
-	Psignal (SIGPIPE, (void *) __dragdrop_oldpipesig);
-#endif
-	(void) Fclose (fd);
+	Psignal(SIGPIPE, __dragdrop_oldpipesig);
+	(void)Fclose(fd);
 }

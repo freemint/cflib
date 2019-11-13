@@ -27,34 +27,33 @@
 #include "wdial.h"
 
 
-short
-key_wdial (short kreturn, short kstate)
+_WORD key_wdial(_WORD kreturn, _WORD kstate)
 {
-	short wh, d;
-	short ret = TRUE, cont, ctrl;
+	_WORD wh, d;
+	_WORD ret = TRUE, cont, ctrl;
 	WDIALOG *wd;
 
-	wind_get (0, WF_TOP, &wh, &d, &d, &d);
-	wd = get_wdial (wh);
+	wind_get(0, WF_TOP, &wh, &d, &d, &d);
+	wd = get_wdial(wh);
 	if (wd != NULL && wd->mode == WD_OPEN)
 	{
-		cont = cf_form_keybd (wd->tree, wd->edit_obj, kstate, &kreturn, &wd->next_obj);
+		cont = cf_form_keybd(wd->tree, wd->edit_obj, kstate, &kreturn, &wd->next_obj);
 		if (cont)
 		{
 			if (wd->next_obj != wd->edit_obj && (wd->tree[wd->next_obj].ob_flags & OF_EDITABLE))
 			{
-				objc_edit (wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_END);
+				objc_edit(wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_END);
 				wd->edit_obj = wd->next_obj;
 				wd->edit_idx = -1;
-				objc_edit (wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_INIT);
+				objc_edit(wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_INIT);
 			}
 			if (kreturn)
-				cf_objc_edit (wd->tree, wd->edit_obj, kreturn, &wd->edit_idx, ED_CHAR, kstate, &ctrl);
+				cf_objc_edit(wd->tree, wd->edit_obj, kreturn, &wd->edit_idx, ED_CHAR, kstate, &ctrl);
 		}
 		else
-			wdial_call_cb (wd);
+			wdial_call_cb(wd);
 
-		/* alle Ctrl-Codes auer ^X^C^V werden nicht ausgewertet */
+		/* alle Ctrl-Codes ausser ^X^C^V werden nicht ausgewertet */
 		if ((kstate & K_CTRL) && !ctrl)
 			ret = FALSE;
 	}

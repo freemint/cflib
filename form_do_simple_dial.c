@@ -37,23 +37,22 @@
 #include "intern.h"
 
 
-short
-simple_dial (OBJECT *tree, short start_edit)
+_WORD simple_dial(OBJECT *tree, _WORD start_edit)
 {
-	short exit_obj;
+	_WORD exit_obj;
 	GRECT r;
 
-	graf_mouse (ARROW, NULL);
-	wind_update (BEG_UPDATE);
-	form_center (tree, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
-	form_dial (FMD_START, 0, 0, 0, 0, r.g_x, r.g_y, r.g_w, r.g_h);
-	graf_mouse (M_OFF, NULL);
-	objc_draw (tree, ROOT, MAX_DEPTH, r.g_x, r.g_y, r.g_w, r.g_h);
-	graf_mouse (M_ON, NULL);
-	exit_obj = cf_form_do (tree, &start_edit) & 0x7FFF;
-	form_dial (FMD_FINISH, 0, 0, 0, 0, r.g_x, r.g_y, r.g_w, r.g_h);
-	wind_update (END_UPDATE);
-	set_state (tree, exit_obj, OS_SELECTED, FALSE);
+	graf_mouse(ARROW, NULL);
+	wind_update(BEG_UPDATE);
+	form_center_grect(tree, &r);
+	form_dial_grect(FMD_START, &r, &r);
+	graf_mouse(M_OFF, NULL);
+	objc_draw_grect(tree, ROOT, MAX_DEPTH, &r);
+	graf_mouse(M_ON, NULL);
+	exit_obj = cf_form_do(tree, &start_edit) & 0x7FFF;
+	form_dial_grect(FMD_FINISH, &r, &r);
+	wind_update(END_UPDATE);
+	set_state(tree, exit_obj, OS_SELECTED, FALSE);
 
 	return exit_obj;
 }

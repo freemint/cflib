@@ -27,8 +27,7 @@
 #include "intern.h"
 
 
-long
-ts2ol (short i1, short i2)
+long ts2ol(_WORD i1, _WORD i2)
 {
 	union {
 		short va[2];

@@ -33,28 +33,29 @@
 #define AL_BUT_ANZ	3
 #define AL_BUT_LEN	14
 
-static short
-alert_key (OBJECT *tree, short edit_obj, short kstate, short *kreturn, short *next_obj)
+static _WORD alert_key(OBJECT *tree, _WORD edit_obj, _WORD kstate, _WORD *kreturn, _WORD *next_obj)
 {
-	short cont = TRUE;
-	short scan;
-	short but = 0;
+	_WORD cont = TRUE;
+	_WORD scan;
+	_WORD but = 0;
 		
+	(void)kstate;
+	(void)edit_obj;
 	scan = *kreturn >> 8;
 	switch (scan)
 	{
-		case 0x3B :				/* F1 -> erster Button */
+		case 0x3B:				/* F1 -> erster Button */
 			but = AL_BUT1;
 			break;
-		case 0x3C :				/* F2 -> zweiter Button */
+		case 0x3C:				/* F2 -> zweiter Button */
 			but = AL_BUT2;
 			break;
-		case 0x3D :				/* F3 -> dritter Button */
+		case 0x3D:				/* F3 -> dritter Button */
 			but = AL_BUT3;
 			break;
 	}
 
-	if ((but != 0) && !get_flag (tree, but, OF_HIDETREE))
+	if ((but != 0) && !get_flag(tree, but, OF_HIDETREE))
 	{
 		*next_obj = but;
 		*kreturn = 0;			/* Lib soll Key nicht mehr auswerten. */
@@ -64,23 +65,22 @@ alert_key (OBJECT *tree, short edit_obj, short kstate, short *kreturn, short *ne
 	return cont;
 }
 				
-static short
-make_alert (short def, short undo, char *alert_str, short win)
+static _WORD make_alert(_WORD def, _WORD undo, char *alert_str, _WORD win)
 {
 	char	al_str[AL_STR_ANZ][AL_STR_LEN];
-	short	str_cnt;
+	_WORD	str_cnt;
 	char	al_btn[AL_BUT_ANZ][AL_BUT_LEN];
-	short	btn_cnt, i, str_len, btn_len, h;
+	_WORD	btn_cnt, i, str_len, btn_len, h;
 	char	*p, str[40];
 		
 	/* erst mal alles verstecken */
 	for (i = 1; i <= AL_BUT3; i++)
-		set_flag (cf_alert_box, i, OF_HIDETREE, TRUE);
+		set_flag(cf_alert_box, i, OF_HIDETREE, TRUE);
 
 	for (i = AL_BUT1; i <= AL_BUT3; i++)
 	{
-		set_flag (cf_alert_box, i, OF_DEFAULT, FALSE);
-		set_flag (cf_alert_box, i, OF_FLAG11, FALSE);
+		set_flag(cf_alert_box, i, OF_DEFAULT, FALSE);
+		set_flag(cf_alert_box, i, OF_FLAG11, FALSE);
 	}
 	
 	/* damit jedes Mal zentriert wird */
@@ -92,25 +92,25 @@ make_alert (short def, short undo, char *alert_str, short win)
 	i = AL_INFO;
 	switch (alert_str[1])
 	{
-		case '0' :
+		case '0':
 			break;
-		case '1' :
+		case '1':
 			i = AL_ACHT;
 			break;
-		case '2' :
+		case '2':
 			i = AL_QST;
 			break;
-		case '3' :
+		case '3':
 			i = AL_STOP;
 			break;
 		default:
-			debug ("make_alert: Unbekanntes Icon: %c\n", alert_str[1]);
+			debug("make_alert: Unbekanntes Icon: %c\n", alert_str[1]);
 			break;
 	}
 
 	if (i > 0)
 	{
-		set_flag (cf_alert_box, i, OF_HIDETREE, FALSE);
+		set_flag(cf_alert_box, i, OF_HIDETREE, FALSE);
 		if (win)
 			cf_alert_box[i].ob_y = 2 * gl_hchar;	/* 1 tiefer wegen Titel */
 	}
@@ -133,9 +133,9 @@ make_alert (short def, short undo, char *alert_str, short win)
 		if (*p != ']')
 			p++;
 		str[i] = '\0';
-		if (strlen (str) > str_len)
-			str_len = strlen (str);
-		strcpy (al_str[str_cnt], str);
+		if (strlen(str) > str_len)
+			str_len = (_WORD)strlen(str);
+		strcpy(al_str[str_cnt], str);
 		str_cnt++;
 	}
 
@@ -157,12 +157,12 @@ make_alert (short def, short undo, char *alert_str, short win)
 		if (*p != ']')
 			p++;
 		str[i] = '\0';
-		if (strlen (str) > btn_len)
-			btn_len = strlen (str);
-		strcpy (al_btn[btn_cnt], str);
+		if (strlen(str) > btn_len)
+			btn_len = (_WORD)strlen(str);
+		strcpy(al_btn[btn_cnt], str);
 		btn_cnt++;
 	}
-	btn_len++; /* immer ein breiter */
+	btn_len++;	/* immer ein breiter */
 	if (btn_len < 6)
 		btn_len = 6;
 
@@ -189,15 +189,15 @@ make_alert (short def, short undo, char *alert_str, short win)
 	/* Texte eintragen */
 	for (i = 0; i < str_cnt; i++)
 	{
-		set_flag (cf_alert_box, AL_STR1 + i, OF_HIDETREE, FALSE);
-		set_string (cf_alert_box, AL_STR1 + i, al_str[i]);
+		set_flag(cf_alert_box, AL_STR1 + i, OF_HIDETREE, FALSE);
+		set_string(cf_alert_box, AL_STR1 + i, al_str[i]);
 		cf_alert_box[AL_STR1 + i].ob_y = (1 + i + h) * gl_hchar;
 	}
 	
 	for (i = 0; i < btn_cnt; i++)
 	{
-		set_flag (cf_alert_box, AL_BUT1 + i, OF_HIDETREE, FALSE);
-		set_string (cf_alert_box, AL_BUT1 + i, al_btn[i]);
+		set_flag(cf_alert_box, AL_BUT1 + i, OF_HIDETREE, FALSE);
+		set_string(cf_alert_box, AL_BUT1 + i, al_btn[i]);
 
 		/* Position anpassen */
 		cf_alert_box[AL_BUT1 + i].ob_x = cf_alert_box[0].ob_width - (btn_cnt - i) * (btn_len + 2) * gl_wchar;
@@ -207,48 +207,45 @@ make_alert (short def, short undo, char *alert_str, short win)
 	}
 
 	if ((def > 0) && (def < 4))
-		set_flag (cf_alert_box, AL_BUT1 + def - 1, OF_DEFAULT, TRUE);
+		set_flag(cf_alert_box, AL_BUT1 + def - 1, OF_DEFAULT, TRUE);
 	if ((undo > 0) && (undo < 4) && (undo != def))
-		set_flag (cf_alert_box, AL_BUT1 + undo - 1, OF_FLAG11, TRUE);
+		set_flag(cf_alert_box, AL_BUT1 + undo - 1, OF_FLAG11, TRUE);
 
 	return TRUE;
 }
 
-static short
-alert (short def, short undo, char *str, char *title, short win)
+static _WORD alert(_WORD def, _WORD undo, char *str, char *title, _WORD win)
 {
-	short ret = 0;
+	_WORD ret = 0;
 	KEY_CB old;
 	
-	if (make_alert (def, undo, str, win))
+	if (make_alert(def, undo, str, win))
 	{
 		if (win && title[0] != '\0')
-			set_string (cf_alert_box, AL_TITLE, title);
+			set_string(cf_alert_box, AL_TITLE, title);
 		
-		old = set_formdo_keycb (alert_key);
-		graf_mouse (ARROW, NULL);
+		old = set_formdo_keycb(alert_key);
+		graf_mouse(ARROW, NULL);
 
 		if (win)
-			ret = simple_mdial (cf_alert_box, 0) & 0x7fff;
+			ret = simple_mdial(cf_alert_box, 0) & 0x7fff;
 		else
-			ret = simple_dial (cf_alert_box, 0) & 0x7fff;
+			ret = simple_dial(cf_alert_box, 0) & 0x7fff;
 
-		set_formdo_keycb (old);
-		set_state (cf_alert_box, ret, OS_SELECTED, FALSE);
+		set_formdo_keycb(old);
+		set_state(cf_alert_box, ret, OS_SELECTED, FALSE);
 		ret = ret - AL_BUT1 + 1;
 	}
 
 	return ret;
 }
 
-short
-do_alert (short def, short undo, char *str)
+_WORD do_alert(_WORD def, _WORD undo, char *str)
 {
-	return alert (def, undo, str, "", FALSE);
+	return alert(def, undo, str, "", FALSE);
 }
 
-short
-do_walert (short def, short undo, char *str, char *win_title)
+_WORD do_walert(_WORD def, _WORD undo, char *str, char *win_title)
 {
-	return alert (def, undo, str, win_title, TRUE);
+	return alert(def, undo, str, win_title, TRUE);
 }

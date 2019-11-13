@@ -30,22 +30,21 @@
 /*
  * Ruft Exit-Callback auf und schliež ggf. den Dialog.
  */
-void
-wdial_call_cb (WDIALOG *wd)
+void wdial_call_cb(WDIALOG *wd)
 {
-	short close = TRUE;
-	short obj;
+	_WORD close = TRUE;
+	_WORD obj;
 
 	obj = wd->next_obj;
 	if (wd->exit_cb != NULL)
-		close = (wd->exit_cb) (wd, obj);
+		close = (wd->exit_cb)(wd, obj);
 
 	if (close)
 	{
 		obj &= 0x7FFF;
 		if (obj != WD_CLOSER)
-			set_state (wd->tree, obj, OS_SELECTED, FALSE);
+			set_state(wd->tree, obj, OS_SELECTED, FALSE);
 
-		close_wdial (wd);
+		close_wdial(wd);
 	}
 }

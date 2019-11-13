@@ -28,3 +28,22 @@
 
 
 WDIALOG *__wdial_list = NULL;
+
+#ifdef __PUREC__
+#include "wdial_call_cb.c"
+#include "wdial_change_wdedit.c"
+#include "wdial_click.c"
+#include "wdial_close.c"
+#include "wdial_create.c"
+#include "wdial_delete.c"
+#include "wdial_draw.c"
+#include "wdial_draw_cursor.c"
+#include "wdial_get.c"
+#include "wdial_iconify.c"
+#include "wdial_key.c"
+#include "wdial_message.c"
+#include "wdial_open.c"
+#include "wdial_redraw_wdicon.c"
+#include "wdial_redraw_wdobj.c"
+#include "wdial_uniconify.c"
+#endif

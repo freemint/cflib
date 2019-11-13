@@ -36,17 +36,16 @@
  * offset gibt den Offset zwischen Root und dem ersten Popup-String an (i.d.R.
  * ist offset 0, bei einem Farb-Popup aber z.B. nicht).
  */
-short
-cf_menu_popup (MENU *m1, short x, short y, MENU *m2, short button, short offset)
+_WORD cf_menu_popup(MENU *m1, _WORD x, _WORD y, MENU *m2, _WORD button, _WORD offset)
 {
-	short i, d;
+	_WORD i, d;
 
-	if ((button == 0) && appl_xgetinfo (9, &d, &i, &d, &d) && (i == 1))
-		return menu_popup (m1, x, y, m2);
+	if ((button == 0) && appl_xgetinfo(9, &d, &i, &d, &d) && (i == 1))	/* gibts menu_popup? */
+		return menu_popup(m1, x, y, m2);
 
 	{
 		OBJECT *tree;
-		short root, m_x, m_y, event, item, msg[8], olditem, kstate, mask, clicks;
+		_WORD root, m_x, m_y, event, item, msg[8], olditem, kstate, mask, clicks;
 		GRECT box, r;
 		MFDB save;
 
@@ -55,9 +54,7 @@ cf_menu_popup (MENU *m1, short x, short y, MENU *m2, short button, short offset)
 		item = m1->mn_item;
 
 		tree[root].ob_x = x;
-		tree[root].ob_y =
-			y -
-			((item - offset - root - 1) * tree[item].ob_height);
+		tree[root].ob_y = y - ((item - offset - root - 1) * tree[item].ob_height);
 
 		/* bei RSM liegt der das Popup enthaltende Dialog nicht unbedingt bei (0,0)!! */
 		if (root != 0 && tree[0].ob_x > 0)
@@ -70,18 +67,18 @@ cf_menu_popup (MENU *m1, short x, short y, MENU *m2, short button, short offset)
 		box.g_w = tree[root].ob_width + 4;
 		box.g_h = tree[root].ob_height + 4;
 
-		wind_update (BEG_MCTRL);
-		save_background (&box, &save);
-		graf_mouse (ARROW, NULL);
+		wind_update(BEG_MCTRL);
+		save_background(&box, &save);
+		graf_mouse(ARROW, NULL);
 
 		if (button == 0)
 			button = 1;
 
-		graf_mkstate (&m_x, &m_y, &i, &d);
+		graf_mkstate(&m_x, &m_y, &i, &d);
 
-		if (i & button)	/* Taste immer noch gedrckt? */
+		if (i & button)		/* Taste immer noch gedrckt? */
 		{
-			clicks = 1;	/* -> evnt_multi wartet auf Loslassen /der/ Taste */
+			clicks = 1;		/* -> evnt_multi wartet auf Loslassen /der/ Taste */
 			mask = button;
 		}
 		else
@@ -90,37 +87,26 @@ cf_menu_popup (MENU *m1, short x, short y, MENU *m2, short button, short offset)
 			mask = 3;
 		}
 
-		objc_draw (tree, root, MAX_DEPTH, box.g_x, box.g_y, box.g_w,
-			   box.g_h);
+		objc_draw_grect(tree, root, MAX_DEPTH, &box);
 
 		olditem = -1;
 		do
 		{
-			item = objc_find (tree, root, MAX_DEPTH, m_x, m_y);
-			if ((item == root) || !popup_valid_item (tree, item))
+			item = objc_find(tree, root, MAX_DEPTH, m_x, m_y);
+			if ((item == root) || !popup_valid_item(tree, item))
 				item = -1;
 
 			if (item != olditem)
 			{
 				if (olditem != -1)
-					objc_change (tree, olditem, 0,
-						     box.g_x, box.g_y,
-						     box.g_w, box.g_h,
-						     tree[olditem].
-						     ob_state & (~OS_SELECTED),
-						     TRUE);
+					objc_change_grect(tree, olditem, 0, &box, tree[olditem].ob_state & ~OS_SELECTED, TRUE);
 
 				if (item != -1)
-					objc_change (tree, item, 0, box.g_x,
-						     box.g_y, box.g_w,
-						     box.g_h,
-						     tree[item].
-						     ob_state | OS_SELECTED,
-						     TRUE);
+					objc_change_grect(tree, item, 0, &box, tree[item].ob_state | OS_SELECTED, TRUE);
 			}
 			if (item != -1)
 			{
-				objc_offset (tree, item, &r.g_x, &r.g_y);
+				objc_offset(tree, item, &r.g_x, &r.g_y);
 				r.g_w = tree[item].ob_width;
 				r.g_h = tree[item].ob_height;
 			}
@@ -133,20 +119,23 @@ cf_menu_popup (MENU *m1, short x, short y, MENU *m2, short button, short offset)
 			}
 
 			d = 0;
-			event = evnt_multi ((MU_BUTTON | MU_M1),
-					    clicks, mask, 0,
-					    1, r.g_x, r.g_y, r.g_w, r.g_h,
-					    0, 0, 0, 0, 0,
-					    msg,
-					    0L,
-					    &m_x, &m_y, &d, &kstate, &d, &d);
+			event = evnt_multi(MU_BUTTON | MU_M1,
+				clicks, mask, 0,
+				1, r.g_x, r.g_y, r.g_w, r.g_h,
+				0, 0, 0, 0, 0,
+				msg,
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
+				0, 0,
+#else
+				0,
+#endif
+				&m_x, &m_y, &d, &kstate, &d, &d);
 
 			olditem = item;
-		}
-		while (!(event & MU_BUTTON));
+		} while (!(event & MU_BUTTON));
 
-		restore_background (&box, &save);
-		wind_update (END_MCTRL);
+		restore_background(&box, &save);
+		wind_update(END_MCTRL);
 
 		if (item == -1)
 			item = 0;
@@ -156,7 +145,7 @@ cf_menu_popup (MENU *m1, short x, short y, MENU *m2, short button, short offset)
 		if (m2 != NULL)
 		{
 			if (m1 != m2)
-				memcpy (m2, m1, sizeof (MENU));
+				memcpy(m2, m1, sizeof(MENU));
 			m2->mn_item = item;
 			m2->mn_keystate = kstate;
 		}

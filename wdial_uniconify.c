@@ -27,17 +27,15 @@
 #include "wdial.h"
 
 
-void
-uniconify_wdial (WDIALOG *wd, short x, short y, short w, short h)
+void uniconify_wdial(WDIALOG *wd, _WORD x, _WORD y, _WORD w, _WORD h)
 {
 	if (wd->mode & WD_ICON)
 	{
 		if (x == -1)
-			wind_set_grect (wd->win_handle, WF_UNICONIFY, &wd->work);
+			wind_set_grect(wd->win_handle, WF_UNICONIFY, &wd->work);
 		else
-			wind_set (wd->win_handle, WF_UNICONIFY, x, y, w, h);
-
-		wind_get_grect (wd->win_handle, WF_WORKXYWH, &wd->work);
+			wind_set(wd->win_handle, WF_UNICONIFY, x, y, w, h);
+		wind_get_grect(wd->win_handle, WF_WORKXYWH, &wd->work);
 		wd->mode &= ~WD_ICON;
 	}
 }

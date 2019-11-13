@@ -24,74 +24,68 @@
  * 
  */
 
-#include <ctype.h>
-#include <stddef.h>
-
 #include "intern.h"
 #include "magx.h"
 
 
-short
-get_magx_obj (OBJECT *tree, short obj)
+_WORD get_magx_obj(OBJECT *tree, _WORD obj)
 {
-	unsigned short typ, state, flags, us;
-	short ret;
+	_UWORD typ, state, flags, us;
+	_WORD ret;
 
 	flags = tree[obj].ob_flags;
 	state = tree[obj].ob_state & 0x00ff;
-	us = (tree[obj].ob_state & 0xff00) >> 8;
+	us = (tree[obj].ob_state >> 8) & 0xff;
 
 	typ = tree[obj].ob_type & 0x00ff;
 	if (typ == G_USERDEF)
-		typ = (tree[obj].ob_type & 0xff00) >> 8;
+		typ = (tree[obj].ob_type >> 8) & 0xff;
 
 	if (state & OS_WHITEBAK)
 	{
 		ret = MX_UNKNOWN;
 		switch (typ)
 		{
-			case G_STRING:
-				if (us == 0xff)	/* komplett unterstrichen */
-					ret = MX_UNDERLINE;
-				else if ((us & 0xf0) == 0)	/* String mit Shortcut */
-					ret = MX_SCSTRING;
-				break;
+		case G_STRING:
+			if (us == 0xff)				/* komplett unterstrichen */
+				ret = MX_UNDERLINE;
+			else if ((us & 0xf0) == 0)	/* String mit Shortcut */
+				ret = MX_SCSTRING;
+			break;
 
-			case G_BUTTON:
-				if (us == 0xfe)	/* Gruppenrahmen */
+		case G_BUTTON:
+			if (us == 0xfe)				/* Gruppenrahmen */
+			{
+				if (state & OS_CHECKED)
+					ret = MX_GROUPBOX2;	/* - kleine Schrift */
+				else
+					ret = MX_GROUPBOX;	/* - normal */
+			}
+			else if (us & 0x80)			/* bit15 -> MagiC-Knopf */
+			{
+				if (flags & OF_RBUTTON)	/* Radio */
 				{
-					if (state & OS_CHECKED)
-						ret = MX_GROUPBOX2;	/* - kleine Schrift */
+					if (us == 0xff)
+						ret = MX_RADIO;	/* ohne */
 					else
-						ret = MX_GROUPBOX;	/* - normal */
-				}
-				else if (us & 0x80)	/* bit15 -> MagiC-Knopf */
+						ret = MX_SCRADIO;	/* mit Shortcut */
+				} else					/* Kreuz */
 				{
-					if (flags & OF_RBUTTON)	/* Radio */
-					{
-						if (us == 0xff)
-							ret = MX_RADIO;	/* ohne */
-						else
-							ret = MX_SCRADIO;	/* mit Shortcut */
-					}
-					else	/* Kreuz */
-					{
-						if (us == 0xff)
-							ret = MX_CHECK;	/* ohne */
-						else
-							ret = MX_SCCHECK;	/* mit ShortCut */
-					}
+					if (us == 0xff)
+						ret = MX_CHECK;	/* ohne */
+					else
+						ret = MX_SCCHECK;	/* mit ShortCut */
 				}
-				else if (flags & OF_EXIT)	/* Exit-Knopf */
-					ret = MX_SCEXIT;
-				break;
+			}
+			else if (flags & OF_EXIT)	/* Exit-Knopf */
+				ret = MX_SCEXIT;
+			break;
 		}
 	}
-	else if ((typ == G_FTEXT) && (flags & OF_FL3DBAK) &&
-		 (tree[obj].ob_spec.tedinfo->te_thickness == -2))
+	else if ((typ == G_FTEXT) && (flags & OF_FL3DBAK) && (tree[obj].ob_spec.tedinfo->te_thickness == -2))
 		ret = MX_EDIT3D;
 	else
 		ret = MX_NOTXOBJ;
-	
+
 	return ret;
 }

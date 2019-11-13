@@ -28,8 +28,7 @@
 #include "app.h"
 
 
-void
-show_mouse (void)
+void show_mouse(void)
 {
 	if (__app_hidden > 0)
 	{

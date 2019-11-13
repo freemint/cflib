@@ -27,10 +27,9 @@
 #include "mdial.h"
 
 
-void
-change_mdedit (MDIAL * md, short new)
+void change_mdedit(MDIAL *md, _WORD new)
 {
-	int last = 0;
+	_WORD last = 0;
 
 	if (md != NULL)
 	{
@@ -38,30 +37,26 @@ change_mdedit (MDIAL * md, short new)
 		if (md->edit_obj > 0)
 		{
 			last = -1;
-			if (!edit_valid (md->tree, md->edit_obj))
+			if (!edit_valid(md->tree, md->edit_obj))
 			{
-				objc_edit (md->tree, md->edit_obj, 0,
-					   &md->edit_idx, ED_END);
+				objc_edit(md->tree, md->edit_obj, 0, &md->edit_idx, ED_END);
 				last = md->edit_obj;
 			}
 		}
 
 		/*
-		 * last = -1    -> aktuelles Editfeld weiterhin gltig, nix weiteres tun
-		 * last = 0             -> bisher kein Editfeld, erstes suchen
-		 * last > 0             -> aktuelles Editfeld ungltig geworden, n„chstes suchen
+		 * last = -1	-> aktuelles Editfeld weiterhin gltig, nix weiteres tun
+		 * last = 0		-> bisher kein Editfeld, erstes suchen
+		 * last > 0		-> aktuelles Editfeld ungltig geworden, n„chstes suchen
 		 */
 		if (last != -1)
 		{
-			if (new > 0 && edit_valid (md->tree, new))
-				md->edit_obj = new;	/* 2a. ein gltiges neues bergeben? */
-			else	/* 2b. neues suchen */
-				md->edit_obj =
-					find_edit (md->tree, last,
-						   FMD_FORWARD);
+			if (new > 0 && edit_valid(md->tree, new))
+				md->edit_obj = new;			/* 2a. ein gltiges neues bergeben? */
+			else							/* 2b. neues suchen */
+				md->edit_obj = find_edit(md->tree, last, FMD_FORWARD);
 			if (md->edit_obj > 0)
-				objc_edit (md->tree, md->edit_obj, 0,
-					   &md->edit_idx, ED_INIT);
+				objc_edit(md->tree, md->edit_obj, 0, &md->edit_idx, ED_INIT);
 		}
 	}
 }

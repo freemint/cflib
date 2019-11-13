@@ -14,12 +14,6 @@
  * signal (write on an empty pipe) is ignored
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
-
 #include "dragdrop.h"
 
 
@@ -27,8 +21,8 @@
  * ddreply: send a 1 byte reply to the drag & drop originator
  *
  * Input Parameters:
- * fd:          file handle returned from ddopen()
- * ack:         byte to send (e.g. DD_OK)
+ * fd:			file handle returned from ddopen()
+ * ack:			byte to send (e.g. DD_OK)
  *
  * Output Parameters:
  * none
@@ -36,14 +30,12 @@
  * Returns: TRUE on success, FALSE on failure
  * in the latter case the file descriptor is closed
  */
-int
-dd_reply (int fd, int ack)
+int dd_reply(int fd, int ack)
 {
 	char c = ack;
 
-	if (Fwrite (fd, 1L, &c) == 1L)
+	if (Fwrite(fd, 1L, &c) == 1L)
 		return TRUE;
-	else
-		Fclose (fd);
+	Fclose(fd);
 	return FALSE;
 }

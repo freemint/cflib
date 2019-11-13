@@ -24,25 +24,19 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "mdial.h"
 
 
-void
-close_mdial (MDIAL *dial)
+void close_mdial(MDIAL *dial)
 {
 	if (dial != NULL)
 	{
 		if (dial->win_handle > 0)
 		{
-			short msg[8], d, event = 0;
+			_WORD msg[8], d, event = 0;
 
-			wind_close (dial->win_handle);
-			wind_delete (dial->win_handle);
+			wind_close(dial->win_handle);
+			wind_delete(dial->win_handle);
 
 			/*
 			 * Alle auflaufenden Redraw-Messages abarbeiten, damit
@@ -50,26 +44,32 @@ close_mdial (MDIAL *dial)
 			 */
 			while (event != MU_TIMER)
 			{
-				event =
-					evnt_multi (MU_MESAG | MU_TIMER, 1, 1,
-						    1, 0, 0, 0, 0, 0, 0, 0, 0,
-						    0, 0, msg, 1, &d, &d, &d,
-						    &d, &d, &d);
-				if ((event & MU_MESAG)
-				    && (msg[0] == WM_REDRAW))
-					handle_mdial_msg (msg);
+				event = evnt_multi(MU_MESAG | MU_TIMER,
+					1, 1, 1,
+					0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0,
+					msg,
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
+					1, 0,
+#else
+					1,
+#endif
+					&d, &d, &d, &d, &d, &d);
+				if ((event & MU_MESAG) && (msg[0] == WM_REDRAW))
+					handle_mdial_msg(msg);
 			}
 
 			/* Men wieder an */
-			enable_menu ();
+			enable_menu();
 		}
 
 		/* Dialog wieder herstellen */
 		dial->tree[0].ob_spec.obspec.framesize = dial->save_frame;
-		set_flag (dial->tree, 1, OF_HIDETREE, FALSE);
+		if (dial->delta_y != 0)
+			set_flag(dial->tree, 1, OF_HIDETREE, FALSE);
 		dial->tree[0].ob_y += dial->delta_y;
 
 		__mdial_md_list = dial->next;
-		Mfree (dial);
+		Mfree(dial);
 	}
 }

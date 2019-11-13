@@ -24,27 +24,20 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <mintbind.h>
-#else
-  #include <tos.h>
-#endif
-
-#include "app.h"
 #include "intern.h"
+#include "file.h"
 
 
-int
-fs_case_sens (char *filename)
+int fs_case_sens(char *filename)
 {
 	char path[256];
 	int ret;
 
 	/* Eigentlichen Dateinamen abschneiden und durch '.' ersetzen -
-	 * muû sein, da Datei evtl. noch nicht existiert... */
-	split_filename (filename, path, NULL);
-	strcat (path, ".");
-	ret = (int) Dpathconf (path, 6);
+	   muû sein, da Datei evtl. noch nicht existiert... */
+	split_filename(filename, path, NULL);
+	strcat(path, ".");
+	ret = (int)Dpathconf(path, 6);
 
 	/* MagiCPC 6.0 meldet 0, das ist aber falsch!! */
 	if (cf_magxPC && ret == 0)
@@ -52,14 +45,15 @@ fs_case_sens (char *filename)
 
 	switch (ret)
 	{
-		case 0:	/* echter Unterschied, MinixFS */
+		case 0:				/* echter Unterschied, MinixFS */
 			ret = FULL_CASE;
 			break;
-		case 2:	/* kein echter Unterschied, VFAT, MacFS */
+		case 2:				/* kein echter Unterschied, VFAT, MacFS */
 			ret = HALF_CASE;
 			break;
 		default:
 			ret = NO_CASE;	/* Dpathconf() nicht verfÅgbar, oder kein Unterschied */
 	}
+
 	return ret;
 }

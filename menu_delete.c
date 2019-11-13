@@ -29,20 +29,14 @@
  * ACHTUNG: Nicht re-entrant, d.h. jede Applikation nur ein Kreuz, Ñh MenÅ!
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "menu.h"
 
 
-void
-delete_menu (void)
+void delete_menu(void)
 {
 	if (__menu_tree != NULL)
 	{
-		menu_bar (__menu_tree, 0);
+		menu_bar(__menu_tree, 0);
 		__menu_tree = NULL;
 	}
 }

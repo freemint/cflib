@@ -29,21 +29,13 @@
  * ACHTUNG: Nicht re-entrant, d.h. jede Applikation nur ein Kreuz, Ñh MenÅ!
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "menu.h"
 
 
-short
-create_menu (OBJECT * t)
+_WORD create_menu(OBJECT *t)
 {
 	if (__menu_keys == NULL)
-		__menu_keys =
-			(KEYTAB *) Keytbl ((void *) -1, (void *) -1,
-					   (void *) -1);
+		__menu_keys = (KEYTAB *)Keytbl((void *)-1, (void *)-1, (void *)-1);
 
 	if (__menu_tree == NULL)
 	{
@@ -51,12 +43,11 @@ create_menu (OBJECT * t)
 		__menu_disabled = FALSE;
 		__menu_dis_cnt = 0;
 
-		fix_menu (__menu_tree);
-		menu_bar (__menu_tree, 1);
+		fix_menu(t);
+		menu_bar(t, 1);
 		return TRUE;
 	}
 	else
-		form_alert (1,
-			    "[3][CF-Lib Panic: create_menu()|Kein zweites MenÅ mîglich!][Abbruch]");
+		form_alert(1, "[3][CF-Lib Panic: create_menu()|Kein zweites MenÅ mîglich!][Abbruch]");
 	return FALSE;
 }

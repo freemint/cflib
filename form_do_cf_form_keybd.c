@@ -39,16 +39,14 @@
 
 static KEY_CB key_cb = NULL;
 
-short
-cf_form_keybd (OBJECT *tree, short edit_obj, short kstate, short *kreturn,
-	       short *next_obj)
+_WORD cf_form_keybd(OBJECT *tree, _WORD edit_obj, _WORD kstate, _WORD *kreturn, _WORD *next_obj)
 {
-	short cont = TRUE, obj;
-	short scan;
+	_WORD cont = TRUE, obj;
+	_WORD scan;
 
 	if (key_cb != NULL)
 	{
-		cont = (*key_cb) (tree, edit_obj, kstate, kreturn, next_obj);
+		cont = (*key_cb)(tree, edit_obj, kstate, kreturn, next_obj);
 		if (!cont || *kreturn == 0)
 			return cont;
 		else
@@ -61,16 +59,16 @@ cf_form_keybd (OBJECT *tree, short edit_obj, short kstate, short *kreturn,
 	 */
 	if (!gl_xaaes)
 	{
-		obj = find_shortcut (tree, kstate, *kreturn);
+		obj = find_shortcut(tree, kstate, *kreturn);
 
 		if (obj != -1)
 		{
 			*kreturn = 0;
-			cont = form_button (tree, obj, 1, next_obj);
+			cont = form_button(tree, obj, 1, next_obj);
 			return cont;
 		}
 	}
-	
+
 	scan = (*kreturn & 0xFF00) >> 8;
 	cont = form_keybd(tree, edit_obj, edit_obj, *kreturn, next_obj, kreturn);
 	/*
@@ -79,20 +77,20 @@ cf_form_keybd (OBJECT *tree, short edit_obj, short kstate, short *kreturn,
 	if (!gl_xaaes)
 	{
 		/*
-		 * Den eventuellen Wechsel des Editfelds mit Cursor/TAB bernehmen wir
+		 * Den eventuellen Wechsel des Editfelds mit Cursor/TAB Åbernehmen wir
 		 * selbst, da das AES auch HIDDEN oder DISABLE Felder anspringt!
-		 * Auerdem werten wir dann gleich noch Shift-TAB mit aus.
+		 * Auûerdem werten wir dann gleich noch Shift-TAB mit aus.
 		 */
 		if ((scan == 0x48) || ((kstate & K_SHIFT) && scan == 0x0F))	/* UP, TAB */
-			*next_obj = find_edit (tree, edit_obj, FMD_BACKWARD);
-		else if ((scan == 0x50) || (scan == 0x0F))	/* DOWN, TAB */
-			*next_obj = find_edit (tree, edit_obj, FMD_FORWARD);
+			*next_obj = find_edit(tree, edit_obj, FMD_BACKWARD);
+		else if ((scan == 0x50) || (scan == 0x0F))					/* DOWN, TAB */
+			*next_obj = find_edit(tree, edit_obj, FMD_FORWARD);
 	}
+
 	return cont;
 }
 
-KEY_CB
-set_formdo_keycb (KEY_CB new)
+KEY_CB set_formdo_keycb(KEY_CB new)
 {
 	KEY_CB old;
 

@@ -27,8 +27,7 @@
 #include "intern.h"
 
 
-short
-get_state (OBJECT *tree, short obj, short state)
+_WORD get_state(OBJECT *tree, _WORD obj, _WORD state)
 {
-	return( ( tree[obj].ob_state & state ) != 0 ? TRUE : FALSE );	/* if present, return TRUE */
+	return (tree[obj].ob_state & state) != 0; /* if present, return TRUE */
 }

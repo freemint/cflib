@@ -24,54 +24,47 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "wdial.h"
 
 
-short
-click_wdial (short clicks, short x, short y, short kshift, short mbutton)
+_WORD click_wdial(_WORD clicks, _WORD x, _WORD y, _WORD kshift, _WORD mbutton)
 {
-	short wh;
-	short ret = TRUE, cont;
-	short obj;
+	_WORD wh;
+	_WORD ret = TRUE, cont;
+	_WORD obj;
 	WDIALOG *wd;
 
-	wh = wind_find (x, y);
-	wd = get_wdial (wh);
+	(void)kshift;
+	wh = wind_find(x, y);
+	wd = get_wdial(wh);
 	if (wd != NULL && wd->mode == WD_OPEN)
 	{
 		if (mbutton == 1)
 		{
-			obj = cf_objc_find (wd->tree, ROOT, MAX_DEPTH, x, y);
+			obj = cf_objc_find(wd->tree, ROOT, MAX_DEPTH, x, y);
 			if (obj > -1)
 			{
-				cont = form_button (wd->tree, obj, clicks, &wd->next_obj);
-				if (cont && (get_flag (wd->tree, wd->next_obj, OF_EDITABLE)))
+				cont = form_button(wd->tree, obj, clicks, &wd->next_obj);
+				if (cont && (get_flag(wd->tree, wd->next_obj, OF_EDITABLE)))
 				{
-					objc_edit (wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_END);
+					objc_edit(wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_END);
 					wd->edit_obj = wd->next_obj;
-#ifdef ED_CRSR
 					if (gl_magx)
-						objc_edit (wd->tree, wd->edit_obj, x, &wd->edit_idx, ED_CRSR);
+						objc_edit(wd->tree, wd->edit_obj, x, &wd->edit_idx, ED_CRSR);
 					else
-#endif
-						objc_edit (wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_INIT);
+						objc_edit(wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_INIT);
 				}
 				else if (!cont)
 				{
 					if (clicks == 2)
 						wd->next_obj |= 0x8000;
-					wdial_call_cb (wd);
+					wdial_call_cb(wd);
 				}
 			}
 			else
-				Bconout (2, 7);
+				Bconout(2, 7);
 		}
-		else if (mbutton == 2)	/* Rechtsklick ignorieren */
+		else if (mbutton == 2)		/* Rechtsklick ignorieren */
 			ret = TRUE;
 	}
 	else

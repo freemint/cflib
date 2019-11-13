@@ -27,11 +27,21 @@
 #include "intern.h"
 #include "app.h"
 
-
-short cf_vdi_handle;
-short cf_font_anz;
-short cf_msg_cb = FALSE;
-short cf_magxPC = FALSE;
+/* intern global */
+_WORD cf_vdi_handle;
+_WORD cf_font_anz;
+_WORD cf_msg_cb = FALSE;
+_WORD cf_magxPC = FALSE;
 
 short __app_hidden;
 short __app_rsc_load = FALSE;
+
+#ifdef __PUREC__
+#include "app_init.c"
+#include "app_exit_gem.c"
+#include "app_exit.c"
+#include "app_hide_mouse.c"
+#include "app_hide_mouse_if_needed.c"
+#include "app_show_mouse.c"
+#include "app_xgetinfo.c"
+#endif

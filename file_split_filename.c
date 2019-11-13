@@ -25,53 +25,37 @@
  */
 
 #include "intern.h"
+#include "file.h"
 
 
-void
-split_filename (char *fullname, char *path, char *name)
+void split_filename(char *fullname, char *path, char *name)
 {
 	char *str;
-	char *str1;
 	char *str2;
 
-	str1 = strrchr (fullname, '\\');
-	str2 = strrchr (fullname, '/');
-	
+	str = strrchr(fullname, '\\');
+	str2 = strrchr(fullname, '/');
 	/* check for mixed name */
-	if( str1 != NULL && str2 != NULL )
-	{
-		if( strcmp( str1, str2 ) > 0 )
-		{
-			/* str1 is longer => '\' isn't the last one */
-			str = str2;
-		}
-		else
-		{
-			str = str1;
-		}
-	}
-	else
-	{
-		str = str1 != NULL ? str1 : str2;
-	}
-	
+	if (str == NULL || str2 > str)
+		str = str2;
+
 	if (path != NULL)
-		path[0] = '\0';	/* schadet nix */
+		path[0] = '\0';		/* schadet nix */
 	if (name != NULL)
-		name[0] = '\0';	/* ditto */
+		name[0] = '\0';		/* ditto */
 
 	if (str != NULL)
 	{
 		/* Dateinamen holen */
 		if (name != NULL)
-			strcpy (name, str + 1);
+			strcpy(name, str + 1);
 
 		/* Pfad mit Laufwerk bestimmen */
 		if (path != NULL)
 		{
-			int len = (short) (str - (char *) fullname + 1);
+			int len = (short)(str - (char *)fullname + 1);
 
-			strncpy (path, fullname, len);
+			strncpy(path, fullname, len);
 			path[len] = '\0';
 		}
 	}

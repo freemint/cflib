@@ -30,14 +30,13 @@
 /*
  * Ein Objekt im iconified Dialog zeichnen.
  */
-void
-redraw_wdicon (WDIALOG *wd, short obj)
+void redraw_wdicon(WDIALOG *wd, _WORD obj)
 {
 	GRECT r;
 
-	if (wd != NULL && wd->mode & WD_ICON)
+	if (wd != NULL && (wd->mode & WD_ICON))
 	{
-		get_objframe (wd->icon, obj, &r);
-		draw_wdial (wd, ROOT, MAX_DEPTH, r.g_x, r.g_y, r.g_w, r.g_h);
+		get_objframe(wd->icon, obj, &r);
+		draw_wdial(wd, ROOT, MAX_DEPTH, r.g_x, r.g_y, r.g_w, r.g_h);
 	}
 }

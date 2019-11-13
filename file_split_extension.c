@@ -25,20 +25,20 @@
  */
 
 #include "intern.h"
+#include "file.h"
 
 
-void
-split_extension (char *filename, char *name, char *extension)
+void split_extension(char *filename, char *name, char *extension)
 {
-	char *ptr = strrchr (filename, '.');
-	char *slash = strrchr (filename, '\\');
-	char *colon = strrchr (filename, ':');
+	char *ptr = strrchr(filename, '.');
+	char *slash = strrchr(filename, '\\');
+	char *colon = strrchr(filename, ':');
 
 	if (ptr == NULL || ptr == filename ||
-	    ptr < slash || ptr - slash == 1 || ptr - colon == 1)
+		ptr < slash || ptr - slash == 1 || ptr - colon == 1)
 	{
 		if (name)
-			strcpy (name, filename);
+			strcpy(name, filename);
 
 		if (extension)
 			extension[0] = '\0';
@@ -47,10 +47,10 @@ split_extension (char *filename, char *name, char *extension)
 
 	if (name)
 	{
-		strncpy (name, filename, ptr - filename);
+		strncpy(name, filename, ptr - filename);
 		name[ptr - filename] = '\0';
 	}
 
 	if (extension)
-		strcpy (extension, ptr + 1);
+		strcpy(extension, ptr + 1);
 }

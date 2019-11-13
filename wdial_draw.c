@@ -30,8 +30,7 @@
 /*
  * Zeichnet Dialog neu.
  */
-void
-draw_wdial (WDIALOG *wd, short obj, short depth, short x, short y, short w, short h)
+void draw_wdial(WDIALOG *wd, _WORD obj, _WORD depth, _WORD x, _WORD y, _WORD w, _WORD h)
 {
 	GRECT r, r1;
 	OBJECT *tree;
@@ -46,16 +45,15 @@ draw_wdial (WDIALOG *wd, short obj, short depth, short x, short y, short w, shor
 	else
 		tree = wd->tree;
 
-	wind_update (BEG_UPDATE);
-	graf_mouse (M_OFF, NULL);
-	wind_get_grect (wd->win_handle, WF_FIRSTXYWH, &r1);
+	wind_update(BEG_UPDATE);
+	graf_mouse(M_OFF, NULL);
+	wind_get_grect(wd->win_handle, WF_FIRSTXYWH, &r1);
 	while (r1.g_w != 0 && r1.g_h != 0)
 	{
-		if (rc_intersect (&r, &r1))
-			objc_draw (tree, obj, depth, r1.g_x, r1.g_y, r1.g_w,
-				   r1.g_h);
-		wind_get_grect (wd->win_handle, WF_NEXTXYWH, &r1);
+		if (rc_intersect(&r, &r1))
+			objc_draw_grect(tree, obj, depth, &r1);
+		wind_get_grect(wd->win_handle, WF_NEXTXYWH, &r1);
 	}
-	graf_mouse (M_ON, NULL);
-	wind_update (END_UPDATE);
+	graf_mouse(M_ON, NULL);
+	wind_update(END_UPDATE);
 }

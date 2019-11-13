@@ -24,24 +24,15 @@
  * 
  */
 
-#ifdef __MINT__
-#include <sys/stat.h>
-#else
-#include <ext.h>
-#define S_IFMT		0170000
-#define S_IFDIR		0040000
-#define S_ISDIR(m)	((m & S_IFMT) == S_IFDIR)
-#endif
-
 #include "intern.h"
+#include "file.h"
 
 
-int
-file_exists (char *filename)
+int file_exists(char *filename)
 {
 	struct stat s;
 
 	if (filename[0] == '\0')
 		return FALSE;
-	return (stat (filename, &s) == 0);
+	return stat(filename, &s) == 0;
 }

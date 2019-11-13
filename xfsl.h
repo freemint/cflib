@@ -8,6 +8,10 @@
 #if !defined(__xFSL__)
 #define __xFSL__
 
+#ifdef __PUREC__
+#include <wdlgfslx.h>
+#endif
+
 #define xFSL_REVISION  4
 
 
@@ -28,37 +32,40 @@ union fsize
 	fix31	size31;		/* Fontgrîûe in 1/65536 Punkt */
 };
 
+#if !defined(_EVENT) && !defined(__AES__)
+#define _EVENT 1
 typedef struct
 {
-	short	ev_mflags, ev_mbclicks, ev_bmask, ev_mbstate, ev_mm1flags,
+	_WORD	ev_mflags, ev_mbclicks, ev_bmask, ev_mbstate, ev_mm1flags,
 			ev_mm1x, ev_mm1y, ev_mm1width, ev_mm1height, ev_mm2flags,
 			ev_mm2x, ev_mm2y, ev_mm2width, ev_mm2height, ev_mtlocount,
 			ev_mthicount, ev_mwich, ev_mmox, ev_mmoy, ev_mmobutton, 
 			ev_mmokstate, ev_mkreturn, ev_mbreturn;
-	short	ev_mmgpbuf[8];
+	_WORD	ev_mmgpbuf[8];
 } EVENT;
+#endif
 
 /*  allgemeine Fontinfo-Struktur
  */
 
 typedef struct
 {
- short 			 fontid; 		/* ID des Fonts									  */
- short 			 fonttype;		/* Typ des Fonts, siehe vqt_info()			  */
- char 		  *fontname;	  /* Name des Fonts, siehe vqt_name()			 */
- union fsize	fontsize;	  /* Fontgrîûe in pt oder fix31					 */
- union fsize	fontwidth;	  /* Breite in pt oder fix31						 */
- char 			trackkern;	  /* Track-Kerning, siehe vst_kern()			 */
- char 			pairkern;	  /* Paar-Kerning, siehe vst_kern() 			 */
- short 			 fontattr;		/* Attribute, siehe vst_attributes()		  */
- short 			 fontskew;		/* Neigung, siehe vst_skew()					  */
- short 			 fontcol;		/* Farbe, siehe vst_color()					  */
- short 			 backcol;		/* Text-Hintergrundfarbe							*/
- short 			 halign; 		/* horizontale Textausrichtung				  */
- short 			 valign; 		/* vertikale Textausrichtung					  */
- short 			 rotation;		/* Textrotation in 1/10 Grad					  */
- short 			 validtype; 	/* Typ (V_CHAR_...) oder Mapping (MAP_...)  */
- short 			*validUBYTEs;	/* benîtigte Zeichen oder 0L					  */
+ _WORD 			fontid; 		/* ID des Fonts									  */
+ _WORD 			fonttype;		/* Typ des Fonts, siehe vqt_info()			  */
+ char 			*fontname;		/* Name des Fonts, siehe vqt_name()			 */
+ union fsize	fontsize;		/* Fontgrîûe in pt oder fix31					 */
+ union fsize	fontwidth;		/* Breite in pt oder fix31						 */
+ char 			trackkern;		/* Track-Kerning, siehe vst_kern()			 */
+ char 			pairkern;		/* Paar-Kerning, siehe vst_kern() 			 */
+ _WORD 			fontattr;		/* Attribute, siehe vst_attributes()		  */
+ _WORD 			fontskew;		/* Neigung, siehe vst_skew()					  */
+ _WORD 			fontcol;		/* Farbe, siehe vst_color()					  */
+ _WORD 			backcol;		/* Text-Hintergrundfarbe							*/
+ _WORD 			halign; 		/* horizontale Textausrichtung				  */
+ _WORD 			valign; 		/* vertikale Textausrichtung					  */
+ _WORD 			rotation;		/* Textrotation in 1/10 Grad					  */
+ _WORD 			validtype;		/* Typ (V_CHAR_...) oder Mapping (MAP_...)  */
+ _WORD 			*validUBYTEs;	/* benîtigte Zeichen oder 0L					  */
 } PFONTINFO;
 
 
@@ -69,8 +76,8 @@ typedef struct
 {
  char 		  *entry;		  /* Text des Popup-Eintrags 					  */
  PFONTINFO	  *fontinfo;	  /* Zeiger auf Fontinfo-Struktur				 */
- unsigned short		  fontflags;	 /* erlaubte Fontarten								*/
- long 			funcflags;	  /* Funktionsflags, nur fÅr HuGo!				 */
+ _UWORD		  fontflags;	  /* erlaubte Fontarten								*/
+ long 		  funcflags;	  /* Funktionsflags, nur fÅr HuGo!				 */
 } xFSL_PENTRY;
 
 
@@ -79,19 +86,19 @@ typedef struct
 
 typedef struct
 {
- short 			 par_size;		/* Grîûe der xFSL_PAR-Struktur selbst		  */
- short 			 pfi_size;		/* Grîûe der PFONTINFO-Struktur				  */
- unsigned long control;		/* Kontroll-Flags, s.u. 						  */
- const char   *headline;	  /* öberschrift oder 0L							 */
- const char   *example; 	  /* Beispieltext oder 0L							 */
- const char   *helptext;	  /* Text fÅr den Hilfe-Button oder 0L 		 */
- PFONTINFO	  *font; 		  /* Zeiger auf Fontinfo, s.o.					 */
- unsigned short  fontflags;	 /* erlaubte Fontarten								*/
- const char   *poptext; 	  /* Text vor dem Popup (nur Calvino) oder 0L */
- short 			 num_entries;	/* Anzahl der EintrÑge (0..n)					*/
- short 			 sel_entry; 	/* Selektierter Eintrag (0..n-1)				*/
- xFSL_PENTRY  *popup;		  /* Zeiger auf ein Popup oder 0L				 */
- char 		  *helpinfo;	  /* RÅckgabe: Zeiger auf Hilfedatei & -seite */
+ _WORD 			par_size;		/* Grîûe der xFSL_PAR-Struktur selbst		  */
+ _WORD 			pfi_size;		/* Grîûe der PFONTINFO-Struktur				  */
+ unsigned long	control;		/* Kontroll-Flags, s.u. 						  */
+ const char		*headline;	  /* öberschrift oder 0L							 */
+ const char		*example; 	  /* Beispieltext oder 0L							 */
+ const char		*helptext;	  /* Text fÅr den Hilfe-Button oder 0L 		 */
+ PFONTINFO		*font; 		  /* Zeiger auf Fontinfo, s.o.					 */
+ _UWORD			fontflags;	 /* erlaubte Fontarten								*/
+ const char		*poptext; 	  /* Text vor dem Popup (nur Calvino) oder 0L */
+ _WORD 			num_entries;	/* Anzahl der EintrÑge (0..n)					*/
+ _WORD 			sel_entry; 	/* Selektierter Eintrag (0..n-1)				*/
+ xFSL_PENTRY	*popup;		  /* Zeiger auf ein Popup oder 0L				 */
+ char			*helpinfo;	  /* RÅckgabe: Zeiger auf Hilfedatei & -seite */
 } xFSL_PAR;
 
 
@@ -104,33 +111,33 @@ typedef struct
  *
  */
 
-typedef short cdecl (*xFSL_INPUT)
+typedef _WORD __CDECL (*xFSL_INPUT)
 (
- short 		vdihandle, 	/* Handle einer geîffneten VDI-Workstation  */
- unsigned short  	fontflags,	 /* Flags, welche Fonts angeboten werden		*/
+ _WORD 		vdihandle, 	/* Handle einer geîffneten VDI-Workstation  */
+ _UWORD  	fontflags,	 /* Flags, welche Fonts angeboten werden		*/
  const char	*headline,	  /* öberschrift oder 0L (Default-Text)		 */
- short 		*id,				/* RÅckgabe: ID des gewÑhlten Fonts 		  */
- short 		*size 			/* RÅckgabe: Grîûe des gewÑhlten Fonts 	  */
+ _WORD 		*id,				/* RÅckgabe: ID des gewÑhlten Fonts 		  */
+ _WORD 		*size 			/* RÅckgabe: Grîûe des gewÑhlten Fonts 	  */
 );
 
-typedef short cdecl (*xFSL_INIT)
+typedef _WORD __CDECL (*xFSL_INIT)
 (
- short 			 vdihandle, 	/* Handle einer geîffneten VDI-Workstation  */
+ _WORD 			 vdihandle, 	/* Handle einer geîffneten VDI-Workstation  */
  xFSL_PAR	  *xpar			  /* Struktur mit weiteren Eingabeparametern  */
 );
 
-typedef short cdecl (*xFSL_EVENT)
+typedef _WORD __CDECL (*xFSL_EVENT)
 (
- short			xfsl_handle,	/* Handle von xfsl_init()						  */
+ _WORD			xfsl_handle,	/* Handle von xfsl_init()						  */
  EVENT	  	 	*event 		  /* Pure-C-Event-Struktur 						 */
 );
 
-typedef void cdecl (*xFSL_EXIT)
+typedef void __CDECL (*xFSL_EXIT)
 (
- short 			 xfsl_handle	/* Handle von xfsl_init()						  */
+ _WORD 			 xfsl_handle	/* Handle von xfsl_init()						  */
 );
 
-typedef long cdecl (*xFSL_INFO)
+typedef long __CDECL (*xFSL_INFO)
 (
  void 							  /* keine Parameter 								 */
 );

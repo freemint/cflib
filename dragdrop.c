@@ -14,13 +14,19 @@
  * signal (write on an empty pipe) is ignored
  */
 
+#include "intern.h"
 #include "dragdrop.h"
 
 
 char __dragdrop_pipename[] = "u:\\pipe\\dragdrop.aa";
 
-#ifdef __MINT__
-__sighandler_t __dragdrop_oldpipesig;
-#else
-long __dragdrop_oldpipesig;
+__mint_sighandler_t __dragdrop_oldpipesig;
+
+#ifdef __PUREC__
+#include "dragdrop_close.c"
+#include "dragdrop_create.c"
+#include "dragdrop_open.c"
+#include "dragdrop_reply.c"
+#include "dragdrop_rtry.c"
+#include "dragdrop_stry.c"
 #endif

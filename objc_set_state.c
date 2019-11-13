@@ -27,8 +27,7 @@
 #include "intern.h"
 
 
-void
-set_state (OBJECT *tree, short obj, short state, short set)
+void set_state(OBJECT *tree, _WORD obj, _WORD state, _WORD set)
 {
 	if (set)
 		tree[obj].ob_state |= state;	/* Status setzen */

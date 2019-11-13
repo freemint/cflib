@@ -28,11 +28,10 @@
 #include "app.h"
 
 
-void
-exit_app (int ret)
+void exit_app(int ret)
 {
-	exit_gem ();
-	debug ("finish with %d\n", ret);
+	exit_gem();
+	debug("finish with %d\n", ret);
 
-	exit (ret);
+	exit(ret);
 }

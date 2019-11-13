@@ -30,10 +30,9 @@
 /*
  * Cursor updaten
  */
-void
-change_wdedit (WDIALOG *wd, short new)
+void change_wdedit(WDIALOG *wd, _WORD new)
 {
-	short last = 0;
+	_WORD last = 0;
 
 	if (wd != NULL)
 	{
@@ -41,30 +40,26 @@ change_wdedit (WDIALOG *wd, short new)
 		if (wd->edit_obj > 0)
 		{
 			last = -1;
-			if (!edit_valid (wd->tree, wd->edit_obj))
+			if (!edit_valid(wd->tree, wd->edit_obj))
 			{
-				objc_edit (wd->tree, wd->edit_obj, 0,
-					   &wd->edit_idx, ED_END);
+				objc_edit(wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_END);
 				last = wd->edit_obj;
 			}
 		}
 
 		/*
-		 * last = -1 -> aktuelles Editfeld weiterhin gltig, nix weiteres tun
-		 * last = 0  -> bisher kein Editfeld, erstes suchen
-		 * last > 0  -> aktuelles Editfeld ungltig geworden, n„chstes suchen
+		 * last = -1	-> aktuelles Editfeld weiterhin gltig, nix weiteres tun
+		 * last = 0		-> bisher kein Editfeld, erstes suchen
+		 * last > 0		-> aktuelles Editfeld ungltig geworden, n„chstes suchen
 		 */
 		if (last != -1)
 		{
-			if (new > 0 && edit_valid (wd->tree, new))
-				wd->edit_obj = new;	/* 2a. ein gltiges neues bergeben? */
-			else	/* 2b. neues suchen */
-				wd->edit_obj =
-					find_edit (wd->tree, last,
-						   FMD_FORWARD);
+			if (new > 0 && edit_valid(wd->tree, new))
+				wd->edit_obj = new;			/* 2a. ein gltiges neues bergeben? */
+			else							/* 2b. neues suchen */
+				wd->edit_obj = find_edit(wd->tree, last, FMD_FORWARD);
 			if (wd->edit_obj > 0)
-				objc_edit (wd->tree, wd->edit_obj, 0,
-					   &wd->edit_idx, ED_INIT);
+				objc_edit(wd->tree, wd->edit_obj, 0, &wd->edit_idx, ED_INIT);
 		}
 	}
 }

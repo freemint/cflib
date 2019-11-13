@@ -27,8 +27,7 @@
 #include "intern.h"
 
 
-void *
-malloc_global (long size)
+void *malloc_global(long size)
 {
-	return cf_malloc (size, "malloc_global", TRUE);
+	return cf_malloc(size, "malloc_global", TRUE);
 }

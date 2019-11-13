@@ -29,12 +29,6 @@
  * ACHTUNG: Nicht re-entrant, d.h. jede Applikation nur ein Kreuz, Ñh MenÅ!
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
-
 #include "intern.h"
 #include "menu.h"
 
@@ -43,3 +37,10 @@ OBJECT *__menu_tree = NULL;
 short __menu_disabled = FALSE;
 short __menu_dis_cnt = 0;
 KEYTAB *__menu_keys = NULL;
+
+#ifdef __PUREC__
+#include "menu_create.c"
+#include "menu_delete.c"
+#include "menu_is_menu_key.c"
+#include "menu_toogle.c"
+#endif

@@ -28,29 +28,23 @@
  * GEM clipbrd
  */
 
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
 #include "intern.h"
 
 
-void
-scrap_wtxt (char *buf)
+void scrap_wtxt(char *buf)
 {
 	char path[150];
 	int datei;
 
-	if (get_scrapdir (path))
+	if (get_scrapdir(path))
 	{
-		scrap_clear ();
+		scrap_clear();
 		strcat (path, "scrap.txt");
 
-		if ((datei = (int) Fcreate (path, 0)) >= 0)
+		if ((datei = (int)Fcreate(path, 0)) >= 0)
 		{
-			Fwrite (datei, strlen (buf), buf);
-			Fclose (datei);
+			Fwrite(datei, strlen(buf), buf);
+			Fclose(datei);
 		}
 	}
 }

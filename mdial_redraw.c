@@ -27,8 +27,8 @@
 #include "mdial.h"
 
 
-void
-redraw_mdial (MDIAL * dial, short start, short depth, short x, short y, short w, short h)
+/* FIXME: identical to draw_wdial? */
+void redraw_mdial(MDIAL *dial, _WORD start, _WORD depth, _WORD x, _WORD y, _WORD w, _WORD h)
 {
 	GRECT r, r1;
 
@@ -36,16 +36,15 @@ redraw_mdial (MDIAL * dial, short start, short depth, short x, short y, short w,
 	r.g_y = y;
 	r.g_w = w;
 	r.g_h = h;
-	wind_update (BEG_UPDATE);
-	hide_mouse_if_needed (&r);
-	wind_get_grect (dial->win_handle, WF_FIRSTXYWH, &r1);
+	wind_update(BEG_UPDATE);
+	hide_mouse_if_needed(&r);
+	wind_get_grect(dial->win_handle, WF_FIRSTXYWH, &r1);
 	while (r1.g_w != 0 && r1.g_h != 0)
 	{
-		if (rc_intersect (&r, &r1))
-			objc_draw (dial->tree, start, depth, r1.g_x, r1.g_y,
-				   r1.g_w, r1.g_h);
-		wind_get_grect (dial->win_handle, WF_NEXTXYWH, &r1);
+		if (rc_intersect(&r, &r1))
+			objc_draw_grect(dial->tree, start, depth, &r1);
+		wind_get_grect(dial->win_handle, WF_NEXTXYWH, &r1);
 	}
-	show_mouse ();
-	wind_update (END_UPDATE);
+	show_mouse();
+	wind_update(END_UPDATE);
 }

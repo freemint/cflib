@@ -27,12 +27,11 @@
 #include "intern.h"
 
 
-void
-set_obspec (OBJECT *tree, short obj, long spec)
+void set_obspec(OBJECT *tree, _WORD obj, long spec)
 {
-	short ud;
+	_WORD ud;
 
-	get_obtype (tree, obj, &ud);
+	get_obtype(tree, obj, &ud);
 	if (ud)
 		tree[obj].ob_spec.userblk->ub_parm = spec;
 	else

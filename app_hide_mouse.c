@@ -28,10 +28,9 @@
 #include "app.h"
 
 
-void
-hide_mouse (void)
+void hide_mouse(void)
 {
 	if (!__app_hidden)
-		graf_mouse (M_OFF, NULL);
+		graf_mouse(M_OFF, NULL);
 	__app_hidden++;
 }

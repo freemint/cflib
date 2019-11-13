@@ -27,46 +27,41 @@
 #include "intern.h"
 
 
-void
-set_string (OBJECT *tree, short obj, char *text)
+void set_string(OBJECT *tree, _WORD obj, char *text)
 {
 	long spec;
-	int type;
+	_WORD type;
 
-	spec = get_obspec (tree, obj);
-	type = get_obtype (tree, obj, NULL);
+	spec = get_obspec(tree, obj);
+	type = get_obtype(tree, obj, NULL);
 	switch (type)
 	{
-		case G_BUTTON:
-		case G_STRING:
-		case G_TITLE:
-#ifdef G_SHORTCUT
-		case G_SHORTCUT:
-#endif
-			strcpy ((char *) spec, text);
-			break;
+	case G_BUTTON:
+	case G_STRING:
+	case G_TITLE:
+	case G_SHORTCUT:
+		strcpy((char *) spec, text);
+		break;
 
-		case G_CICON:
-		case G_ICON:
-			strcpy (((ICONBLK *) spec)->ib_ptext, text);
-			break;
+	case G_CICON:
+	case G_ICON:
+		strcpy(((ICONBLK *) spec)->ib_ptext, text);
+		break;
 
-		case G_TEXT:
-		case G_BOXTEXT:
-		case G_FTEXT:
-		case G_FBOXTEXT:
-			strcpy (((TEDINFO *) spec)->te_ptext, text);
-			break;
+	case G_TEXT:
+	case G_BOXTEXT:
+	case G_FTEXT:
+	case G_FBOXTEXT:
+		strcpy(((TEDINFO *) spec)->te_ptext, text);
+		break;
 
-		default:
+	default:
 		{
 			char s[96];
 
-			sprintf (s,
-				 "[3][CF-Lib Panic: set_string()!|Objekt %d hat unbekannten Typ %d|!][Abbruch]",
-				 obj, type);
-			form_alert (1, s);
+			sprintf(s, "[3][CF-Lib Panic: set_string()!|Objekt %d hat unbekannten Typ %d|!][Abbruch]", obj, type);
+			form_alert(1, s);
 		}
-			break;
+		break;
 	}
 }

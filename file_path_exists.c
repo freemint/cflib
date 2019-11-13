@@ -24,47 +24,35 @@
  * 
  */
 
-#ifdef __MINT__
-#include <osbind.h>
-#include <sys/stat.h>
-#else
-#include <ext.h>
-#define S_IFMT		0170000
-#define S_IFDIR		0040000
-#define S_ISDIR(m)	((m & S_IFMT) == S_IFDIR)
-#endif
-
-#include <ctype.h>
-#include "app.h"
 #include "intern.h"
+#include "file.h"
 
 
-int
-path_exists (char *pathname)
+int path_exists(char *pathname)
 {
 	struct stat s;
 	int r = FALSE;
 
 	if (pathname[0] != '\0')
 	{
-		if ((stat (pathname, &s) == 0) && S_ISDIR (s.st_mode))
+		if ((stat(pathname, &s) == 0) && S_ISDIR(s.st_mode))
 			r = TRUE;
 
 		/* Work-around fÅr MagiCPC, wo der stat(<Laufwerk>) nicht funkt! */
 		if (cf_magxPC && !r)
 		{
-			int len = (int) strlen (pathname);
+			int len = (int)strlen(pathname);
 
 			if (pathname[1] == ':' && len <= 3)	/* nur Laufwerk 'X:' oder 'X:\' */
 			{
 				char p[80];
 
 				/* Laufwerk existiert, wenn man das akt. Verzeichnis ermitteln kann */
-				if (Dgetpath (p, toupper (pathname[0]) - 64)
-				    == 0)
+				if (Dgetpath(p, toupper(pathname[0]) - 64) == 0)
 					r = TRUE;
 			}
 		}
 	}
+
 	return r;
 }

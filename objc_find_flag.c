@@ -27,17 +27,16 @@
 #include "intern.h"
 
 
-short
-find_flag (OBJECT *tree, short flag)
+_WORD find_flag(OBJECT *tree, _WORD flag)
 {
-	short obj = -1;
+	_WORD obj = -1;
 
-	do {
+	do
+	{
 		obj++;
 		if (tree[obj].ob_flags & flag)
 			return obj;
-	}
-	while (!(tree[obj].ob_flags & OF_LASTOB));
+	} while (!(tree[obj].ob_flags & OF_LASTOB));
 
 	return -1;
 }

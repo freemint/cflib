@@ -32,16 +32,15 @@
  * Der doppelte objc_edit() ist fr den Fall, wenn der Cursor teilweise
  * oder ganz von einem anderen Fenster verdeckt wird.
  */
-void
-wdial_draw_cursor (WDIALOG *wd, short mode)
+void wdial_draw_cursor(WDIALOG *wd, _WORD mode)
 {
 	GRECT r;
 
 	if (wd != NULL && wd->edit_obj > 0)
 	{
-		objc_edit (wd->tree, wd->edit_obj, 0, &wd->edit_idx, mode);
-		get_objframe (wd->tree, wd->edit_obj, &r);
-		draw_wdial (wd, ROOT, MAX_DEPTH, r.g_x, r.g_y - 3, r.g_w + 1, r.g_h + 6);
-		objc_edit (wd->tree, wd->edit_obj, 0, &wd->edit_idx, mode);
+		objc_edit(wd->tree, wd->edit_obj, 0, &wd->edit_idx, mode);
+		get_objframe(wd->tree, wd->edit_obj, &r);
+		draw_wdial(wd, ROOT, MAX_DEPTH, r.g_x, r.g_y - 3, r.g_w + 1, r.g_h + 6);
+		objc_edit(wd->tree, wd->edit_obj, 0, &wd->edit_idx, mode);
 	}
 }

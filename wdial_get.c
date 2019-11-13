@@ -30,8 +30,7 @@
 /*
  * Liefert zu einem Fensterhandle den Dialog oder NULL.
  */
-WDIALOG *
-get_wdial (short w_handle)
+WDIALOG *get_wdial(_WORD w_handle)
 {
 	WDIALOG *p;
 
@@ -40,7 +39,6 @@ get_wdial (short w_handle)
 	{
 		if (p->win_handle == w_handle)
 			return p;
-
 		p = p->next;
 	}
 

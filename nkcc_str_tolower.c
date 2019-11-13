@@ -27,12 +27,11 @@
 #include "intern.h"
 
 
-void
-str_tolower (char *str)
+void str_tolower(char *str)
 {
 	while (*str != '\0')
 	{
-		*str = nkc_tolower (*str);
+		*str = nkc_tolower(*str);
 		str++;
 	}
 }

@@ -27,19 +27,18 @@
 #include "mdial.h"
 
 
-short
-simple_mdial (OBJECT *tree, short edit_start)
+_WORD simple_mdial(OBJECT *tree, _WORD edit_start)
 {
 	MDIAL *dial;
-	short ret = -1;
+	_WORD ret = -1;
 
-	graf_mouse (ARROW, NULL);
-	dial = open_mdial (tree, edit_start);
+	graf_mouse(ARROW, NULL);
+	dial = open_mdial(tree, edit_start);
 	if (dial)
 	{
-		ret = do_mdial (dial) & 0x7FFF;
-		set_state (tree, ret, OS_SELECTED, FALSE);
-		close_mdial (dial);
+		ret = do_mdial(dial) & 0x7FFF;
+		set_state(tree, ret, OS_SELECTED, FALSE);
+		close_mdial(dial);
 	}
 
 	return ret;

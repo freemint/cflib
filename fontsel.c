@@ -24,22 +24,8 @@
  * 
  */
 
-/*
- * ACHTNG: Dieses Modul darf nicht mit -O bersetzt werden, da sonst der 
- *         ASM-Hack kaputt-optimiert wird!! (gilt nur fr gcc 2.7.2.3)
- *
- */
-
-#ifdef __MINT__
-  #include <osbind.h>
-#else
-  #include <tos.h>
-#endif
-#include <gemx.h>
-
-#include "app.h"
 #include "intern.h"
-
+#include "app.h"
 #include "xfsl.h"
 
 
@@ -50,7 +36,7 @@
 #define xfsl_init(f, w, l) \
 __extension__ \
 ({ \
-	register long retvalue __asm__("d0"); \
+	register short retvalue __asm__("d0"); \
  \
 	__asm__ volatile \
 	( \
@@ -70,7 +56,7 @@ __extension__ \
 #define xfsl_event(f, w, l) \
 __extension__ \
 ({ \
-	register long retvalue __asm__("d0"); \
+	register short retvalue __asm__("d0"); \
  \
 	__asm__ volatile \
 	( \
@@ -107,24 +93,20 @@ __extension__ \
 })
 
 #else
-/* [GS] Old:
 #define xfsl_init(a,b,c)	a(b, c)
 #define xfsl_event(a,b,c)	a(b, c)
 #define xfsl_exit(a,b)		a(b)
-*/
 #endif
 
 
 static xFSL_PAR	xpar;
 static PFONTINFO f_info;
-/* static EVENT ev; */
 
-static inline short
-do_xfsl (long v, short handle, short flags, char *title, short *id, short *pts)
+static _WORD do_xfsl(long v, _WORD handle, _WORD flags, char *title, _WORD *id, _WORD *pts)
 {
 	xFSL *xfsl;
 	int ret = 0;
-	int win;
+	_WORD win;
 	int use_win;
 	EVENT ev;
 
@@ -132,8 +114,8 @@ do_xfsl (long v, short handle, short flags, char *title, short *id, short *pts)
 	memset(&ev, 0, sizeof(EVENT));
 
 	memset(&xpar, 0, sizeof(xFSL_PAR));
-	xpar.par_size = sizeof(xFSL_PAR);
-	xpar.pfi_size = sizeof(PFONTINFO);
+	xpar.par_size = (short)sizeof(xFSL_PAR);
+	xpar.pfi_size = (short)sizeof(PFONTINFO);
 	
 	xpar.headline = title;
 	xpar.fontflags = FF_ALL;
@@ -151,11 +133,7 @@ do_xfsl (long v, short handle, short flags, char *title, short *id, short *pts)
 		ev.ev_mflags = MU_MESAG;
 	}
 
-#ifdef __GNUC__	
 	win = xfsl_init(xfsl->xfsl_init, handle, &xpar);
-#else
- 	win = xfsl->xfsl_init (handle, &xpar);
-#endif
 	if (win == xFS_ERROR)
 		return FALSE;
 
@@ -172,30 +150,13 @@ do_xfsl (long v, short handle, short flags, char *title, short *id, short *pts)
 	ret = 0;
 	do
 	{
-#ifdef __GNUC__	
-	ret = xfsl_event(xfsl->xfsl_event, win, &ev);
-#else
- 	ret = xfsl->xfsl_event ( win, &ev);
-#endif
+		ret = xfsl_event(xfsl->xfsl_event, win, &ev);
 		if (ret == xFS_EVENT)
 		{
-#ifdef __GNUC__
-			short m[8], i;
-	
-			for (i = 0; i<8; i++)
-				m[i] = ev.ev_mmgpbuf[i];
-			handle_mdial_msg(m);
-#else
-			handle_mdial_msg((int*)ev.ev_mmgpbuf);
-#endif
+			handle_mdial_msg(ev.ev_mmgpbuf);
 		}
-	}
-	while (ret != xFS_OK && ret != xFS_STOP);
-#ifdef __GNUC__	
+	} while (ret != xFS_OK && ret != xFS_STOP);
 	xfsl_exit(xfsl->xfsl_exit, win);
-#else
- 	xfsl->xfsl_exit (win);
-#endif
 
 	if (use_win)
 		enable_menu();
@@ -208,10 +169,9 @@ do_xfsl (long v, short handle, short flags, char *title, short *id, short *pts)
 	return (ret == xFS_OK);
 }
 
-static inline short
-check_for_xfsl (long *v)
+static int check_for_xfsl(long *v)
 {
-	short ok;
+	int ok;
 	xFSL *xfsl;
 		
 	ok = getcookie("xFSL", v);
@@ -229,8 +189,7 @@ check_for_xfsl (long *v)
 
 /* --------------------------------------------------------------------------- */
 
-static inline short
-check_for_fprot (void)
+static short check_for_fprot(void)
 {
 	char name[9], *p;
 	short i = -1;
@@ -240,17 +199,16 @@ check_for_fprot (void)
 	{
 		strncpy(name, p, 8);
 		name[8] = '\0';
-		for (i = (int)strlen(name); i < 8; i++)
+		for (i = (short)strlen(name); i < 8; i++)
 			strcat(name, " ");
 		i = appl_find(name);
 	}
 	return i;
 }
 
-static inline void
-do_fprotokoll (int ap_id, int id, int pts)
+static void do_fprotokoll(_WORD ap_id, _WORD id, _WORD pts)
 {
-	short msgbuff[8];
+	_WORD msgbuff[8];
 	
 	msgbuff[0] = 0x7A19;			/* FONT_SELECT */
 	msgbuff[1] = gl_apid;
@@ -266,13 +224,13 @@ do_fprotokoll (int ap_id, int id, int pts)
 
 /* --------------------------------------------------------------------------- */
 
-static inline short
-do_magx (short handle, short f_anz, short flags, short *id, short *pts)
+static _WORD do_magx(_WORD handle, _WORD f_anz, _WORD flags, _WORD *id, _WORD *pts)
 {
 	FNT_DIALOG *fnt_ptr;
-	int f_typ, ret, win;
-	long ratio = 1l << 16, n_id, n_pts;
-	short but, check, d;
+	_WORD f_typ, ret, win;
+	long ratio = 1l << 16;
+	long n_id, n_pts;
+	_WORD but, check, d;
 	EVNT ev;
 	
 	f_typ = FNTS_BTMP|FNTS_OUTL|FNTS_MONO;
@@ -295,51 +253,34 @@ do_magx (short handle, short f_anz, short flags, short *id, short *pts)
 		ret = 0;
 		while (ret == 0)
 		{
-#ifdef __GNUC__
-			short msg[8], i, mx, my, mb, mc, ks, kr;
-
-			/*
-			 * GNU erwartet beim evnt_multi wirklich 'int', in EVNT sind aber
-			 * nur 'short', so dass die Struktur nicht bergeben werden kann!
-			*/
-			ev.mwhich = (short)evnt_multi(MU_KEYBD|MU_MESAG|MU_BUTTON, 2, 1, 1, 
-											0, 0, 0, 0, 0,	0, 0, 0, 0, 0,
-											msg, 0, &mx, &my, &mb, &ks, &kr, &mc);
-			ev.mx = mx;
-			ev.my = my;
-			ev.mbutton = mb;
-			ev.kstate = ks;
-			ev.key = kr;
-			ev.mclicks = mc;
-			for (i = 0; i<8; i++)
-				ev.msg[i] = msg[i];
+			ev.mwhich = evnt_multi(MU_KEYBD | MU_MESAG | MU_BUTTON,
+				2, 1, 1, 
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				ev.msg,
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
+				0, 0,
 #else
-			ev.mwhich = (short)evnt_multi(MU_KEYBD|MU_MESAG|MU_BUTTON, 2, 1, 1, 
-											0, 0, 0, 0, 0,	0, 0, 0, 0, 0,
-											(int*)ev.msg, 0, (int*)&ev.mx, (int*)&ev.my, (int*)&ev.mbutton, 
-											(int*)&ev.kstate,	(int*)&ev.key, (int*)&ev.mclicks);
+				0,
 #endif
+				&ev.mx, &ev.my, &ev.mbutton, &ev.kstate, &ev.key, &ev.mclicks);
 			if (ev.mwhich & MU_MESAG)
 			{
 				switch (ev.msg[0])
 				{
-					case WM_REDRAW :
-					case WM_MOVED :
+					case WM_REDRAW:
+					case WM_MOVED:
 					case WM_SIZED:
 						if (ev.msg[3] != win)		/* fuer fremdes Fenster */
-#ifdef __GNUC__
-							handle_mdial_msg(msg);
-#else
-							handle_mdial_msg((int*)ev.msg);
-#endif
+							handle_mdial_msg(ev.msg);
 						break;
 
 					case WM_BOTTOMED:					/* nicht erlaubt! */
 						break;
 					
-					case WM_TOPPED :
-					case WM_NEWTOP :
-					case WM_ONTOP :		
+					case WM_TOPPED:
+					case WM_NEWTOP:
+					case WM_ONTOP:		
 						ev.msg[0] = WM_TOPPED;		/* immer Fontbox toppen! */
 						ev.msg[3] = win;
 						break;
@@ -371,14 +312,13 @@ do_magx (short handle, short f_anz, short flags, short *id, short *pts)
 
 /* --------------------------------------------------------------------------- */
 
-short
-do_fontsel (short flags, char *title, short *id, short *pts)
+_WORD do_fontsel(_WORD flags, char *title, _WORD *id, _WORD *pts)
 {
-	short new_id, new_pts;
-	short fs_handle, workout[57], f_anz, d, i;
-	short ok = FALSE;
+	_WORD new_id, new_pts;
+	_WORD fs_handle, workout[57], f_anz, d, i;
+	_WORD ok = FALSE;
 	long v;
-				
+
 	/* 
 	 * Wir machen einfach eine eigene WS auf, da MagiC am Handle rumfummelt und
 	 * alte UFSL den Demotext drucken wuerden.
@@ -405,14 +345,14 @@ do_fontsel (short flags, char *title, short *id, short *pts)
 	else if ((flags & FS_M_FPROT) && (i = check_for_fprot()) >= 0)
 	{
 		do_fprotokoll(i, *id, *pts);
-		return FALSE; /* immer so, da neuer Font per Message kommt! */
+		return FALSE;				/* immer so, da neuer Font per Message kommt! */
 	}		
 
 	else if ((flags & FS_M_MAGX) && (appl_xgetinfo(7, &i, &d, &d, &d) && (i & 0x04)))
 	{
 		ok = do_magx(fs_handle, f_anz, flags, &new_id, &new_pts);
 	}
-	else /* keine der drei Methoden moeglich */
+	else			/* keine der drei Methoden moeglich */
 	{
 		*id = -1;
 		*pts = -1;

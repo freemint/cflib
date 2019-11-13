@@ -24,27 +24,22 @@
  * 
  */
 
-#ifdef __MINT__
-  #include <mintbind.h>
-#else
-  #include <tos.h>
-#endif
-
 #include "intern.h"
+#include "file.h"
 
 
-int
-fs_long_name (char *filename)
+int fs_long_name(char *filename)
 {
 	char path[256];
 	long ret;
 
 	/* eigentlichen Dateinamen abschneiden und durch '.' ersetzen -
-	 * muž sein, da Datei evtl. noch nicht existiert... */
-	split_filename (filename, path, NULL);
-	strcat (path, ".");
-	ret = Dpathconf (path, 3);
-	if ((ret < 0) || (ret == 12))
+	   muž sein, da Datei evtl. noch nicht existiert... */
+	split_filename(filename, path, NULL);
+	strcat(path, ".");
+	ret = Dpathconf(path, 3);
+	if (ret < 0 || ret == 12)
 		ret = 0;
+
 	return (int) ret;
 }

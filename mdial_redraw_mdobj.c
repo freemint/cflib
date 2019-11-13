@@ -27,40 +27,17 @@
 #include "mdial.h"
 
 
-static inline void
-redraw_cursor (MDIAL * dial)
-{
-	if (dial->edit_obj > 0)
-	{
-		GRECT r;
-
-		objc_edit (dial->tree, dial->edit_obj, 0, &dial->edit_idx,
-			   ED_INIT);
-		get_objframe (dial->tree, dial->edit_obj, &r);
-		redraw_mdial (dial, ROOT, MAX_DEPTH, r.g_x, r.g_y - 3,
-			      r.g_w + 1, r.g_h + 6);
-		objc_edit (dial->tree, dial->edit_obj, 0, &dial->edit_idx,
-			   ED_INIT);
-	}
-}
-
-void
-redraw_mdobj (MDIAL * dial, short obj)
+void redraw_mdobj(MDIAL *dial, _WORD obj)
 {
 	GRECT r;
 
 	if (dial != NULL)
 	{
-		get_objframe (dial->tree, obj, &r);
-		redraw_mdial (dial, ROOT, MAX_DEPTH, r.g_x, r.g_y - 3,
-			      r.g_w + 1, r.g_h + 6);
+		get_objframe(dial->tree, obj, &r);
+		redraw_mdial(dial, ROOT, MAX_DEPTH, r.g_x, r.g_y - 3, r.g_w + 1, r.g_h + 6);
 
 		/* neu zeichnen, wenn obj das Editfeld bzw. ein Child von obj ist */
-		if ((obj == dial->edit_obj)
-			|| (dial->edit_obj >= dial->tree[obj].ob_head
-				&& dial->edit_obj <= dial->tree[obj].ob_tail))
-		{
-			redraw_cursor (dial);
-		}
+		if ((obj == dial->edit_obj) || (dial->edit_obj >= dial->tree[obj].ob_head && dial->edit_obj <= dial->tree[obj].ob_tail))
+			redraw_mdial_cursor(dial);
 	}
 }

@@ -57,14 +57,14 @@ normalv4e:
 clean::
 	rm -rf .lib*
 
-libcflib$(TARGET).a: objs
+libcflib$(TARGET).a: .lib$(TARGET)/objs
 	$(AM_V_at)$(RM) $@
 	$(AM_V_AR)$(AR) rc $@ \
 		$(shell for file in `cat .lib$(TARGET)/objs` ; \
 			do echo .lib$(TARGET)/$$file ; done)
 	$(AM_V_RANLIB)$(RANLIB) $@
 
-objs: .lib$(TARGET)
+.lib$(TARGET)/objs: .lib$(TARGET) $(COBJS) $(SOBJS) $(HEADER)
 	cd .lib$(TARGET); $(MAKE)
 
 .lib$(TARGET):

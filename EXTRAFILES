@@ -17,4 +17,15 @@ SRCFILES += \
 	inline.hrd \
 	inline.rsc \
 	 \
+	comm.c \
+	file.c \
+	form_do.c \
+	magx.c \
+	misc.c \
+	nkcc.c \
+	objc.c \
+	popup.c \
+	scrap.c \
+	vdi.c \
+	 \
 	nkcc-pc.s

@@ -27,11 +27,10 @@
 #include "intern.h"
 
 
-void
-redraw_obj (OBJECT *tree, short obj)
+void redraw_obj(OBJECT *tree, _WORD obj)
 {
 	GRECT r;
 
-	get_objframe (tree, obj, &r);
-	objc_draw (tree, ROOT, MAX_DEPTH, r.g_x, r.g_y, r.g_w, r.g_h);
+	get_objframe(tree, obj, &r);
+	objc_draw_grect(tree, ROOT, MAX_DEPTH, &r);
 }

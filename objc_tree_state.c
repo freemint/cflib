@@ -27,11 +27,11 @@
 #include "intern.h"
 
 
-void
-tree_state (OBJECT *tree, short start_obj, short state, short set)
+void tree_state(OBJECT *tree, _WORD start_obj, _WORD state, _WORD set)
 {
-	int i;
+	_WORD i;
 
+	/* FIXME: logical order is not neccessarily physical order */
 	for (i = tree[start_obj].ob_head; i <= tree[start_obj].ob_tail; i++)
-		set_state (tree, i, state, set);
+		set_state(tree, i, state, set);
 }

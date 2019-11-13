@@ -28,10 +28,10 @@
 #define _app_h
 
 
-extern short cf_vdi_handle;
-extern short cf_font_anz;
-extern short cf_msg_cb;
-extern short cf_magxPC;
+extern _WORD cf_vdi_handle;
+extern _WORD cf_font_anz;
+extern _WORD cf_msg_cb;
+extern _WORD cf_magxPC;
 
 extern short __app_hidden;
 extern short __app_rsc_load;

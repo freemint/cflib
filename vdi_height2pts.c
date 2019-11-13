@@ -34,14 +34,13 @@
 /*
  * Point-Hîhe zu einer Pixel-Hîhe ermitteln.
  */
-short
-height2pts (short handle, short f_id, short f_height)
+_WORD height2pts(_WORD handle, _WORD f_id, _WORD f_height)
 {
-	short d, w, h, asked, got, width, height;
-	short pt = -1;
+	_WORD d, w, h, asked, got, width, height;
+	_WORD pt = -1;
 	
-	vst_font (handle, f_id);
-	vst_height (handle, f_height, &d, &height, &width, &d);
+	vst_font(handle, f_id);
+	vst_height(handle, f_height, &d, &height, &width, &d);
 
 	asked = 99; 
 	got = asked;
@@ -53,7 +52,7 @@ height2pts (short handle, short f_id, short f_height)
 		 * einstellt (und somit auch als tatsÑchliche Grîûe zurÅckliefert)
 		 */
 		asked = got - 1; 	/* 1 kleiner als aktuelle Grîûe einstellen */
-		got = vst_point (handle, asked, &d, &h, &w, &d);
+		got = vst_point(handle, asked, &d, &h, &w, &d);
 		if ((h == height) && (w == width))
 		{
 			pt = got; 		/* Punktgrîûe gefunden */

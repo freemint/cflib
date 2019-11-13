@@ -27,12 +27,11 @@
 #include "intern.h"
 
 
-void
-str_toupper (char *str)
+void str_toupper(char *str)
 {
 	while (*str != '\0')
 	{
-		*str = nkc_toupper (*str);
+		*str = nkc_toupper(*str);
 		str++;
 	}
 }

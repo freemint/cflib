@@ -32,18 +32,6 @@
  */
 #include "cflib.h"
 
-
-#ifndef __PUREC__
-#define cdecl
-#endif
-
-/* ein paar nicht-standard AES-Messages */
-#ifndef WM_SHADED
-#define WM_SHADED		0x5758
-#define WM_UNSHADED		0x5759
-#define WF_SHADE		0x575D
-#endif
-
 #ifndef SC_CHANGED
 #define SC_CHANGED		80
 #endif
@@ -56,6 +44,13 @@
 #define K_SHIFT			(K_RSHIFT|K_LSHIFT)
 #endif
 
+/* vst_alignment() */
+#ifndef TA_LEFT
+#define TA_LEFT			0
+#define TA_CENTER		1
+#define TA_TOP 			5
+#endif
+
 /* boolean */
 #ifdef TRUE
 #undef TRUE
@@ -65,7 +60,15 @@
 #define TRUE			1
 #define FALSE			0
 
-#ifdef __MINT__
+#ifdef __GNUC__
+#include <mint/osbind.h>
+#include <mint/mintbind.h>
+#include <gemx.h>
+#else
+#include <tos.h>
+#endif
+
+#ifdef __GNUC__
 /* ist in osbind.h komisch definiert. */
 typedef struct
 {
@@ -75,68 +78,60 @@ typedef struct
 } KEYTAB;
 #endif
 
-void *	cf_malloc (long size, char *who, int global);
+void *cf_malloc(long size, char *who, int global);
 
-/* cicon */
-CICON *	fix_cicon (CICONBLK *cicnblk, short screen_planes, short handle);
+/* cicon.c */
+CICON *fix_cicon(CICONBLK *cicnblk, _WORD screen_planes, _WORD handle);
 
 
-/* form_do */
-#define FMD_BACKWARD	1
+/* form_do.c */
+#define FMD_BACKWARD 1
 #define FMD_FORWARD	2
 
-short	edit_valid (OBJECT *tree, short obj);
-short	find_edit (OBJECT *tree, short obj, short mode);
-short 	cf_objc_find (OBJECT *tree, short start, short depth, short x, short y);
-short 	find_shortcut (OBJECT *tree, short kstate, short kreturn);
-short 	cf_form_keybd (OBJECT *tree, short edit_obj, short kstate, short *kreturn, short *next_obj);
-void	cf_objc_edit (OBJECT *tree, short obj, short kreturn, short *idx, short mode, short kstate, short *ctrl);
+_WORD edit_valid(OBJECT *tree, _WORD obj);
+_WORD find_edit(OBJECT *tree, _WORD obj, _WORD mode);
+_WORD cf_objc_find(OBJECT *tree, _WORD start, _WORD depth, _WORD x, _WORD y);
+_WORD find_shortcut(OBJECT *tree, _WORD kstate, _WORD kreturn);
+_WORD cf_form_keybd(OBJECT *tree, _WORD edit_obj, _WORD kstate, _WORD *kreturn, _WORD *next_obj);
+void cf_objc_edit(OBJECT *tree, _WORD obj, _WORD kreturn, _WORD *idx, _WORD mode, _WORD kstate, _WORD *ctrl);
 
 
-/* mdial */
-void handle_mdial_msg (short *msg);
+/* mdial.c */
+void handle_mdial_msg(_WORD *msg);
 
 
-/* userdef */
+/* userdef.c */
 extern OBJECT	*cf_ascii_tab;
 extern OBJECT	*cf_alert_box;
 
-void init_userdef (void);
-void exit_userdef (void);
+void init_userdef(void);
+void exit_userdef(void);
 
 /* popup */
-short popup_valid_item (OBJECT *tree, short obj);
+_WORD popup_valid_item(OBJECT *tree, _WORD obj);
 
 
-#ifdef __MINT__
+#if defined(__GNUC__) && defined(__MINT__)
 
-#include <macros.h>
 #include <support.h>
 #define ltoa(a,b,c)	_ltoa(a,b,c)
 #define ultoa(a,b,c)	_ultoa(a,b,c)
 
 #define DTA _DTA
 
-/* Temporary fix for MiNTLib bug.  */
-#if defined(__GNUC__) && defined(__MINTLIB_MAJOR__)
-# if __MINTLIB_MAJOR__ == 0 && __MINLIB_MINOR < 54
-#  ifdef abs
-#   undef abs
-#  endif
-#  define abs(a) \
-    ({__typeof__ (a) _a = (a);     \
-	      _a  < ((__typeof__ (a))0) ? -(_a) : _a; })
-# endif
 #endif
 
-#else /* pure lib */
+/* FIXME: should be in public api */
+#if defined(__PUREC__) && !defined(_GEMLIB_COMPATIBLE)
+void vqt_real_extent(_WORD handle, _WORD x, _WORD y, const char *string, _WORD extent[]);
+#endif
+
+#undef min
+#undef max
+#undef abs
 
 #define min(a,b)	  (((a) < (b)) ? (a) : (b))
 #define max(a,b)	  (((a) > (b)) ? (a) : (b))
-short rc_intersect(GRECT *r1, GRECT *r2);
-void vqt_real_extent(int handle, short x, short y, char *string, short extent[]);
-
-#endif
-
+#define abs(a)  ((a) < 0 ? -(a) : (a))
 
 #endif
