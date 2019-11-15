@@ -1,4 +1,4 @@
-#include "nkcc_gem_to_norm.c"
-#include "nkcc_norm_to_gem.c"
-#include "nkcc_str_tolower.c"
-#include "nkcc_str_toupper.c"
+#include "nkccgton.c"
+#include "nkccntog.c"
+#include "nkcclowr.c"
+#include "nkccuppr.c"

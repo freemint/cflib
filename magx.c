@@ -1,3 +1,3 @@
-#include "magx_obj.c"
-#include "magx_shortcut.c"
-#include "magx_version.c"
+#include "magxobj.c"
+#include "magxsc.c"
+#include "magxver.c"

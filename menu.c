@@ -39,8 +39,8 @@ short __menu_dis_cnt = 0;
 KEYTAB *__menu_keys = NULL;
 
 #ifdef __PUREC__
-#include "menu_create.c"
-#include "menu_delete.c"
-#include "menu_is_menu_key.c"
-#include "menu_toogle.c"
+#include "menucre.c"
+#include "menudel.c"
+#include "menuisk.c"
+#include "menutogg.c"
 #endif

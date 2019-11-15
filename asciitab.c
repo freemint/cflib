@@ -273,5 +273,5 @@ _WORD ascii_table(_WORD id, _WORD pts)
 
 
 #ifdef __PUREC__
-#include "ascii_set_asciitable_strings.c"
+#include "asciiset.c"
 #endif

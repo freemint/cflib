@@ -1,4 +1,4 @@
-#include "scrap_clear.c"
-#include "scrap_get_scrapdir.c"
-#include "scrap_rtxt.c"
-#include "scrap_wtxt.c"
+#include "scclear.c"
+#include "scdir.c"
+#include "scrtxt.c"
+#include "scwtxt.c"

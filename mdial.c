@@ -31,13 +31,13 @@ MDIAL_WCB __mdial_win_cb = NULL;
 MDIAL *__mdial_md_list = NULL;
 
 #ifdef __PUREC__
-#include "mdial_set_mdial_wincb.c"
-#include "mdial_handle_mdial_msg.c"
-#include "mdial_redraw.c"
-#include "mdial_open.c"
-#include "mdial_do.c"
-#include "mdial_close.c"
-#include "mdial_simple.c"
-#include "mdial_redraw_mdobj.c"
-#include "mdial_change_mdedit.c"
+#include "mdwincb.c"
+#include "mdmesag.c"
+#include "mdredraw.c"
+#include "mdopen.c"
+#include "mddo.c"
+#include "mdclose.c"
+#include "mdsimple.c"
+#include "mdrdrobj.c"
+#include "mdchange.c"
 #endif

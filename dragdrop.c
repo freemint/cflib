@@ -23,10 +23,10 @@ char __dragdrop_pipename[] = "u:\\pipe\\dragdrop.aa";
 __mint_sighandler_t __dragdrop_oldpipesig;
 
 #ifdef __PUREC__
-#include "dragdrop_close.c"
-#include "dragdrop_create.c"
-#include "dragdrop_open.c"
-#include "dragdrop_reply.c"
-#include "dragdrop_rtry.c"
-#include "dragdrop_stry.c"
+#include "ddclose.c"
+#include "ddcreate.c"
+#include "ddopen.c"
+#include "ddreply.c"
+#include "ddrtry.c"
+#include "ddstry.c"
 #endif
