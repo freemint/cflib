@@ -209,7 +209,7 @@ int	getcookie	(char *cookie, long *value);
  * debug functions
  *******************************************************************************/
 
-int	gl_debug;
+extern int	gl_debug;
 
 void	debug_init	(char *prgName, DEBUGDEV dev, char *file);
 void	debug_exit	(void);
