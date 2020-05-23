@@ -8,9 +8,6 @@ addons:
       - binutils-m68k-atari-mint
       - gcc-m68k-atari-mint
       - mintbin-m68k-atari-mint
-      # TODO: replace with snapshots
-      - mintlib-m68k-atari-mint
-      - gemlib-m68k-atari-mint
 
 env:
   global:
