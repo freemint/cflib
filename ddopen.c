@@ -16,6 +16,9 @@
 
 #include "dragdrop.h"
 
+#if defined(__GNUC__) && __GNUC__ >= 7
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
 
 /*
  * ddopen: open a drag & drop pipe
