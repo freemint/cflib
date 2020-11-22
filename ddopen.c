@@ -16,7 +16,7 @@
 
 #include "dragdrop.h"
 
-#if defined(__GNUC__) && __GNUC__ >= 7
+#if defined(__GNUC__) && __GNUC__ >= 8
 #pragma GCC diagnostic ignored "-Wstringop-truncation"
 #endif
 
