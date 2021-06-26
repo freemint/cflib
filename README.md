@@ -1,1 +1,3 @@
-[![Build Status](https://travis-ci.org/freemint/cflib.svg?branch=master)](https://travis-ci.org/freemint/cflib) [ ![Download](https://api.bintray.com/packages/freemint/lib/cflib/images/download.svg) ](https://bintray.com/freemint/lib/cflib/_latestVersion)
+[![Build Status](https://github.com/freemint/cflib/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/freemint/cflib/actions) 
+
+Latest snapshot: [Download](https://tho-otto.de/snapshots/cflib/cflib-latest.tar.bz2)
