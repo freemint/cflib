@@ -59,4 +59,6 @@ void split_filename(char *fullname, char *path, char *name)
 			path[len] = '\0';
 		}
 	}
+	else if (name != NULL)
+		strcpy(name, fullname);
 }
