@@ -105,8 +105,13 @@ ifeq ($(WITH_V4E_LIB),yes)
 	install -m 644 libcflibv4e.a  ${PREFIX}/lib/m5475/libcflib.a
 endif
 	install -m 755 -d $(PREFIX)/stguide
-	install -m 644 doc/cflib.hyp      ${PREFIX}/stguide
-	install -m 644 doc/cflib.ref      ${PREFIX}/stguide
+	if test -f doc/cflib.hyp; then \
+		install -m 644 doc/cflib.hyp      ${PREFIX}/stguide; \
+		install -m 644 doc/cflib.ref      ${PREFIX}/stguide; \
+	else \
+		echo "HCP not found, installing documentation source" >&2; \
+		install -m 644 doc/cflib.stg      ${PREFIX}/stguide; \
+	fi
 
 uninstall:
 	rm -f ${PREFIX}/include/cflib.h
@@ -119,5 +124,6 @@ endif
 ifeq ($(WITH_V4E_LIB),yes)
 	rm -f ${PREFIX}/lib/m5475/libcflib.a
 endif
+	rm -f ${PREFIX}/stguide/cflib.stg
 	rm -f ${PREFIX}/stguide/cflib.hyp
 	rm -f ${PREFIX}/stguide/cflib.ref
