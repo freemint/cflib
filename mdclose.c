@@ -70,6 +70,6 @@ void close_mdial(MDIAL *dial)
 		dial->tree[0].ob_y += dial->delta_y;
 
 		__mdial_md_list = dial->next;
-		Mfree(dial);
+		free(dial);
 	}
 }

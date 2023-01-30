@@ -211,7 +211,7 @@ CICON *fix_cicon(CICONBLK *cicnblk, _WORD screen_planes, _WORD handle)
 
 	if (best_icn != NULL)			/* passendes Farbicon gefunden */
 	{
-		new_icn = (CICON*)cf_malloc(sizeof(CICON), "fix_cicon", FALSE);
+		new_icn = (CICON*)cf_malloc(sizeof(CICON), "fix_cicon", FALSE); /* leaked */
 		*new_icn = *best_icn;
 
 		if (best_planes > 1)
@@ -219,8 +219,8 @@ CICON *fix_cicon(CICONBLK *cicnblk, _WORD screen_planes, _WORD handle)
 		else
 			new_icn->num_planes = 1;
 
-		new_icn->col_data = cf_malloc(len * screen_planes, "fix_cicon", FALSE);
-		new_icn->sel_data = cf_malloc(len * screen_planes, "fix_cicon", FALSE);
+		new_icn->col_data = cf_malloc(len * screen_planes, "fix_cicon", FALSE); /* leaked */
+		new_icn->sel_data = cf_malloc(len * screen_planes, "fix_cicon", FALSE); /* leaked */
 
 		if (best_planes > 1)
 		{
@@ -259,8 +259,8 @@ CICON *fix_cicon(CICONBLK *cicnblk, _WORD screen_planes, _WORD handle)
 			d.fd_addr = new_icn->sel_data;
 			vr_trnfm(handle, &s, &d);
 
-			Mfree(buf2);
-			Mfree(buf1);
+			free(buf2);
+			free(buf1);
 		}
 		else
 		{

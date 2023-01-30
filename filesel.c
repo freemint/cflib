@@ -276,7 +276,7 @@ int select_file(char *path, char *name, char *mask, char *title, FSEL_CB open_cb
 			}
 			for (i = 0; i < SLCT_ANZ; i++)
 				if (files[i] != NULL)
-					Mfree(files[i]);
+					free(files[i]);
 
 			/* leeren */
 			path[0] = '\0';

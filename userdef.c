@@ -459,20 +459,14 @@ static void init_inline_rsc(void)
 	check_cib->mainlist = fix_cicon(check_cib, i, handle);
 }
 
-static void make_userdef(OBJECT *tree, _WORD obj, _WORD __CDECL (*proc)(PARMBLK *p))
+static void make_userdef(USERBLK *uPtr, OBJECT *tree, _WORD obj, _WORD __CDECL (*proc)(PARMBLK *p))
 {
-	USERBLK *uPtr;
+	uPtr->ub_code = proc;						/* neue Zeichenfunktion */
+	uPtr->ub_parm = tree[obj].ob_spec.index;	/* alte obSpec sichern */
 
-	uPtr = (USERBLK *)cf_malloc(sizeof(USERBLK), "make_userdef", FALSE);
-	if (uPtr != NULL)
-	{
-		uPtr->ub_code = proc;						/* neue Zeichenfunktion */
-		uPtr->ub_parm = tree[obj].ob_spec.index;	/* alte obSpec sichern */
-
-		/* alten Typ hochschieben und neuen eintragen */
-		tree[obj].ob_type = (tree[obj].ob_type << 8) | G_USERDEF;
-		tree[obj].ob_spec.userblk = uPtr;			/* Userblock eintragen */
-	}
+	/* alten Typ hochschieben und neuen eintragen */
+	tree[obj].ob_type = (tree[obj].ob_type << 8) | G_USERDEF;
+	tree[obj].ob_spec.userblk = uPtr;			/* Userblock eintragen */
 }
 
 /* -- exportierte Funtkionen ------------------------------------------------- */
@@ -480,10 +474,60 @@ static void make_userdef(OBJECT *tree, _WORD obj, _WORD __CDECL (*proc)(PARMBLK 
 void fix_dial(OBJECT *tree)
 {
 	_WORD mtyp, obj;
+	USERBLK *uPtr;
+	_WORD count;
 
 	if (!tree)
 		return;
 
+	/* first pass: count number of USERBLKs needed */
+	obj = -1;
+	count = 0;
+	do
+	{
+		obj++;
+		mtyp = get_magx_obj(tree, obj);
+
+		/* Ein paar Erweiterungen, die MagiC auch nicht kann */
+		switch (mtyp)
+		{
+			case MX_GROUPBOX2:
+				count++;
+				break;
+		}
+
+		/* den Rest nur, wenn keine WHITEBACK-Buttons verfgbar sind */
+		if (!mx_buttons || use_all_userdefs)
+		{
+			switch (mtyp)
+			{
+				case MX_UNDERLINE:
+					count++;
+					break;
+				case MX_GROUPBOX:
+					count++;
+					break;
+				case MX_RADIO:
+				case MX_SCRADIO:
+					count++;
+					break;
+				case MX_CHECK:
+				case MX_SCCHECK:
+					count++;
+					break;
+				case MX_SCSTRING:
+					count++;
+					break;
+			}
+		}
+	} while (!(tree[obj].ob_flags & OF_LASTOB));
+
+	if (count == 0)
+		return;
+
+	uPtr = (USERBLK *)cf_malloc(count * sizeof(USERBLK), "fix_dial", FALSE); /* leaked */
+
+	/* 2nd pass: construct USERBLKs */
 	obj = -1;
 	do
 	{
@@ -494,32 +538,37 @@ void fix_dial(OBJECT *tree)
 		switch (mtyp)
 		{
 			case MX_GROUPBOX2:
-				make_userdef(tree, obj, draw_groupbox);
+				make_userdef(uPtr, tree, obj, draw_groupbox);
+				uPtr++;
 				break;
 		}
 
 		/* den Rest nur, wenn keine WHITEBACK-Buttons verfgbar sind */
-/*		if ((gl_magx <= 0x200 && gl_naes < 0x0200) || use_all_userdefs) */
 		if (!mx_buttons || use_all_userdefs)
 		{
 			switch (mtyp)
 			{
 				case MX_UNDERLINE:
-					make_userdef(tree, obj, draw_underline);
+					make_userdef(uPtr, tree, obj, draw_underline);
+					uPtr++;
 					break;
 				case MX_GROUPBOX:
-					make_userdef(tree, obj, draw_groupbox);
+					make_userdef(uPtr, tree, obj, draw_groupbox);
+					uPtr++;
 					break;
 				case MX_RADIO:
 				case MX_SCRADIO:
-					make_userdef(tree, obj, draw_radiobutton);
+					make_userdef(uPtr, tree, obj, draw_radiobutton);
+					uPtr++;
 					break;
 				case MX_CHECK:
 				case MX_SCCHECK:
-					make_userdef(tree, obj, draw_checkbutton);
+					make_userdef(uPtr, tree, obj, draw_checkbutton);
+					uPtr++;
 					break;
 				case MX_SCSTRING:
-					make_userdef(tree, obj, draw_scstring);
+					make_userdef(uPtr, tree, obj, draw_scstring);
+					uPtr++;
 					break;
 			}
 		}

@@ -34,7 +34,7 @@ void *cf_malloc(long size, char *who, int global)
 	if (global && getcookie("MiNT", NULL))
 		r = (void *)Mxalloc(size, 0x23);
 	else
-		r = (void *)Malloc(size);
+		r = (void *)malloc(size);
 
 	if (r == NULL)
 	{

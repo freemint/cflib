@@ -72,7 +72,7 @@ static void cf_background(GRECT *box, MFDB *buffer, _WORD get)
 				xy[6] = r.g_x + r.g_w - 1;
 				xy[7] = r.g_y + r.g_h - 1;
 				vro_cpyfm(cf_vdi_handle, S_ONLY, xy, buffer, &screen);
-				Mfree(buffer->fd_addr);
+				free(buffer->fd_addr);
 			}
 			show_mouse();
 		}

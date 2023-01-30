@@ -54,6 +54,6 @@ void delete_wdial(WDIALOG *wd)
 			p->next = wd->next;
 		}
 
-		Mfree(wd);
+		free(wd);
 	}
 }

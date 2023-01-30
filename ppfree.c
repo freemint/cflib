@@ -41,7 +41,7 @@ _WORD free_popup(POPUP *p)
 			free((char *)get_obspec(p->tree, i));	/* free_string freigeben */
 	} while (!(p->tree[i].ob_flags & OF_LASTOB));
 	
-	Mfree(p->tree);
+	free(p->tree);
 	
 	return TRUE;
 }
