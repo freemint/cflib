@@ -30,9 +30,7 @@
 
 int file_exists(char *filename)
 {
-	struct stat s;
-
 	if (filename[0] == '\0')
 		return FALSE;
-	return stat(filename, &s) == 0;
+	return Fattrib(filename, 0, 0) >= 0;
 }

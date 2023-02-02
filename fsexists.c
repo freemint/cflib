@@ -30,12 +30,12 @@
 
 int path_exists(char *pathname)
 {
-	struct stat s;
 	int r = FALSE;
-
+	short attr;
+	
 	if (pathname[0] != '\0')
 	{
-		if ((stat(pathname, &s) == 0) && S_ISDIR(s.st_mode))
+		if ((attr = Fattrib(pathname, 0, 0)) >= 0 && (attr & FA_DIR) != 0)
 			r = TRUE;
 
 		/* Work-around fÅr MagiCPC, wo der stat(<Laufwerk>) nicht funkt! */
