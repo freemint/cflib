@@ -65,9 +65,9 @@ static _WORD get_txtlen(char *str)
 	_WORD pxy[8];
 
 	if (gl_nvdi >= 0x300)
-		vqt_real_extent(handle, 0, 0, str, pxy);
+		udef_vqt_real_extent(handle, 0, 0, str, pxy);
 	else
-		vqt_extent(handle, str, pxy);
+		udef_vqt_extent(handle, str, pxy);
 
 	return pxy[2] - pxy[0];
 }
@@ -83,9 +83,9 @@ static void draw_string(OBJECT *tree, _WORD obj, _WORD x, _WORD y, char *str, _W
 	if (tree[obj].ob_state & OS_DISABLED)
 		effect |= TXT_LIGHT;
 
-	vst_effects(handle, effect);
+	udef_vst_effects(handle, effect);
 
-	v_gtext(handle, x, y, str);
+	udef_v_gtext(handle, x, y, str);
 
 	/* Gibts einen Shortcut? */
 	pos = get_magx_shortcut(tree, obj, &c);
@@ -99,10 +99,10 @@ static void draw_string(OBJECT *tree, _WORD obj, _WORD x, _WORD y, char *str, _W
 		s2[pos] = '\0';
 		l = get_txtlen(s2);
 
-		vswr_mode(handle, MD_TRANS);
-		vst_effects(handle, effect | TXT_UNDERLINED);
+		udef_vswr_mode(handle, MD_TRANS);
+		udef_vst_effects(handle, effect | TXT_UNDERLINED);
 		chr[0] = c;
-		v_gtext(handle, x + l, y, chr);
+		udef_v_gtext(handle, x + l, y, chr);
 	}
 }
 
@@ -131,9 +131,9 @@ static void draw_bitblk(short *data, _WORD planes, _WORD mode, _WORD *col, _WORD
 	pxy[7] = pxy[5] + pxy[3];
 
 	if (planes == 1)
-		vrt_cpyfm(handle, mode, pxy, &src, &dst, col);
+		udef_vrt_cpyfm(handle, mode, pxy, &src, &dst, col);
 	else
-		vro_cpyfm(handle, mode, pxy, &src, &dst);
+		udef_vro_cpyfm(handle, mode, pxy, &src, &dst);
 }
 
 
@@ -147,7 +147,7 @@ static _WORD draw_ciconblk(PARMBLK *p, CICONBLK *cib)
 	short *m_d, *i_d;
 
 	set_clipping(handle, p->pb_xc, p->pb_yc, p->pb_wc, p->pb_hc, TRUE);
-	vswr_mode(handle, MD_TRANS);
+	udef_vswr_mode(handle, MD_TRANS);
 
 	if (p->pb_currstate & OS_SELECTED)
 	{
@@ -180,8 +180,8 @@ static _WORD draw_ciconblk(PARMBLK *p, CICONBLK *cib)
 	if (p->pb_prevstate == p->pb_currstate)
 	{
 		str = (char *)p->pb_parm;
-		vst_font(handle, sys_big_id);
-		vst_height(handle, sys_big_height, &wchar, &d, &d, &d);
+		udef_vst_font(handle, sys_big_id);
+		udef_vst_height(handle, sys_big_height, &wchar, &d, &d, &d);
 		draw_string(p->pb_tree, p->pb_obj, p->pb_x + p->pb_h + wchar, p->pb_y, str, 0);
 	}
 
@@ -207,11 +207,11 @@ static _WORD __CDECL draw_underline(PARMBLK *p)
 	_WORD d, len, pxy[8], wBox, hBox;
 
 	set_clipping(handle, p->pb_xc, p->pb_yc, p->pb_wc, p->pb_hc, TRUE);
-	vswr_mode(handle, MD_TRANS);
+	udef_vswr_mode(handle, MD_TRANS);
 
 	/* Font */
-	vst_font(handle, sys_big_id);
-	vst_height(handle, sys_big_height, &d, &d, &wBox, &hBox);
+	udef_vst_font(handle, sys_big_id);
+	udef_vst_height(handle, sys_big_height, &d, &d, &wBox, &hBox);
 
 	/* Text ausgeben */
 	str = (char *)p->pb_parm;
@@ -221,22 +221,22 @@ static _WORD __CDECL draw_underline(PARMBLK *p)
 	len = p->pb_w;
 
 	if (use_3D)
-		vsl_color(handle, G_LBLACK);
+		udef_vsl_color(handle, G_LBLACK);
 	else
-		vsl_color(handle, G_BLACK);
+		udef_vsl_color(handle, G_BLACK);
 
 	pxy[0] = p->pb_x;
 	pxy[1] = p->pb_y + hBox;
 	pxy[2] = p->pb_x + len;
 	pxy[3] = pxy[1];
-	v_pline(handle, 2, pxy);
+	udef_v_pline(handle, 2, pxy);
 
 	if (use_3D)
 	{
-		vsl_color(handle, G_WHITE);
+		udef_vsl_color(handle, G_WHITE);
 		pxy[1]--;
 		pxy[3]--;
-		v_pline(handle, 2, pxy);
+		udef_v_pline(handle, 2, pxy);
 	}
 
 	return p->pb_currstate & ~(OS_CHECKED | OS_DISABLED);
@@ -254,17 +254,17 @@ static _WORD __CDECL draw_groupbox(PARMBLK *p)
 	/* Font */
 	if (p->pb_tree[p->pb_obj].ob_state & OS_CHECKED)		/* kleine Schrift */
 	{
-		vst_font(handle, sys_sml_id);
-		vst_height(handle, sys_sml_height, &d, &d, &wBox, &hBox);
+		udef_vst_font(handle, sys_sml_id);
+		udef_vst_height(handle, sys_sml_height, &d, &d, &wBox, &hBox);
 	}
 	else
 	{
-		vst_font(handle, sys_big_id);
-		vst_height(handle, sys_big_height, &d, &d, &wBox, &hBox);
+		udef_vst_font(handle, sys_big_id);
+		udef_vst_height(handle, sys_big_height, &d, &d, &wBox, &hBox);
 	}
 
 	/* Text */
-	vswr_mode(handle, MD_TRANS);
+	udef_vswr_mode(handle, MD_TRANS);
 	str = (char *)p->pb_parm;
 
 	x = p->pb_x + wBox;
@@ -288,11 +288,11 @@ static _WORD __CDECL draw_groupbox(PARMBLK *p)
 	}
 
 	/* Frame */
-	vswr_mode(handle, MD_REPLACE);
+	udef_vswr_mode(handle, MD_REPLACE);
 	if (use_3D)
-		vsl_color(handle, G_LBLACK);
+		udef_vsl_color(handle, G_LBLACK);
 	else
-		vsl_color(handle, G_BLACK);
+		udef_vsl_color(handle, G_BLACK);
 
 	pxy[0] = x + wBox;
 	pxy[1] = y;
@@ -306,17 +306,17 @@ static _WORD __CDECL draw_groupbox(PARMBLK *p)
 	pxy[9] = y;
 	pxy[10] = x + wBox + len;
 	pxy[11] = y;
-	v_pline(handle, 6, pxy);
+	udef_v_pline(handle, 6, pxy);
 
 	if (use_3D)
 	{
-		vsl_color(handle, G_WHITE);
+		udef_vsl_color(handle, G_WHITE);
 		pxy[1]++;
 		pxy[2]++;
 		pxy[3]++;
 		pxy[4]++;
 		pxy[5]--;
-		v_pline(handle, 3, pxy);
+		udef_v_pline(handle, 3, pxy);
 
 		pxy[0] = x;
 		pxy[1] = y + h;
@@ -324,13 +324,13 @@ static _WORD __CDECL draw_groupbox(PARMBLK *p)
 		pxy[3] = pxy[1];
 		pxy[4] = pxy[2];
 		pxy[5] = y;
-		v_pline(handle, 3, pxy);
+		udef_v_pline(handle, 3, pxy);
 
 		pxy[0] = x + w - 2;
 		pxy[1] = y + 1;
 		pxy[2] = pxy[10];
 		pxy[3] = pxy[1];
-		v_pline(handle, 2, pxy);
+		udef_v_pline(handle, 2, pxy);
 	}
 
 	return 0;
@@ -343,10 +343,10 @@ static _WORD __CDECL draw_scstring(PARMBLK *p)
 	_WORD d;
 
 	set_clipping(handle, p->pb_xc, p->pb_yc, p->pb_wc, p->pb_hc, TRUE);
-	vswr_mode(handle, MD_TRANS);
+	udef_vswr_mode(handle, MD_TRANS);
 
-	vst_font(handle, sys_big_id);
-	vst_height(handle, sys_big_height, &d, &d, &d, &d);
+	udef_vst_font(handle, sys_big_id);
+	udef_vst_height(handle, sys_big_height, &d, &d, &d, &d);
 
 	/* Text ausgeben */
 	str = (char *)p->pb_parm;
@@ -370,7 +370,7 @@ static _WORD __CDECL draw_menuline(PARMBLK *p)
 	if (gnva || gl_magx)
 		set_clipping(handle, p->pb_xc, p->pb_yc, p->pb_wc, p->pb_hc, TRUE);
 	else
-		vs_clip(handle, 0, pxy);
+		udef_vs_clip(handle, 0, pxy);
 
 	pxy[0] = p->pb_x;
 	pxy[1] = p->pb_y + (p->pb_h / 2) - 1;
@@ -379,16 +379,16 @@ static _WORD __CDECL draw_menuline(PARMBLK *p)
 
 	if (use_3D)
 	{
-		vsf_interior(handle, FIS_SOLID);
-		vsf_color(handle, G_LBLACK);
+		udef_vsf_interior(handle, FIS_SOLID);
+		udef_vsf_color(handle, G_LBLACK);
 	}
 	else
 	{
-		vsf_interior(handle, FIS_PATTERN);
-		vsf_style(handle, 4);
-		vsf_color(handle, G_BLACK);
+		udef_vsf_interior(handle, FIS_PATTERN);
+		udef_vsf_style(handle, 4);
+		udef_vsf_color(handle, G_BLACK);
 	}
-	vr_recfl(handle, pxy);
+	udef_vr_recfl(handle, pxy);
 
 	return 0;
 }
@@ -410,21 +410,21 @@ static _WORD __CDECL draw_popupline(PARMBLK *p)
 
 	if (use_3D)
 	{
-		vsl_color(handle, G_LBLACK);
-		v_pline(handle, 2, pxy);
+		udef_vsl_color(handle, G_LBLACK);
+		udef_v_pline(handle, 2, pxy);
 
 		pxy[1] = p->pb_y + (p->pb_h / 2);
 		pxy[3] = pxy[1];
 
-		vsl_color(handle, G_WHITE);
-		v_pline(handle, 2, pxy);
+		udef_vsl_color(handle, G_WHITE);
+		udef_v_pline(handle, 2, pxy);
 	}
 	else
 	{
-		vsf_interior(handle, FIS_PATTERN);
-		vsf_style(handle, 4);
-		vsf_color(handle, G_BLACK);
-		vr_recfl(handle, pxy);
+		udef_vsf_interior(handle, FIS_PATTERN);
+		udef_vsf_style(handle, 4);
+		udef_vsf_color(handle, G_BLACK);
+		udef_vr_recfl(handle, pxy);
 	}
 
 	return 0;
