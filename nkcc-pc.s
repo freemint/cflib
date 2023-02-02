@@ -52,8 +52,7 @@ NK_DEL			=	$1f 			; Delete
 			   .globl	nkc_init			 ; init NKCC
 			   .globl	nkc_tos2n			 ; TOS key code converter
 			   .globl	nkc_n2tos			 ; NKC to TOS key code converter
-               .globl   nkc_toupper          ; convert character to upper case
-               .globl   nkc_tolower          ; convert character to lower case
+			   .globl	nkc_tolower_tab
 
 ****************************************************************************
 *							 LOCAL TEXT SECTION 						   *
@@ -433,7 +432,7 @@ nkc_n2tos:
 			   beq.s	.notfound			 ; no ->
 
 			   move.l	a0,d1				 ; save a0
-			   lea		tolower,a0			 ; ^upper->lower case table
+			   lea		nkc_tolower_tab,a0	 ; ^upper->lower case table
 			   moveq.l	#0,d2				 ; clear for word operation
 			   move.b	d0,d2				 ; ASCII code
 			   move.b	(a0,d2),d0			 ; get lowercased ASCII code
@@ -561,32 +560,6 @@ nkc_n2tos:
 
 
 ****************************************************************************
-*
-*  nkc_toupper: convert character to upper case
-*
-****************************************************************************
-
-nkc_toupper:
-			   lea      toupper,a0           ; ^upper case translation table
-               and      #$ff,d0              ; high byte = 0 for word operation
-               move.b   (a0,d0),d0           ; convert
-               rts                           ; bye
-
-
-****************************************************************************
-*
-*  nkc_tolower: convert character to lower case
-*
-****************************************************************************
-
-nkc_tolower:
-			   lea      tolower,a0           ; ^lower case translation table
-               and      #$ff,d0              ; high byte = 0 for word operation
-               move.b   (a0,d0),d0           ; convert
-               rts                           ; bye
-
-
-****************************************************************************
 *							 LOCAL DATA SECTION 						   *
 ****************************************************************************
 
@@ -617,40 +590,6 @@ xscantab:	   .dc.b	NK_UP		,  $48	 ; cursor up
 			   .dc.b	NK_M_F12	,  $46	 ; Mac: F12
 			   .dc.b	NK_M_F14	,  $37	 ; Mac: F14
 			   .dc.w	-1
-
-
-*  lower case to upper case conversion table
-*  (array of 256 unsigned bytes)
-
-toupper:
-               .dc.b    $00,$01,$02,$03,$04,$05,$06,$07
-               .dc.b    $08,$09,$0a,$0b,$0c,$0d,$0e,$0f
-               .dc.b    $10,$11,$12,$13,$14,$15,$16,$17
-               .dc.b    $18,$19,$1a,$1b,$1c,$1d,$1e,$1f
-               .dc.b    " !",$22,"#$%&",$27,"()*+,-./0123456789:;<=>?"
-               .dc.b    "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[",$5c,"]^_"
-               .dc.b    "`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~"
-               .dc.b    "€šƒ¶€ˆ‰Š‹Œ’’“™•–—˜™š›œŸ"
-               .dc.b    " ¡¢£¥¥¦§¨©ª«¬­®¯·¸²²µµ¶·¸¹º»¼½¾¿"
-               .dc.b    "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞß"
-               .dc.b    "àáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ"
-
-
-*  upper case to lower case conversion table
-*  (array of 256 unsigned bytes)
-
-tolower:
-               .dc.b    $00,$01,$02,$03,$04,$05,$06,$07
-               .dc.b    $08,$09,$0a,$0b,$0c,$0d,$0e,$0f
-               .dc.b    $10,$11,$12,$13,$14,$15,$16,$17
-               .dc.b    $18,$19,$1a,$1b,$1c,$1d,$1e,$1f
-               .dc.b    " !",$22,"#$%&",$27,"()*+,-./0123456789:;<=>?"
-               .dc.b    "@abcdefghijklmnopqrstuvwxyz[",$5c,"]^_"
-               .dc.b    "`abcdefghijklmnopqrstuvwxyz{|}~"
-               .dc.b    "‡‚ƒ„…†‡ˆ‰Š‹Œ„†‚‘‘“”•–—˜”›œŸ"
-               .dc.b    " ¡¢£¤¤¦§¨©ª«¬­®¯°±³³´´…°±¹º»¼½¾¿"
-               .dc.b    "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞß"
-               .dc.b    "àáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ"
 
 
 *  ASCII code translation table for Control key
