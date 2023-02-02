@@ -25,7 +25,6 @@ mdial.c
 menu.c
 misc.c
 nkcc.c
-nkcc-pc.s
 objc.c
 popup.c
 scrap.c

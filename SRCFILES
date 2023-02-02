@@ -108,6 +108,7 @@ COBJS = \
 	nkccntog.c \
 	nkcclowr.c \
 	nkccuppr.c \
+	nkccinit.c \
 	\
 	obfindfl.c \
 	obgflag.c \
@@ -167,7 +168,6 @@ COBJS = \
 	wdredro.c \
 	wdunico.c
 
-SOBJS = \
-	nkcc-gc.S
+SOBJS = 
 
 SRCFILES = $(HEADER) $(COBJS) $(SOBJS)

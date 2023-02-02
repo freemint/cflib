@@ -2,3 +2,4 @@
 #include "nkccntog.c"
 #include "nkcclowr.c"
 #include "nkccuppr.c"
+#include "nkccinit.c"
