@@ -63,6 +63,8 @@ PREFIX=/usr
 
 endif
 
+ELF := $(shell if echo __ELF__ | $(CROSSPREFIX)gcc -E - 2>/dev/null | grep -q __ELF__; then echo no; else echo yes; fi)
+
 CC = $(CROSSPREFIX)gcc
 AS = $(CC)
 AR = $(CROSSPREFIX)ar
@@ -88,6 +90,9 @@ TAR   = tar
 # optimizations
 # 
 OPTS = -O2 -fomit-frame-pointer
+ifeq (yes,$(ELF))
+OPTS += -ffunction-sections -fdata-sections
+endif
 
 
 #
