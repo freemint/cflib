@@ -1,5 +1,6 @@
 #!/bin/sh
 # Use as: ". setup_env.sh"
+set -x
 
 PROJECT_REPO=$(echo "${GITHUB_REPOSITORY}" | cut -d '/' -f 1)
 echo "PROJECT_REPO=${PROJECT_REPO}" >> $GITHUB_ENV
@@ -23,6 +24,8 @@ BRANCH=$(echo "${GITHUB_REF}" | cut -d '/' -f 3)
 if test "$CPU_TARGET" != ""; then
 	echo "CPU_TARGET=$CPU_TARGET" >> $GITHUB_ENV
 fi
+CROSS_TOOL=${CROSS_TOOL:-m68k-atari-mint}
+echo "CROSS_TOOL=$CROSS_TOOL" >> $GITHUB_ENV
 
 # GITHUB_HEAD_REF is only set for pull requests
 if [ "${GITHUB_HEAD_REF}" = "" ]
