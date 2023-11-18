@@ -31,3 +31,5 @@ scrap.c
 userdef.c
 vdi.c
 wdial.c
+dirent.c
+rpl_stat.c

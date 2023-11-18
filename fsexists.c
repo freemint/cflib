@@ -27,6 +27,9 @@
 #include "intern.h"
 #include "file.h"
 
+#ifndef FA_DIR
+#define FA_DIR 0x10
+#endif
 
 int path_exists(char *pathname)
 {

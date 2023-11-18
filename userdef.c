@@ -46,6 +46,25 @@
 #include "inline.rsh"
 #include "inline.h"
 
+#ifndef udef_v_gtext
+#define udef_v_gtext v_gtext
+#define udef_vqt_extent vqt_extent
+#define udef_vst_effects vst_effects
+#define udef_vswr_mode vswr_mode
+#define udef_vro_cpyfm vro_cpyfm
+#define udef_vrt_cpyfm vrt_cpyfm
+#define udef_vst_font vst_font
+#define udef_vst_height vst_height
+#define udef_vsl_color vsl_color
+#define udef_v_pline v_pline
+#define udef_vqt_real_extent vqt_real_extent
+#define udef_vsf_color vsf_color
+#define udef_vsf_style vsf_style
+#define udef_vsf_interior vsf_interior
+#define udef_vr_recfl vr_recfl
+#define udef_vs_clip vs_clip
+#endif
+
 OBJECT *cf_ascii_tab = NULL;
 OBJECT *cf_alert_box = NULL;
 

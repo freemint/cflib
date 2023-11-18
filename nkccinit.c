@@ -29,6 +29,10 @@
 #include <mint/osbind.h>
 #else
 #include <tos.h>
+#ifndef KEYTAB
+#define _KEYTAB KEYTAB
+#define caps capslock
+#endif
 #endif
 
 
