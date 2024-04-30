@@ -23,10 +23,9 @@ INCLUDES += -I..
 
 # default definitions
 OBJS = $(COBJS:.c=.o) $(SOBJS:.s=.o)
-LIBS += -L.. -lcflib -lgem
-GENFILES = $(TARGET)
+LIBS += -L../.build/m68000 -lcflib -lgem
 
-$(TARGET): $(OBJS) ../libcflib.a
+$(TARGET): $(OBJS) ../.build/m68000/libcflib.a
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
 
 clean::

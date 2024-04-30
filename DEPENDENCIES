@@ -7,14 +7,11 @@ $(DEFS-$(<F)) $(DEFS-$(DIRSTEM)))
 #
 # compile rule
 #
-%.o: %.c
-	$(AM_V_CC)$(COMPILE) -Wp,-MD,.deps/$(@:.o=.P) -c $< -o $@
-
-%.o: %.S
-	$(AM_V_CPPAS)$(COMPILE) -Wp,-MD,.deps/$(@:.o=.P) -c $< -o $@
-
-%.o: %.s
-	$(AM_V_AS)$(COMPILE) -Wp,-MD,.deps/$(@:.o=.P) -c $< -o $@
+define CC_TEMPLATE
+$(1).o: $(srcdir)/$(1).c
+	$(AM_V_CC)$(COMPILE) -Wp,-MD,.deps/$$(@:.o=.P) -c $$< -o $$@
+endef
+$(foreach FILE,$(COBJS:.c=),$(eval $(call CC_TEMPLATE,$(FILE))))
 
 #
 # dependencies

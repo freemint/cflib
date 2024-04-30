@@ -24,12 +24,13 @@ INCLUDES += -I..
 
 # default definitions
 OBJS = $(COBJS:.c=.o) $(SOBJS:.s=.o)
-LIBS += -L.. -lcflib -lgem
-GENFILES = $(TARGET)
+LIBS += -L../.build/m68000 -lcflib -lgem
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
 	$(STRIP) $@
 
+clean::
+	rm -f $(TARGET)
 
 include $(top_srcdir)/DEPENDENCIES

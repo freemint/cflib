@@ -3,7 +3,6 @@
 #
 
 SHELL = /bin/sh
-SUBDIRS = demo intrface
 BUILDLIB=cflib
 
 srcdir = .
@@ -18,7 +17,7 @@ include $(top_srcdir)/RULES
 include $(top_srcdir)/PHONY
 include $(srcdir)/VERSION
 
-all-here: libs doc/cflib.hyp
+all-here: libdirs doc/cflib.hyp
 
 dist: distdir
 	-chmod -R a+r $(distdir) 
@@ -28,48 +27,86 @@ dist: distdir
 # default overwrites
 
 # default definitions
-GENFILES = .lib* libcflib*.a
-
-ALL_LIBS = normal mshort
-
-ifeq ($(WITH_020_LIB),yes)
-ALL_LIBS += normal020
+BASE_FLAVOURS = m68000
+ifeq ($(WITH_020_LIB), yes)
+  BASE_FLAVOURS += m68020
+endif
+ifeq ($(WITH_V4E_LIB), yes)
+  BASE_FLAVOURS += coldfire
 endif
 
-ifeq ($(WITH_V4E_LIB),yes)
-ALL_LIBS += normalv4e
+FASTCALL_FLAVOURS = $(BASE_FLAVOURS)
+ifeq ($(WITH_FASTCALL), yes)
+FASTCALL_FLAVOURS += $(addsuffix -fastcall,$(BASE_FLAVOURS))
 endif
+FLAVOURS = $(FASTCALL_FLAVOURS) $(addsuffix -short,$(FASTCALL_FLAVOURS))
 
-libs: $(ALL_LIBS)
+BUILDDIR=.build
 
-normal:
-	$(MAKE) libcflib.a TARGET=""
+LIBDIRS = $(addprefix $(BUILDDIR)/,$(FLAVOURS))
 
-mshort:
-	$(MAKE) libcflib16.a TARGET="16"
-	
-normal020:
-	$(MAKE) libcflib020.a TARGET="020"
+SUBDIRS = $(LIBDIRS) demo intrface
+CLEAN_SUBDIRS = demo intrface
+ALL_LIBS = $(addsuffix /libcflib.a,$(LIBDIRS))
 
-normalv4e:
-	$(MAKE) libcflibv4e.a TARGET="v4e"
+libdirs:
+	@for flavour in $(FLAVOURS); do \
+	   dir=$(BUILDDIR)/$$flavour; \
+	   mkdir -p $$dir/.deps; \
+	   cflags=""; \
+	   for f in `echo $$flavour | sed -e 's/-/ /g'`; do \
+	     case $$f in \
+	     m68000) \
+	        cflags="$$cflags $(CFLAGS_m68000)"; \
+	        ;; \
+	     m68020) \
+	        cflags="$$cflags $(CFLAGS_m68020)"; \
+	        ;; \
+	     coldfire) \
+	        cflags="$$cflags $(CFLAGS_coldfire)"; \
+	        ;; \
+	     short) \
+	        cflags="$$cflags $(CFLAGS_short)"; \
+	        ;; \
+	     fastcall) \
+	        cflags="$$cflags $(CFLAGS_fastcall)"; \
+	        ;; \
+	     esac; \
+	   done; \
+	   instdir=`$(CC) $$cflags -print-multi-directory`; \
+	   ( echo "SHELL = /bin/sh"; \
+	     echo 'srcdir = ../..'; \
+	     echo 'top_srcdir = ../..'; \
+	     echo "subdir = $$dir"; \
+             echo 'include $$(top_srcdir)/CONFIGVARS'; \
+             echo 'include $$(top_srcdir)/RULES'; \
+             echo 'include $$(top_srcdir)/SRCFILES'; \
+	     echo ""; \
+	     echo "cflags = $$cflags"; \
+	     echo "instdir = $$instdir"; \
+	     echo "all: all-here"; \
+	     echo ""; \
+	     echo "all-here: libcflib.a"; \
+	     echo ""; \
+	     echo 'OBJS = $$(COBJS:.c=.o) $$(SOBJS:.S=.o)'; \
+	     echo 'libcflib.a: $$(OBJS)'; \
+	     echo '	$$(AM_V_at)$$(RM) $$@'; \
+	     echo '	$$(AM_V_AR)$$(AR) rc $$@ $$(OBJS)'; \
+	     echo '	$$(AM_V_RANLIB)$$(RANLIB) $$@'; \
+	     echo ""; \
+	     echo "install:"; \
+	     echo '	install -m 755 -d $$(DESTDIR)$$(PREFIX)/lib/$$(instdir)'; \
+	     echo '	install -m 644 libcflib.a $$(DESTDIR)$${PREFIX}/lib/$$(instdir)'; \
+	     echo ""; \
+	     echo "uninstall:"; \
+	     echo '	rm -f $$(DESTDIR)$${PREFIX}/lib/$$(instdir)libcflib.a'; \
+	     echo ""; \
+	     echo 'include $$(top_srcdir)/DEPENDENCIES'; \
+	   ) > $$dir/Makefile; \
+	done
 
 clean::
-	rm -rf .lib*
-
-libcflib$(TARGET).a: .lib$(TARGET)/objs
-	$(AM_V_at)$(RM) $@
-	$(AM_V_AR)$(AR) rc $@ \
-		$(shell for file in `cat .lib$(TARGET)/objs` ; \
-			do echo .lib$(TARGET)/$$file ; done)
-	$(AM_V_RANLIB)$(RANLIB) $@
-
-.lib$(TARGET)/objs: .lib$(TARGET) $(COBJS) $(SOBJS) $(HEADER)
-	cd .lib$(TARGET); $(MAKE)
-
-.lib$(TARGET):
-	$(AM_V_at)$(MKDIR) $@
-	$(AM_V_at)$(CP) Makefile.objs $@/Makefile
+	rm -rf $(BUILDDIR)
 
 cflib.spec: cflib.spec.in VERSION
 	$(AM_V_at)rm -f $@
@@ -86,24 +123,9 @@ doc/cflib.hyp: doc/cflib.stg
 	fi
 
 
-all-recursive:: normal
-
 install:
 	install -m 755 -d $(DESTDIR)$(PREFIX)/include
 	install -m 644 cflib.h        $(DESTDIR)${PREFIX}/include
-	install -m 755 -d $(DESTDIR)$(PREFIX)/lib
-	install -m 644 libcflib.a     $(DESTDIR)${PREFIX}/lib
-	install -m 755 -d $(DESTDIR)$(PREFIX)/lib/mshort
-	install -m 644 libcflib16.a   $(DESTDIR)${PREFIX}/lib/mshort/libcflib.a
-	ln -sf mshort/libcflib.a	      $(DESTDIR)${PREFIX}/lib/libcflib16.a
-ifeq ($(WITH_020_LIB),yes)
-	install -m 755 -d $(DESTDIR)$(PREFIX)/lib/m68020-60
-	install -m 644 libcflib020.a  $(DESTDIR)${PREFIX}/lib/m68020-60/libcflib.a
-endif
-ifeq ($(WITH_V4E_LIB),yes)
-	install -m 755 -d $(DESTDIR)$(PREFIX)/lib/m5475
-	install -m 644 libcflibv4e.a  $(DESTDIR)${PREFIX}/lib/m5475/libcflib.a
-endif
 	install -m 755 -d $(DESTDIR)/stguide
 	if test -f doc/cflib.hyp; then \
 		install -m 644 doc/cflib.hyp      $(DESTDIR)/stguide; \
@@ -115,15 +137,7 @@ endif
 
 uninstall:
 	rm -f $(DESTDIR)${PREFIX}/include/cflib.h
-	rm -f $(DESTDIR)${PREFIX}/lib/libcflib.a
 	rm -f $(DESTDIR)${PREFIX}/lib/libcflib16.a
-	rm -f $(DESTDIR)${PREFIX}/lib/mshort/libcflib.a
-ifeq ($(WITH_020_LIB),yes)
-	rm -f $(DESTDIR)${PREFIX}/lib/m68020-60/libcflib.a
-endif
-ifeq ($(WITH_V4E_LIB),yes)
-	rm -f $(DESTDIR)${PREFIX}/lib/m5475/libcflib.a
-endif
 	rm -f $(DESTDIR)/stguide/cflib.stg
 	rm -f $(DESTDIR)/stguide/cflib.hyp
 	rm -f $(DESTDIR)/stguide/cflib.ref

@@ -1,5 +1,6 @@
 .deps
 .lib*
+.build
 cflib.spec
 *.o
 *.a
