@@ -4,7 +4,7 @@
 # -x: Display expanded script commands
 
 DOWNLOAD_DIR=http://tho-otto.de/snapshots
-SYSROOT_DIR=${SYSROOT_DIR:-"/usr/${CROSS_TOOL}/sys-root/usr"}
+SYSROOT_DIR=${SYSROOT_DIR:-"/usr/${CROSS_TOOL}/sys-root"}
 
 sudo mkdir -p "${SYSROOT_DIR}" && cd "${SYSROOT_DIR}"
 

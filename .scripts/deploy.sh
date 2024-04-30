@@ -73,10 +73,6 @@ upload_file "$ARCHIVE_PATH" "${UPLOAD_DIR}/${PROJECT_DIR}/${ARCHIVE_NAME}"
 if test -z "${CPU_TARGET}"
 then
 	link_file "$ARCHIVE_NAME" "${PROJECT_DIR}-${toolsuffix}-latest.${DEPLOY_ARCHIVE}"
-	# traditionally, that link did not contain the cross toolchain suffix
-	if test "$toolsuffix" = "mint"; then
-		link_file "$ARCHIVE_NAME" "${PROJECT_DIR}-latest.${DEPLOY_ARCHIVE}"
-	fi
 fi
 
 echo ${PROJECT_NAME}-${PROJECT_VERSION}-${SHORT_ID} > .latest_version

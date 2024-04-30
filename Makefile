@@ -89,41 +89,41 @@ doc/cflib.hyp: doc/cflib.stg
 all-recursive:: normal
 
 install:
-	install -m 755 -d $(PREFIX)/include
-	install -m 644 cflib.h        ${PREFIX}/include
-	install -m 755 -d $(PREFIX)/lib
-	install -m 644 libcflib.a     ${PREFIX}/lib
-	install -m 755 -d $(PREFIX)/lib/mshort
-	install -m 644 libcflib16.a   ${PREFIX}/lib/mshort/libcflib.a
-	ln -sf mshort/libcflib.a	      ${PREFIX}/lib/libcflib16.a
+	install -m 755 -d $(DESTDIR)$(PREFIX)/include
+	install -m 644 cflib.h        $(DESTDIR)${PREFIX}/include
+	install -m 755 -d $(DESTDIR)$(PREFIX)/lib
+	install -m 644 libcflib.a     $(DESTDIR)${PREFIX}/lib
+	install -m 755 -d $(DESTDIR)$(PREFIX)/lib/mshort
+	install -m 644 libcflib16.a   $(DESTDIR)${PREFIX}/lib/mshort/libcflib.a
+	ln -sf mshort/libcflib.a	      $(DESTDIR)${PREFIX}/lib/libcflib16.a
 ifeq ($(WITH_020_LIB),yes)
-	install -m 755 -d $(PREFIX)/lib/m68020-60
-	install -m 644 libcflib020.a  ${PREFIX}/lib/m68020-60/libcflib.a
+	install -m 755 -d $(DESTDIR)$(PREFIX)/lib/m68020-60
+	install -m 644 libcflib020.a  $(DESTDIR)${PREFIX}/lib/m68020-60/libcflib.a
 endif
 ifeq ($(WITH_V4E_LIB),yes)
-	install -m 755 -d $(PREFIX)/lib/m5475
-	install -m 644 libcflibv4e.a  ${PREFIX}/lib/m5475/libcflib.a
+	install -m 755 -d $(DESTDIR)$(PREFIX)/lib/m5475
+	install -m 644 libcflibv4e.a  $(DESTDIR)${PREFIX}/lib/m5475/libcflib.a
 endif
-	install -m 755 -d $(PREFIX)/stguide
+	install -m 755 -d $(DESTDIR)/stguide
 	if test -f doc/cflib.hyp; then \
-		install -m 644 doc/cflib.hyp      ${PREFIX}/stguide; \
-		install -m 644 doc/cflib.ref      ${PREFIX}/stguide; \
+		install -m 644 doc/cflib.hyp      $(DESTDIR)/stguide; \
+		install -m 644 doc/cflib.ref      $(DESTDIR)/stguide; \
 	else \
 		echo "HCP not found, installing documentation source" >&2; \
-		install -m 644 doc/cflib.stg      ${PREFIX}/stguide; \
+		install -m 644 doc/cflib.stg      $(DESTDIR)/stguide; \
 	fi
 
 uninstall:
-	rm -f ${PREFIX}/include/cflib.h
-	rm -f ${PREFIX}/lib/libcflib.a
-	rm -f ${PREFIX}/lib/libcflib16.a
-	rm -f ${PREFIX}/lib/mshort/libcflib.a
+	rm -f $(DESTDIR)${PREFIX}/include/cflib.h
+	rm -f $(DESTDIR)${PREFIX}/lib/libcflib.a
+	rm -f $(DESTDIR)${PREFIX}/lib/libcflib16.a
+	rm -f $(DESTDIR)${PREFIX}/lib/mshort/libcflib.a
 ifeq ($(WITH_020_LIB),yes)
-	rm -f ${PREFIX}/lib/m68020-60/libcflib.a
+	rm -f $(DESTDIR)${PREFIX}/lib/m68020-60/libcflib.a
 endif
 ifeq ($(WITH_V4E_LIB),yes)
-	rm -f ${PREFIX}/lib/m5475/libcflib.a
+	rm -f $(DESTDIR)${PREFIX}/lib/m5475/libcflib.a
 endif
-	rm -f ${PREFIX}/stguide/cflib.stg
-	rm -f ${PREFIX}/stguide/cflib.hyp
-	rm -f ${PREFIX}/stguide/cflib.ref
+	rm -f $(DESTDIR)/stguide/cflib.stg
+	rm -f $(DESTDIR)/stguide/cflib.hyp
+	rm -f $(DESTDIR)/stguide/cflib.ref
