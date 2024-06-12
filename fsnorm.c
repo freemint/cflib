@@ -90,9 +90,8 @@ int make_normalpath(char *path)
 	}
 
 	ret = path_exists(p);
-	if (!ret)
-		p[i] = '\0';
 
+	/* always return path with trailing backslash */
 	strcpy(path, p);
 	return ret;
 }
