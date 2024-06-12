@@ -38,14 +38,21 @@ int path_exists(char *pathname)
 	
 	if (pathname[0] != '\0')
 	{
+		size_t len = strlen(pathname);
+		int trailing_backslash = pathname[len-1] == '\\';
+
+		if (trailing_backslash)
+			pathname[len-1] = '\0';
+
 		if ((attr = Fattrib(pathname, 0, 0)) >= 0 && (attr & FA_DIR) != 0)
 			r = TRUE;
 
-		/* Work-around fÅr MagiCPC, wo der stat(<Laufwerk>) nicht funkt! */
+		if (trailing_backslash)
+			pathname[len-1] = '\\';
+
+		/* Work-around fuer MagiCPC, wo der stat(<Laufwerk>) nicht funkt! */
 		if (cf_magxPC && !r)
 		{
-			int len = (int)strlen(pathname);
-
 			if (pathname[1] == ':' && len <= 3)	/* nur Laufwerk 'X:' oder 'X:\' */
 			{
 				char p[80];
