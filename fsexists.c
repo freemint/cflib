@@ -34,7 +34,6 @@
 int path_exists(char *pathname)
 {
 	int r = FALSE;
-	short attr;
 	
 	if (pathname[0] != '\0')
 	{
@@ -44,7 +43,8 @@ int path_exists(char *pathname)
 		if (trailing_backslash)
 			pathname[len-1] = '\0';
 
-		if ((attr = Fattrib(pathname, 0, 0)) >= 0 && (attr & FA_DIR) != 0)
+		if (Fsfirst(pathname, FA_RDONLY|FA_HIDDEN|FA_SYSTEM|FA_DIR|FA_CHANGED) == 0
+			&& ((Fgetdta())->dta_attribute & FA_DIR) != 0)
 			r = TRUE;
 
 		if (trailing_backslash)

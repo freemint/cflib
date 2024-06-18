@@ -32,5 +32,8 @@ int file_exists(char *filename)
 {
 	if (filename[0] == '\0')
 		return FALSE;
-	return Fattrib(filename, 0, 0) >= 0;
+	/* include read-only, hidden, system and files with archive-bit
+	 * (exclude volume labels and directories)
+	 */
+	return Fsfirst(filename, FA_RDONLY|FA_HIDDEN|FA_SYSTEM|FA_CHANGED) == 0;
 }
