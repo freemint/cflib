@@ -344,6 +344,10 @@ _WORD do_fontsel(_WORD flags, char *title, _WORD *id, _WORD *pts)
 
 	else if ((flags & FS_M_FPROT) && (i = check_for_fprot()) >= 0)
 	{
+		if (gl_gdos)
+			vst_unload_fonts(fs_handle, 0);
+
+		v_clsvwk(fs_handle);
 		do_fprotokoll(i, *id, *pts);
 		return FALSE;				/* immer so, da neuer Font per Message kommt! */
 	}		
