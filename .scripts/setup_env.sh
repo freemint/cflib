@@ -1,6 +1,5 @@
 #!/bin/sh
 # Use as: ". setup_env.sh"
-set -x
 
 PROJECT_REPO=$(echo "${GITHUB_REPOSITORY}" | cut -d '/' -f 1)
 echo "PROJECT_REPO=${PROJECT_REPO}" >> $GITHUB_ENV
