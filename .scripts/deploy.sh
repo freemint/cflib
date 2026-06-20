@@ -75,3 +75,8 @@ then
 	link_file "$ARCHIVE_NAME" "${PROJECT_DIR}-${toolsuffix}-latest.${DEPLOY_ARCHIVE}"
 fi
 
+if [ "$toolsuffix" = "mint" ]
+then
+	upload_file "${INSTALL_DIR}/stguide/cflib.hyp" "${UPLOAD_DIR}/guides/cflib.hyp"
+fi
+

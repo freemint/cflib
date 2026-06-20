@@ -112,12 +112,13 @@ cflib.spec: cflib.spec.in VERSION
 	$(AM_V_at)rm -f $@
 	$(AM_V_GEN)sed 's,@VERSION@,$(VERSION),g' $@.in >$@
 
+HCP ?= hcp
+
 docu: doc/cflib.hyp
 
-doc/cflib.hyp: doc/cflib.stg
-	@if test "$(HCP)" != ""; then hcp="$(HCP)"; else hcp=hcp; fi; \
-	if test "$$hcp" != "" && $$hcp --version >/dev/null 2>&1; then \
-		$$hcp -o $@ $<; \
+%.hyp: %.stg
+	@if command -v $(HCP) >/dev/null 2>&1 && test -f $<; then \
+		$(HCP) -o $@ $<; \
 	else \
 		echo "HCP not found, help file not compiled" >&2; \
 	fi
